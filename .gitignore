@@ -1,0 +1,7 @@
+# Never store the virtual environment in git
+/env
+
+# Don't store Intuit keys
+testapp1.crt
+testapp1.key
+testapp1.p12
