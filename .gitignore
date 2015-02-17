@@ -5,3 +5,6 @@
 testapp1.crt
 testapp1.key
 testapp1.p12
+
+# Don't store tokens (Quandl, )
+tokens.txt
