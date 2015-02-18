@@ -1,9 +1,9 @@
-""" Pulls QUANDL API data. """
-
-# FIXME: successfully, pulls the data I want from the JSON file, need to 
-# directly session.commit it to the database (unscrubbed data) 
+""" Pulls QUANDL API data and autoloads database """
 
 import json, urllib
+import model
+from model import Ticker, Price
+from datetime import datetime
 
 # FIXME: need to input real tickers in ticker list
 ticker_list = ["MX_FB", "MX_COST"]
@@ -18,10 +18,7 @@ def build_ticker_url(ticker_list):
 		ticker_url_list.append(ticker_url)
 	return ticker_url_list
 
-
-ticker_name_dict = {}
-
-def get_ticker_names(ticker_url_list):
+def load_ticker_data(ticker_url_list, session):
 	for ticker_url in ticker_url_list:	
 		u = urllib.urlopen(ticker_url)
 		data = u.read()
@@ -30,34 +27,32 @@ def get_ticker_names(ticker_url_list):
 		# FIXME- "code" pulls the url query, not the actual symbol
 		ticker_symbol = newdata["code"]
 		ticker_name = newdata["name"]
-		ticker_name_dict[ticker_symbol] = ticker_name
-	return ticker_name_dict
 		
-
-ticker_prices_dict = {}
-ticker_prices_masterdict = {}
-
-def get_ticker_prices(ticker_url_list):
-	for ticker_url in ticker_url_list:	
-		u = urllib.urlopen(ticker_url)
-		data = u.read()
-		newdata = json.loads(data)
-
-		ticker_symbol = newdata["code"]
-		# prices pulls a list of lists (consisting of date, open, high, low, close, volume. adjusted close)
+		# prices pulls a list of lists (consisting of date, open, high, 
+			# low, close, volume. adjusted close)
 		prices = newdata["data"]
 
-		# itierate over the list of lists to pull out date and close price
 		for price in prices:
 			date = price[0]
+			date_format = datetime.strptime(date, "%Y-%m-%d")
+			date_format = date_format.date()
 			close_price = price[4]
-			ticker_prices_dict[date] = close_price
-		ticker_prices_masterdict[ticker_symbol] = ticker_prices_dict
-    	return ticker_prices_masterdict
+			new_ticker_price = Price(ticker_symbol=ticker_symbol, 
+				date=date_format, close_price=close_price)
+			session.add(new_ticker_price)
 
-def main():
-	print get_ticker_names(build_ticker_url(ticker_list))
+		# create new instance of the Ticker class called new_ticker
+		new_ticker = Ticker(symbol=ticker_symbol, name=ticker_name)
+        # add each instance to session
+		session.add(new_ticker)
+    # commit after all instances are added
+	session.commit()
+
+
+def main(session):
+	load_ticker_data(build_ticker_url(ticker_list), session)
 
 if __name__ == "__main__":
-	main()
+    session = model.session
+    main(session)
 	

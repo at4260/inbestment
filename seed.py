@@ -1,22 +1,19 @@
-# Purpose: autoload database with u.tickers
+""" Autoload database with data.py data """
 
 import model
-from model import User, Rating, Movie
-import csv
+from model import Ticker, Price
 from datetime import datetime
+import data
 
 def load_tickers(session):
-    # use u.user
-    f = open("./seed_data/u.user")
-    # read file and parse using traditional loop method
-    for line in f:
-        data = line.split("|")
+        name_dict = data.get_ticker_names(data.build_ticker_url(data.ticker_list))
+
         user_age = data[1]
         user_zipcode = data[4]
         # create new instance of the User class in model.py called my_new_user, set class attributes to variables defined in this function
-        my_new_user = User(age=user_age, zipcode=user_zipcode)
+        new_ticker = Ticker(symbol=user_age, name=user_zipcode)
         # add each instance to session
-        session.add(my_new_user)
+        session.add(new_ticker)
     # commit after all instances are added
     session.commit()
 
@@ -51,24 +48,13 @@ def load_prices(session):
             session.add(my_new_movie)
         session.commit() 
 
-# def load_ratings(session):
-#     # use u.data
-#     filename=("./seed_data/u.data")
-#     with open(filename, 'rb') as csvfile:
-#         openfile = csv.reader(csvfile, delimiter='\t')
-#         for row in openfile:
-#             rating_user_id = row[0]
-#             rating_movie_id = row[1]
-#             rating_rating = row[2]
-#             my_new_rating = Rating(user_id=rating_user_id, movie_id=rating_movie_id, rating=rating_rating)
-#             session.add(my_new_rating)
-#         session.commit() 
 
 def main(session):
-    # You'll call each of the load_* functions with the session as an argument
-    load_users(session)
-    load_movies(session)
-    load_ratings(session)
+#     # You'll call each of the load_* functions with the session as an argument
+    load_tickers(session)
+#     # load_movies(session)
+#     # load_ratings(session)
+#     pass
 
 if __name__ == "__main__":
     s= model.connect()

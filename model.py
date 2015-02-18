@@ -6,11 +6,12 @@
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, ForeignKey
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, Date
 from sqlalchemy.orm import sessionmaker, relationship, backref, scoped_session
 
 engine = create_engine("sqlite:///database.db", echo=True)
-session = scoped_session(sessionmaker(bind=engine, autocommit = False, autoflush = False))
+session = scoped_session(sessionmaker(bind=engine, autocommit = False, 
+    autoflush = False))
 
 Base = declarative_base()
 Base.query = session.query_property()
@@ -30,7 +31,7 @@ class Price(Base):
 
     id = Column(Integer, primary_key=True)
     ticker_symbol = Column(String(8), ForeignKey('tickers.id'), nullable=False)
-    date = Column(DateTime, nullable=False)
+    date = Column(Date, nullable=False)
     close_price = Column(Integer, nullable=False)
 
     ticker_price = relationship("Ticker",
@@ -40,7 +41,7 @@ class Price(Base):
         return "<Ticker Symbol=%s Date=%s Close Price=%d>" % (self.ticker_symbol, self.date, self.close_price)
 
 def main():
-    """In case we need this for something"""
+    pass
 
 if __name__ == "__main__":
     main()
