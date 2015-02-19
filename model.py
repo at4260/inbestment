@@ -16,12 +16,94 @@ session = scoped_session(sessionmaker(bind=engine, autocommit = False,
 Base = declarative_base()
 Base.query = session.query_property()
 
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    email = Column(String(50), nullable=False)
+    password = Column(String(10), nullable=False)
+
+    banking = relationship("UserBanking", 
+        backref=backref("user", order_by=id))
+    profile = relationship("UserProfile", 
+        backref=backref("user", order_by=id))
+
+    def __repr__(self):
+        return "<User ID=%s Email=%s Password=%s>" % (self.id, self.email,
+            self.password)
+
+class UserBanking(Base):
+    __tablename__ = "user_banking"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    checking_amt = Column(Integer, nullable=True)
+    savings_amt = Column(Integer, nullable=True)
+    IRA_amt = Column(Integer, nullable=True)
+    comp401k_amt = Column(Integer, nullable=True)
+    investment_amt = Column(Integer, nullable=True)
+
+    def __repr__(self):
+        return "<User ID=%s Checkings=%s Savings=%s>" % (self.user_id, 
+            self.checking_amt, self.savings_amt)
+
+class UserProfile(Base):
+    __tablename__ = "user_profiles"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    income = Column(String(30), nullable=False)
+    company_401k = Column(String(1), nullable=False)
+    company_match = Column(String(1), nullable=True)
+    match_terms = Column(String(10), nullable=True)
+    risk_profile_id = Column(Integer, ForeignKey('risk_profiles.id'), 
+        nullable=False)
+
+    risk_profile = relationship("RiskProfile",
+        backref=backref("users", order_by=id))
+
+    def __repr__(self):
+        return "<User ID=%s Income=%s Risk Profile ID=%s>" % (self.user_id, 
+            self.income, self.risk_profile_id)
+
+class RiskProfile(Base):
+    __tablename__ = "risk_profiles"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(20), nullable=False)
+
+    allocation = relationship("ProfileAllocation",
+        backref=backref("risk_profile", order_by=id))
+
+    def __repr__(self):
+        return "<Risk Profile ID=%s Name=%s>" % (self.id, self.name)
+
+class ProfileAllocation(Base):
+    __tablename__ = "profile_allocations"
+
+    id = Column(Integer, primary_key=True)
+    risk_profile_id = Column(Integer, ForeignKey('risk_profiles.id'), 
+        nullable=False)
+    ticker_id = Column(String(8), ForeignKey('tickers.id'), nullable=False)
+    ticker_weight_percent = Column(Integer, nullable=False)
+    
+    ticker = relationship("Ticker",
+        backref=backref("profile_allocations", order_by=id))
+
+    def __repr__(self):
+        return "<Risk Profile ID=%s Ticker Symbol=%s Ticker Weight % \
+            =%s>" %(self.risk_profile_id, self.ticker_id, 
+            self.ticker_weight_percent)
+
 class Ticker(Base):
     __tablename__ = "tickers"
 
     id = Column(Integer, primary_key = True)
     symbol = Column(String(8), nullable=False)
     name = Column(String(100), nullable=False)
+
+    price = relationship("Price",
+            backref=backref("ticker", order_by=id))
     
     def __repr__(self):
         return "<Ticker ID=%s Symbol=%s Name=%s>" % (self.id, self.symbol, 
@@ -31,38 +113,13 @@ class Price(Base):
     __tablename__ = "prices"
 
     id = Column(Integer, primary_key=True)
-    ticker_symbol = Column(String(8), ForeignKey('tickers.id'), nullable=False)
+    ticker_id = Column(String(8), ForeignKey('tickers.id'), nullable=False)
     date = Column(Date, nullable=False)
     close_price = Column(Integer, nullable=False)
 
-    ticker_price = relationship("Ticker",
-            backref=backref("prices", order_by=id))
-
     def __repr__(self):
-        return "<Ticker Symbol=%s Date=%s Close Price=%d>" % (self.ticker_symbol, 
+        return "<Ticker ID=%s Date=%s Close Price=%d>" % (self.ticker_id, 
             self.date, self.close_price)
-
-class riskProfile(Base):
-    __tablename__ = "risk_profiles"
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(20), nullable=False)
-
-    def __repr__(self):
-        return "<Risk Profile ID=%s Name=%s>" % (self.id, self.name)
-
-class profileAllocation(Base):
-    __tablename__ = "profile_allocations"
-
-    id = Column(Integer, primary_key=True)
-    risk_profile_id = Column(Integer, ForeignKey('risk_profiles.id'), nullable=False)
-    ticker_symbol = Column(String(8), ForeignKey('tickers.id'), nullable=False)
-    ticker_weight_percent = Column(Integer, nullable=False)
-
-    def __repr__(self):
-        return "<Risk Profile ID=%s Ticker Symbol=%s Ticker Weight(in percent) \
-            =%s>" %(self.risk_profile_id, self.ticker_symbol, 
-            self.ticker_weight_percent)
 
 def main():
     pass
