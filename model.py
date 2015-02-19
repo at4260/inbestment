@@ -24,7 +24,8 @@ class Ticker(Base):
     name = Column(String(100), nullable=False)
     
     def __repr__(self):
-        return "<Ticker ID=%s Symbol=%s Name=%s>" % (self.id, self.symbol, self.name)
+        return "<Ticker ID=%s Symbol=%s Name=%s>" % (self.id, self.symbol, 
+            self.name)
 
 class Price(Base):
     __tablename__ = "prices"
@@ -38,7 +39,30 @@ class Price(Base):
             backref=backref("prices", order_by=id))
 
     def __repr__(self):
-        return "<Ticker Symbol=%s Date=%s Close Price=%d>" % (self.ticker_symbol, self.date, self.close_price)
+        return "<Ticker Symbol=%s Date=%s Close Price=%d>" % (self.ticker_symbol, 
+            self.date, self.close_price)
+
+class riskProfile(Base):
+    __tablename__ = "risk_profiles"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(20), nullable=False)
+
+    def __repr__(self):
+        return "<Risk Profile ID=%s Name=%s>" % (self.id, self.name)
+
+class profileAllocation(Base):
+    __tablename__ = "profile_allocations"
+
+    id = Column(Integer, primary_key=True)
+    risk_profile_id = Column(Integer, ForeignKey('risk_profiles.id'), nullable=False)
+    ticker_symbol = Column(String(8), ForeignKey('tickers.id'), nullable=False)
+    ticker_weight_percent = Column(Integer, nullable=False)
+
+    def __repr__(self):
+        return "<Risk Profile ID=%s Ticker Symbol=%s Ticker Weight(in percent) \
+            =%s>" %(self.risk_profile_id, self.ticker_symbol, 
+            self.ticker_weight_percent)
 
 def main():
     pass
