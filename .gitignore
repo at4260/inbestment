@@ -4,7 +4,7 @@
 # Don't store Intuit keys
 testapp1.crt
 testapp1.key
-testapp1.p12
+testapp1.pfx
 
 # Don't store tokens (Quandl, )
 tokens.txt
