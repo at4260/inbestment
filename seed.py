@@ -24,8 +24,8 @@ def load_ticker_data(ticker_url_list, session):
 		data = u.read()
 		newdata = json.loads(data)
 
-		# FIXME- "code" pulls the url query, not the actual symbol
-		ticker_symbol = newdata["code"]
+		ticker_symbol = (newdata["code"].split("_"))[1]
+
 		ticker_name = newdata["name"]
 		
 		# prices pulls a list of lists (consisting of date, open, high, 
