@@ -5,14 +5,14 @@ import model
 from model import Ticker, Price
 from datetime import datetime
 
-# FIXME: need to input real tickers in ticker list
-ticker_list = ["MX_FB", "MX_COST"]
+ticker_list = ["NYSEARCA_VV", "NYSEARCA_VB", "NASDAQ_VXUS", 
+	"NYSEARCA_BIV", "NYSEARCA_BSV", "NYSEARCA_VWO", "NYSEARCA_BND"]
 ticker_url_list = []
 
 def build_ticker_url(ticker_list):
 	""" Queries the url using the desired ticker and token"""
 	for ticker in ticker_list:
-		url = "https://www.quandl.com/api/v1/datasets/YAHOO/"
+		url = "https://www.quandl.com/api/v1/datasets/GOOG/"
 		token = open("tokens.txt").read()
 		ticker_url = url + ticker + ".json?auth_token=" + token
 		ticker_url_list.append(ticker_url)
