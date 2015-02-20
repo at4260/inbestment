@@ -33,7 +33,7 @@ class User(Base):
             self.password)
 
 class UserBanking(Base):
-    __tablename__ = "user_banking"
+    __tablename__ = "u_bank"
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
@@ -48,7 +48,7 @@ class UserBanking(Base):
             self.checking_amt, self.savings_amt)
 
 class UserProfile(Base):
-    __tablename__ = "user_profiles"
+    __tablename__ = "u_profiles"
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
@@ -56,7 +56,7 @@ class UserProfile(Base):
     company_401k = Column(String(1), nullable=False)
     company_match = Column(String(1), nullable=True)
     match_terms = Column(String(10), nullable=True)
-    risk_profile_id = Column(Integer, ForeignKey('risk_profiles.id'), 
+    risk_profile_id = Column(Integer, ForeignKey('risk_profs.id'), 
         nullable=False)
 
     risk_profile = relationship("RiskProfile",
@@ -67,7 +67,7 @@ class UserProfile(Base):
             self.income, self.risk_profile_id)
 
 class RiskProfile(Base):
-    __tablename__ = "risk_profiles"
+    __tablename__ = "risk_profs"
 
     id = Column(Integer, primary_key=True)
     name = Column(String(20), nullable=False)
@@ -79,10 +79,10 @@ class RiskProfile(Base):
         return "<Risk Profile ID=%s Name=%s>" % (self.id, self.name)
 
 class ProfileAllocation(Base):
-    __tablename__ = "profile_allocations"
+    __tablename__ = "prof_allocs"
 
     id = Column(Integer, primary_key=True)
-    risk_profile_id = Column(Integer, ForeignKey('risk_profiles.id'), 
+    risk_profile_id = Column(Integer, ForeignKey('risk_profs.id'), 
         nullable=False)
     ticker_id = Column(String(8), ForeignKey('tickers.id'), nullable=False)
     ticker_weight_percent = Column(Integer, nullable=False)
