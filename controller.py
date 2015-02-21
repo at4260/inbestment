@@ -50,12 +50,24 @@ def show_results():
 	
 	risk_tolerance = request.args.get("risk_tolerance")
 
+	# FIXME add
+	# new_user_profile = model.UserProfile(user_id= , income=income, company_401k=comp_401k, company_match=match_401k)
+
 	return render_template("results.html", checking=format_currency(checking_needed), savings=format_currency(savings_needed), max_match=format_currency(max_match), max_401k=format_currency(max_401k), ira=format_currency(ira_needed), investment=format_currency(investment_needed))
 
 @app.route("/investments")
-def home_page():
+def show_investments():
+	conservative = m_session.query(model.RiskProfile).get(1)
+	conservative_name = conservative.name
+	ticker_dict = {}
+	for ticker in conservative.allocation:
+		ticker_name = m_session.query(model.Ticker).get(ticker.ticker_id).name
+		weight = ticker.ticker_weight_percent
+		ticker_dict[ticker_name] = weight
 
-	return render_template("investments.html")
+	print ticker_dict
+
+	return render_template("investments.html", conservative=conservative_name, ticker_dict=ticker_dict)
 
 if __name__ == "__main__":
     app.run(debug = True)

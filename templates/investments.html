@@ -4,7 +4,12 @@
 </head>
 <body>
 	<h1> This is what you should be invested in: </h1>
-	<p> This is your rt: {{risk_tolerance}} </p>
+	<p> This is your risk tolerance: {{conservative}} </p>
+
+	{% for ticker, weight in ticker_dict.items() %}
+	<p> Ticker: {{ticker}} </p>
+	<p> Weighting: {{weight}}% </p>
+	{% endfor %}
 	
     
 </body>
