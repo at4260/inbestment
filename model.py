@@ -92,9 +92,7 @@ class ProfileAllocation(Base):
         backref=backref("profile_allocations", order_by=id))
 
     def __repr__(self):
-        return "<Risk Profile ID=%s Ticker Symbol=%s Ticker Weight % \
-            =%s>" %(self.risk_profile_id, self.ticker_id, 
-            self.ticker_weight_percent)
+        return "<Risk Profile ID=%s Ticker Symbol=%s Ticker Weight=%s>" %(self.risk_profile_id, self.ticker_id, self.ticker_weight_percent)
 
 class Ticker(Base):
     __tablename__ = "tickers"
