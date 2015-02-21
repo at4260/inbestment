@@ -52,10 +52,11 @@ class UserProfile(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    income = Column(String(30), nullable=False)
+    income = Column(Integer, nullable=False)
     company_401k = Column(String(1), nullable=False)
     company_match = Column(String(1), nullable=True)
-    match_terms = Column(String(10), nullable=True)
+    match_percent = Column(Integer, nullable=True)
+    match_salary = Column(Integer, nullable=True)
     risk_profile_id = Column(Integer, ForeignKey('risk_profs.id'), 
         nullable=False)
 
