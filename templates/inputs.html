@@ -3,10 +3,71 @@
 <head>
 </head>
 <body>
-<h1> Let's start </h1>
-    <form action="/">
-        <label >What's your income? <input type="text" name="person"></label>
-        <input type="submit">
-    </form>
+	<h1> Let's start </h1>
+	<form action="/results">
+		<label >How much money do you have? <input type="text" name="assets">
+	    </label>
+	    <br>
+
+	    <label >What's your income? <input type="text" name="income">
+	    </label>
+	    <br>
+
+	    Does your company have a 401k? 
+	    <label><input type="radio" name="401k" value="yes"> Yes 
+	    </label>
+	    <label><input type="radio" name="401k" value="no"> No 
+	    </label>
+	    <br>
+
+	    Does your company offer a 401k match?
+	    <label><input type="radio" name="match" value="yes"> Yes 
+	    </label>
+	    <label><input type="radio" name="match" value="no"> No 
+	    </label>
+	    <br>
+
+	    What are the match terms? 
+	    For example: 100% of the first 6%, meaning your company will match 100% up to 6% of your salary. If your salary is $50,000 and you contributed 6% (or $3,000), your employer will match 100% of that (receive $3,000).
+		<br>
+	    <label>Percentage of match
+			<select name="match_percent">
+				<label><option value="0.5">50%</option>
+				</label>
+				<label><option value="1.0">100%</option>
+				</label>
+			</select>
+		</label>
+		<br>
+
+		<label >Percentage of salary
+			<select name="salary_percent">
+				<label><option value="0.03">3%</option>
+				</label>
+				<label><option value="0.04">4%</option>
+				</label>
+				<label><option value="0.05">5%</option>
+				</label>
+				<label><option value="0.06">6%</option>
+				</label>
+			</select>
+		</label>
+		<br>
+
+	    <label >What is your risk tolerance?
+			<select name="risk_tolerance">
+				<label><option value="conservative">Conservative</option>
+				</label>
+				<label><option value="moderate">Moderate</option>
+				</label>
+				<label><option value="aggressive">Aggressive</option>
+				</label>
+			</select>
+		</label>
+		<br>
+
+		<br> 
+	    <input type="submit">
+	</form>
 </body>
 </html>
