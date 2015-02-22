@@ -49,25 +49,29 @@ def show_results():
 		investment_needed = 0
 	
 	risk_tolerance = request.args.get("risk_tolerance")
+	risk_profile_id = m_session.query(model.RiskProfile).filter_by(name = risk_tolerance).one().id
 
-	# FIXME add
-	# new_user_profile = model.UserProfile(user_id= , income=income, company_401k=comp_401k, company_match=match_401k)
+	# FIXME - user id should be reliant on login info
+	new_user_profile = model.UserProfile(user_id=1, income=income, company_401k=comp_401k, company_match=match_401k, match_percent=match_percent, match_salary=match_salary, risk_profile_id=risk_profile_id)
+	m_session.add(new_user_profile)
+	m_session.commit()
 
 	return render_template("results.html", checking=format_currency(checking_needed), savings=format_currency(savings_needed), max_match=format_currency(max_match), max_401k=format_currency(max_401k), ira=format_currency(ira_needed), investment=format_currency(investment_needed))
 
 @app.route("/investments")
 def show_investments():
-	conservative = m_session.query(model.RiskProfile).get(1)
-	conservative_name = conservative.name
+	# FIXME - user id should be reliant on login info
+	risk_profile_id = m_session.query(model.UserProfile).filter_by(id = 4).one().risk_profile_id
+	risk_prof = m_session.query(model.RiskProfile).filter_by(id = risk_profile_id).one()
+	risk_prof_name = risk_prof.name
+
 	ticker_dict = {}
-	for ticker in conservative.allocation:
+	for ticker in risk_prof.allocation:
 		ticker_name = m_session.query(model.Ticker).get(ticker.ticker_id).name
 		weight = ticker.ticker_weight_percent
 		ticker_dict[ticker_name] = weight
 
-	print ticker_dict
-
-	return render_template("investments.html", conservative=conservative_name, ticker_dict=ticker_dict)
+	return render_template("investments.html", risk_prof=risk_prof_name, ticker_dict=ticker_dict)
 
 if __name__ == "__main__":
     app.run(debug = True)
