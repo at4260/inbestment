@@ -32,27 +32,21 @@ def show_results():
 	checking_needed = monthly_expenses * 1
 	savings_needed = monthly_expenses * 3
 
-	if assets >= checking_needed:
-		assets = assets - checking_needed
-	else:
+	if assets < checking_needed:
 		checking_needed = assets
-		assets = assets - checking_needed
+	assets = assets - checking_needed
 
-	if assets >= savings_needed:
-		assets = assets - savings_needed
-	else:
+	if assets < savings_needed:
 		savings_needed = assets
-		assets = assets - savings_needed
+	assets = assets - savings_needed
 
 	match_needed = income * match_percent * match_salary
 
 	if comp_401k == "yes":
 		if match_401k == "yes":
-			if assets >= match_needed:
-				assets = assets - match_needed
-			else:
+			if assets < match_needed:
 				match_needed = assets
-				assets = assets - match_needed
+			assets = assets - match_needed
 		else:
 			match_needed = 0
 	else:
@@ -61,31 +55,27 @@ def show_results():
 	ret401k_needed = 18000 - match_needed
 	ira_needed = 5500   
 
-	if assets >= ira_needed:
-		assets = assets - ira_needed
-	else:
+	if assets < ira_needed:
 		ira_needed = assets
-		assets = assets - ira_needed
+	assets = assets - ira_needed
 
 	if comp_401k == "yes":
-		if assets >= ret401k_needed:
-			assets = assets - ret401k_needed
-		else:
+		if assets < ret401k_needed:
 			ret401k_needed = assets
-			assets = assets - ret401k_needed
+		assets = assets - ret401k_needed
 	else:
 		ret401k_needed = 0
 
 	investment_needed = assets
 	assets = assets - investment_needed
 
-	# risk_tolerance = request.args.get("risk_tolerance")
-	# risk_profile_id = m_session.query(model.RiskProfile).filter_by(name = risk_tolerance).one().id
+	risk_tolerance = request.args.get("risk_tolerance")
+	risk_profile_id = m_session.query(model.RiskProfile).filter_by(name = risk_tolerance).one().id
 
-	# # FIXME - user id should be reliant on login info
-	# new_user_profile = model.UserProfile(user_id=1, income=income, company_401k=comp_401k, company_match=match_401k, match_percent=match_percent, match_salary=match_salary, risk_profile_id=risk_profile_id)
-	# m_session.add(new_user_profile)
-	# m_session.commit()
+	# FIXME - user id should be reliant on login info
+	new_user_profile = model.UserProfile(user_id=1, income=income, company_401k=comp_401k, company_match=match_401k, match_percent=match_percent, match_salary=match_salary, risk_profile_id=risk_profile_id)
+	m_session.add(new_user_profile)
+	m_session.commit()
 
 	return render_template("results.html", 
 		assets=format_currency(assets), 
