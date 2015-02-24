@@ -12,6 +12,29 @@ app.secret_key = 'thisisasecretkey'
 def home_page():
     return render_template("home.html")
 
+@app.route("/login")
+def show_login():
+    return render_template("login.html")
+
+@app.route("/login", methods=["POST"])
+def process_login():
+	email = request.form["email"]
+	password = request.form["password"]
+
+	user = m_session.query(model.User).filter_by(email = email).first()
+
+	if user != None:
+		if email == user.email and password == user.password:
+			f_session["email"] = email
+			flash ("Login successful.")
+			return redirect("/input")
+		else:
+			flash ("Incorrect password. Try again.")
+			return redirect("/login")
+	else:
+		flash ("Please create an account first.")
+		return redirect("/login")
+
 @app.route("/input")
 def create_inputs():
     return render_template("inputs.html")

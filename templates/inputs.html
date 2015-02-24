@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+{% block body %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,6 +35,8 @@
 		<br>
 	    <label>Percentage of match
 			<select name="match_percent">
+				<label><option value="0.0">0%</option>
+				</label>
 				<label><option value="0.5">50%</option>
 				</label>
 				<label><option value="1.0">100%</option>
@@ -42,6 +47,8 @@
 
 		<label >Percentage of salary
 			<select name="salary_percent">
+				<label><option value="0.00">0%</option>
+				</label>
 				<label><option value="0.03">3%</option>
 				</label>
 				<label><option value="0.04">4%</option>
@@ -71,3 +78,6 @@
 	</form>
 </body>
 </html>
+
+{% endblock %}
+
