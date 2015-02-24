@@ -4,6 +4,7 @@ from flask import Flask, render_template, redirect, request, flash
 from flask import session as f_session
 from model import session as m_session
 import model
+import utils
 
 app = Flask(__name__)
 app.secret_key = 'thisisasecretkey'
@@ -33,14 +34,25 @@ def process_login():
 			return redirect("/login")
 	else:
 		flash ("Please create an account first.")
-		return redirect("/login")
+		return redirect("/create")
+
+@app.route("/create")
+def create_acct():
+    return render_template("create_acct.html")
+
+@app.route("/create", methods=["POST"])
+def process_acct():
+    email = request.form["email"]
+    password =request.form["password"]
+    new_user_acct = model.User(email=email, password=password)
+    m_session.add(new_user_acct)
+    m_session.commit()
+    flash("Your account has been succesfully added. Please log in.")
+    return redirect("/login")
 
 @app.route("/input")
 def create_inputs():
     return render_template("inputs.html")
-
-def format_currency(value):
-	return "${:,.2f}".format(value)
 
 @app.route("/results")
 def show_results():
@@ -101,13 +113,13 @@ def show_results():
 	m_session.commit()
 
 	return render_template("results.html", 
-		assets=format_currency(assets), 
-		checking=format_currency(checking_needed),
-		savings=format_currency(savings_needed), 
-		match=format_currency(match_needed),
-		ira=format_currency(ira_needed),
-		ret401k=format_currency(ret401k_needed), 
-		investment=format_currency(investment_needed))
+		assets=utils.format_currency(assets), 
+		checking=utils.format_currency(checking_needed),
+		savings=utils.format_currency(savings_needed), 
+		match=utils.format_currency(match_needed),
+		ira=utils.format_currency(ira_needed),
+		ret401k=utils.format_currency(ret401k_needed), 
+		investment=utils.format_currency(investment_needed))
 
 @app.route("/investments")
 def show_investments():
