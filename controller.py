@@ -107,8 +107,11 @@ def show_results():
 	risk_tolerance = request.args.get("risk_tolerance")
 	risk_profile_id = m_session.query(model.RiskProfile).filter_by(name = risk_tolerance).one().id
 
-	# FIXME - user id should be reliant on login info
-	new_user_profile = model.UserProfile(user_id=1, income=income, company_401k=comp_401k, company_match=match_401k, match_percent=match_percent, match_salary=match_salary, risk_profile_id=risk_profile_id)
+	email = f_session["email"]
+	user = m_session.query(model.User).filter_by(email = email).one()
+	user_id = user.id
+
+	new_user_profile = model.UserProfile(user_id=user_id, income=income, company_401k=comp_401k, company_match=match_401k, match_percent=match_percent, match_salary=match_salary, risk_profile_id=risk_profile_id)
 	m_session.add(new_user_profile)
 	m_session.commit()
 
@@ -123,9 +126,13 @@ def show_results():
 
 @app.route("/investments")
 def show_investments():
-	# FIXME - user id should be reliant on login info
-	risk_profile_id = m_session.query(model.UserProfile).filter_by(id = 4).one().risk_profile_id
-	risk_prof = m_session.query(model.RiskProfile).filter_by(id = risk_profile_id).one()
+	email = f_session["email"]
+	user = m_session.query(model.User).filter_by(email = email).one()
+	user_id = user.id
+	user_profile = m_session.query(model.UserProfile).filter_by(user_id = user_id).one()
+	user_risk_id = user_profile.risk_profile_id
+
+	risk_prof = m_session.query(model.RiskProfile).filter_by(id = user_risk_id).one()
 	risk_prof_name = risk_prof.name
 
 	ticker_dict = {}
