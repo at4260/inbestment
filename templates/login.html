@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+	<form method="POST">
+	    <h1> Please Sign In </h1>
+	    <input type="email" name="email" placeholder="Email" required autofocus />
+	    <br>
+	    <input type="password" name="password" placeholder="Password" required />
+	    <br>
+	    <br>
+	    <button type="submit"> Sign In </button>
+	</form>
+
+	<p> No account? </p>
+	<form action="/create">
+		<button type="submit"> Create Account </button>
+</body>
+</html>
+
+{% endblock %}
