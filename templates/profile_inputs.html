@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+	<h1> This is your current profile: </h1>
+	<p> Income: {{income}} </p>
+	<p> Does your company have a 401k? {{company_401k}} </p>
+	<p> Does your company have a 401k match? {{company_match}} </p>
+	<p> Percentage of match: {{match_percent}} </p>
+	<p> Percentage of salary: {{match_salary}} </p>
+	<p> Risk tolerance: {{risk_profile}} </p>
+	<form action="/input">
+	    <button type="submit"> Want to change your profile? </button>
+	</form>
+	<form action="/investments">
+	    <button type="submit"> Just show me my investments. </button>
+	</form>
+</body>
+</html>
+
+{% endblock %}
+

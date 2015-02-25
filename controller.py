@@ -5,7 +5,6 @@ from flask import session as f_session
 from model import session as m_session
 import model
 import utils
-from sqlalchemy import update
 
 app = Flask(__name__)
 app.secret_key = 'thisisasecretkey'
@@ -29,7 +28,7 @@ def process_login():
 		if email == user.email and password == user.password:
 			f_session["email"] = email
 			flash ("Login successful.")
-			return redirect("/input")
+			return redirect("/profile")
 		else:
 			flash ("Incorrect password. Try again.")
 			return redirect("/login")
@@ -48,12 +47,31 @@ def process_acct():
     new_user_acct = model.User(email=email, password=password)
     m_session.add(new_user_acct)
     m_session.commit()
-    flash("Your account has been succesfully added. Please log in.")
-    return redirect("/login")
+    flash("Your account has been succesfully added.")
+    f_session["email"] = email
+    return redirect("/input")
+
+@app.route("/profile")
+def show_existing_inputs():
+	""" This shows the user's current saved inputs and allows them 
+	to either move on or edit it. """
+	email = f_session["email"]
+	user = m_session.query(model.User).filter_by(email = 
+		email).first()
+	risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
+		user.risk_profile_id).one().name
+	return render_template("profile_inputs.html", 
+		income=utils.format_currency(user.income), 
+		company_401k=user.company_401k, 
+		company_match=user.company_match, 
+		match_percent=user.match_percent, 
+		match_salary=user.match_salary, 
+		risk_profile=risk_prof)
 
 @app.route("/input")
 def create_inputs():
-    return render_template("inputs.html")
+	""" This allows the user to enter their financial inputs. """
+	return render_template("inputs.html")
 
 @app.route("/results")
 def show_results():
