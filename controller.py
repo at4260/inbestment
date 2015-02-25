@@ -65,15 +65,23 @@ def show_results():
 	match_salary = float(request.args.get("salary_percent"))
 
 	# unpacking the list from the calculate_results function
-	checking_needed, savings_needed, match_needed, ira_needed, ret401k_needed, investment_needed = utils.calculate_results(assets, income, comp_401k, match_401k, match_percent, match_salary)
+	checking_needed, savings_needed, match_needed, ira_needed, \
+	ret401k_needed, investment_needed = utils.calculate_results(assets, 
+		income, comp_401k, match_401k, match_percent, match_salary)
 
 	risk_tolerance = request.args.get("risk_tolerance")
-	risk_profile_id = m_session.query(model.RiskProfile).filter_by(name = risk_tolerance).one().id
+	risk_profile_id = m_session.query(model.RiskProfile).filter_by(name = 
+		risk_tolerance).one().id
 
-	# find user id using f_session and then update the database with the user's financial inputs
+	# find user id using f_session and then update the database with the 
+	# user's financial inputs
 	email = f_session["email"]
 	user = m_session.query(model.User).filter_by(email = email).one()
-	update_user = m_session.query(model.User).filter_by(id = user.id).update({model.User.income: income, model.User.company_401k: comp_401k, model.User.company_match: match_401k, model.User.match_percent: match_percent, model.User.match_salary: match_salary, model.User.risk_profile_id:risk_profile_id})
+	update_user = m_session.query(model.User).filter_by(id = 
+		user.id).update({model.User.income: income, model.User.company_401k: 
+		comp_401k, model.User.company_match: match_401k, 
+		model.User.match_percent: match_percent, model.User.match_salary: 
+		match_salary, model.User.risk_profile_id:risk_profile_id})
 	m_session.commit()
 
 	return render_template("results.html", 
@@ -87,9 +95,11 @@ def show_results():
 @app.route("/investments")
 def show_investments():
 	email = f_session["email"]
-	user_risk_id = m_session.query(model.User).filter_by(email = email).one().risk_profile_id
+	user_risk_id = m_session.query(model.User).filter_by(email = 
+		email).one().risk_profile_id
 	
-	risk_prof = m_session.query(model.RiskProfile).filter_by(id = user_risk_id).one()
+	risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
+		user_risk_id).one()
 
 	ticker_dict = {}
 	for ticker in risk_prof.allocation:
@@ -97,7 +107,8 @@ def show_investments():
 		weight = ticker.ticker_weight_percent
 		ticker_dict[ticker_name] = weight
 
-	return render_template("investments.html", risk_prof=risk_prof.name, ticker_dict=ticker_dict)
+	return render_template("investments.html", risk_prof=risk_prof.name, 
+		ticker_dict=ticker_dict)
 
 if __name__ == "__main__":
     app.run(debug = True)

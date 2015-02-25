@@ -1,7 +1,8 @@
 def format_currency(value):
 	return "${:,.2f}".format(value)
 
-def calculate_results(assets, income, comp_401k, match_401k, match_percent, match_salary):
+def calculate_results(assets, income, comp_401k, match_401k, match_percent, 
+	match_salary):
 	monthly_expenses = (income * (0.28 + 0.36 + 0.10)) / 12
 	checking_needed = monthly_expenses * 1
 	savings_needed = monthly_expenses * 3
@@ -45,10 +46,6 @@ def calculate_results(assets, income, comp_401k, match_401k, match_percent, matc
 
 	results_list = []
 	# appending mutliple items to a list at one time
-	results_list.extend([checking_needed, savings_needed, match_needed, ira_needed, ret401k_needed, investment_needed])
+	results_list.extend([checking_needed, savings_needed, match_needed, 
+		ira_needed, ret401k_needed, investment_needed])
 	return results_list
-
-
-
-
-
