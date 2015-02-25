@@ -1,10 +1,8 @@
-""" Autoloads database with QUANDL API data, risk profiles, profile allocations,
-fake user profiles and banking information """
+""" Autoloads database with QUANDL API data, risk profiles, profile allocations, fake user profiles and banking information """
 
 import json, urllib, csv
 import model
-from model import User, UserBanking, UserProfile, RiskProfile, ProfileAllocation, \
-	Ticker, Price
+from model import User, UserBanking, RiskProfile, ProfileAllocation,Ticker, Price
 from datetime import datetime
 
 def load_risk_profs(session):

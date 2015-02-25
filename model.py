@@ -22,15 +22,22 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String(50), nullable=False)
     password = Column(String(10), nullable=False)
+    income = Column(Integer, nullable=True)
+    company_401k = Column(String(1), nullable=True)
+    company_match = Column(String(1), nullable=True)
+    match_percent = Column(Integer, nullable=True)
+    match_salary = Column(Integer, nullable=True)
+    risk_profile_id = Column(Integer, ForeignKey('risk_profs.id'), 
+        nullable=True)
 
     banking = relationship("UserBanking", 
         backref=backref("user", order_by=id))
-    profile = relationship("UserProfile", 
-        backref=backref("user", order_by=id))
-
+    risk_profile = relationship("RiskProfile",
+        backref=backref("users", order_by=id))
+ 
     def __repr__(self):
-        return "<User ID=%s Email=%s Password=%s>" % (self.id, self.email,
-            self.password)
+        return "<User ID=%s Email=%s Password=%s Income=%s Risk Profile ID=%s>" % (self.id, self.email,
+            self.password, self.income, self.risk_profile_id)
 
 class UserBanking(Base):
     __tablename__ = "u_bank"
@@ -46,26 +53,6 @@ class UserBanking(Base):
     def __repr__(self):
         return "<User ID=%s Checkings=%s Savings=%s>" % (self.user_id, 
             self.checking_amt, self.savings_amt)
-
-class UserProfile(Base):
-    __tablename__ = "u_profiles"
-
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    income = Column(Integer, nullable=False)
-    company_401k = Column(String(1), nullable=False)
-    company_match = Column(String(1), nullable=True)
-    match_percent = Column(Integer, nullable=True)
-    match_salary = Column(Integer, nullable=True)
-    risk_profile_id = Column(Integer, ForeignKey('risk_profs.id'), 
-        nullable=False)
-
-    risk_profile = relationship("RiskProfile",
-        backref=backref("users", order_by=id))
-
-    def __repr__(self):
-        return "<User ID=%s Income=%s Risk Profile ID=%s>" % (self.user_id, 
-            self.income, self.risk_profile_id)
 
 class RiskProfile(Base):
     __tablename__ = "risk_profs"
