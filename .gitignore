@@ -6,5 +6,6 @@ testapp1.crt
 testapp1.key
 testapp1.pfx
 
-# Don't store tokens (Quandl, )
-tokens.txt
+# Don't store tokens (Quandl)
+quandl_tokens.txt
+intuit_tokens.txt
