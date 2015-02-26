@@ -50,14 +50,22 @@ def create_acct():
 
 @app.route("/create", methods=["POST"])
 def process_acct():
-    email = request.form["email"]
-    password =request.form["password"]
-    new_user_acct = model.User(email=email, password=password)
-    m_session.add(new_user_acct)
-    m_session.commit()
-    flash("Your account has been succesfully added.")
-    f_session["email"] = email
-    return redirect("/input")
+	email = request.form["email"]
+	password =request.form["password"]
+
+	user = m_session.query(model.User).filter_by(email = email).first()
+
+    # checks that user isn't creating a duplicate account
+	if user != None:
+		flash ("That account already exists. Please log in.")
+		return redirect("/login")
+	else:
+	    new_user_acct = model.User(email=email, password=password)
+	    m_session.add(new_user_acct)
+	    m_session.commit()
+	    flash("Your account has been succesfully added.")
+	    f_session["email"] = email
+	    return redirect("/input")
 
 
 # FIXME- need to link to rest of app, incorporate account logic
@@ -115,35 +123,6 @@ def create_inputs():
 	""" This allows the user to enter their financial inputs. """
 	return render_template("inputs.html")
 
-@app.route("/results")
-def show_existing_results():
-	""" This route relies on pulling inputs from the database, rather
-	than user input (post request) and calculating results. """
-	email = f_session["email"]
-	user = m_session.query(model.User).filter_by(email = email).one()
-	user_assets = m_session.query(model.UserBanking).filter_by(
-		user_id = user.id).one()
-
-	assets = user_assets.checking_amt
-	income = user.income
-	comp_401k = user.company_401k
-	match_401k = user.company_match
-	match_percent = user.match_percent
-	match_salary = user.match_salary
-
-	# unpacking the list from the calculate_results function
-	checking_needed, savings_needed, match_needed, ira_needed, \
-	ret401k_needed, investment_needed = utils.calculate_results(assets, 
-		income, comp_401k, match_401k, match_percent, match_salary)
-
-	return render_template("results.html", 
-		checking=utils.format_currency(checking_needed),
-		savings=utils.format_currency(savings_needed), 
-		match=utils.format_currency(match_needed),
-		ira=utils.format_currency(ira_needed),
-		ret401k=utils.format_currency(ret401k_needed), 
-		investment=utils.format_currency(investment_needed))
-
 @app.route("/results", methods=["POST"])
 def show_results():
 	""" This route relies on pulling inputs from user input 
@@ -167,7 +146,7 @@ def show_results():
 	# find user id using f_session and then update the database with the 
 		# user's financial inputs
 	email = f_session["email"]
-	user = m_session.query(model.User).filter_by(email = email).one()
+	user = m_session.query(model.User).filter_by(email = email).first()
 	update_user = m_session.query(model.User).filter_by(id = 
 		user.id).update({model.User.income: income, model.User.company_401k: 
 		comp_401k, model.User.company_match: match_401k, 
@@ -175,12 +154,47 @@ def show_results():
 		match_salary, model.User.risk_profile_id:risk_profile_id})
 	m_session.commit()
 
-	# FIXME prevent duplicate user banking info from saving
+    # checks that user's assets are getting updated each time they change
+    	# their input, and not getting added to the database
 	# assumes that all assets will be in checkings
-	new_account = model.UserBanking(user_id=user.id, 
-		checking_amt=assets)
-	m_session.add(new_account)
+	user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
+		user.id).first()
+	if user_assets != None:
+		update_assets = m_session.query(model.UserBanking).filter_by(user_id =
+		user.id).update({model.UserBanking.checking_amt: assets})
+	else:
+		new_account = model.UserBanking(user_id=user.id, checking_amt=assets)
+		m_session.add(new_account)
 	m_session.commit()
+
+	return render_template("results.html", 
+		checking=utils.format_currency(checking_needed),
+		savings=utils.format_currency(savings_needed), 
+		match=utils.format_currency(match_needed),
+		ira=utils.format_currency(ira_needed),
+		ret401k=utils.format_currency(ret401k_needed), 
+		investment=utils.format_currency(investment_needed))
+
+@app.route("/results")
+def show_existing_results():
+	""" This route relies on pulling inputs from the database, rather
+	than user input (post request) and calculating results. """
+	email = f_session["email"]
+	user = m_session.query(model.User).filter_by(email = email).one()
+	user_assets = m_session.query(model.UserBanking).filter_by(
+		user_id = user.id).one()
+
+	assets = user_assets.checking_amt
+	income = user.income
+	comp_401k = user.company_401k
+	match_401k = user.company_match
+	match_percent = user.match_percent
+	match_salary = user.match_salary
+
+	# unpacking the list from the calculate_results function
+	checking_needed, savings_needed, match_needed, ira_needed, \
+	ret401k_needed, investment_needed = utils.calculate_results(assets, 
+		income, comp_401k, match_401k, match_percent, match_salary)
 
 	return render_template("results.html", 
 		checking=utils.format_currency(checking_needed),
