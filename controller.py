@@ -5,6 +5,7 @@ from flask import session as f_session
 from model import session as m_session
 import model
 import utils
+import accounts
 
 app = Flask(__name__)
 app.secret_key = 'thisisasecretkey'
@@ -50,6 +51,39 @@ def process_acct():
     flash("Your account has been succesfully added.")
     f_session["email"] = email
     return redirect("/input")
+
+
+# FIXME- need to link to rest of app, incorporate account logic
+	# into "inputs"
+@app.route("/banklogin")
+def login_bank():
+	return render_template("banking.html")
+
+@app.route("/banklogin", methods=["POST"])
+def access_bank():
+	credentials = {}
+	username = request.form["usr_name"]
+	password = request.form["usr_password"]
+	credentials["USERID"] = username
+	credentials["PASSWORD"] = password
+	account = accounts.discover_add_account(accounts.create_client(), credentials)
+	# assumes all accounts are checking accounts
+	checking_balance = account.balance_amount
+
+	email = f_session["email"]
+	user_id = m_session.query(model.User).filter_by(email = 
+		email).first().id
+	new_account = model.UserBanking(user_id=user_id, 
+		checking_amt=checking_balance)
+	m_session.add(new_account)
+	m_session.commit()
+	
+	# print account.account_nickname
+	# print account.account_number
+	# print account.balance_amount
+	# print account.current_balance
+
+	return redirect("/input")
 
 @app.route("/profile")
 def show_existing_inputs():
