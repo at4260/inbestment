@@ -33,7 +33,7 @@ def build_ticker_url(ticker_list):
 	""" Queries the url using the desired ticker and token"""
 	for ticker in ticker_list:
 		url = "https://www.quandl.com/api/v1/datasets/GOOG/"
-		token = open("tokens.txt").read()
+		token = open("quandl_tokens.txt").read()
 		ticker_url = url + ticker + ".json?auth_token=" + token
 		ticker_url_list.append(ticker_url)
 	return ticker_url_list
