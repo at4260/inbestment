@@ -83,21 +83,26 @@ def access_bank():
 	credentials["PASSWORD"] = password
 	account = accounts.discover_add_account(accounts.create_client(), 
 		credentials)
-	# assumes all accounts are checking accounts
-	checking_balance = account.balance_amount
+	# assumes all accounts are savings accounts
+	savings_balance = account.balance_amount
 
 	email = f_session["email"]
-	user_id = m_session.query(model.User).filter_by(email = 
-		email).first().id
-	new_account = model.UserBanking(user_id=user_id, 
-		checking_amt=checking_balance)
-	m_session.add(new_account)
+	user = m_session.query(model.User).filter_by(email = email).first()
+	# checks that user's assets are getting updated each time they change
+    	# their input, and not getting added to the database
+	user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
+		user.id).first()
+	if user_assets != None:
+		update_assets = m_session.query(model.UserBanking).filter_by(user_id = 
+			user.id).update({model.UserBanking.savings_amt: savings_balance})
+	else:
+		new_account = model.UserBanking(user_id=user.id, 
+			savings_amt=savings_balance)
+		m_session.add(new_account)
 	m_session.commit()
 	
-	# print account.account_nickname
-	# print account.account_number
-	# print account.balance_amount
-	# print account.current_balance
+	print account.account_nickname
+	print account.balance_amount
 
 	return redirect("/input")
 
@@ -109,14 +114,14 @@ def show_existing_inputs():
 	user = m_session.query(model.User).filter_by(email = 
 		email).first()
 	risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
-		user.risk_profile_id).first().name
+		user.risk_profile_id).first()
 	return render_template("profile_inputs.html", 
 		income=utils.format_currency(user.income), 
 		company_401k=user.company_401k, 
 		company_match=user.company_match, 
 		match_percent=utils.format_percentage(user.match_percent), 
 		match_salary=utils.format_percentage(user.match_salary), 
-		risk_profile=risk_prof)
+		risk_profile=risk_prof.name)
 
 @app.route("/input")
 def create_inputs():
