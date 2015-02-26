@@ -1,6 +1,9 @@
 def format_currency(value):
 	return "${:,.2f}".format(value)
 
+def format_percentage(value):
+	return "{0:.0f}%".format(value * 100)
+
 def calculate_results(assets, income, comp_401k, match_401k, match_percent, 
 	match_salary):
 	monthly_expenses = (income * (0.28 + 0.36 + 0.10)) / 12
@@ -17,8 +20,8 @@ def calculate_results(assets, income, comp_401k, match_401k, match_percent,
 
 	match_needed = income * match_percent * match_salary
 
-	if comp_401k == "yes":
-		if match_401k == "yes":
+	if comp_401k == "Yes":
+		if match_401k == "Yes":
 			if assets < match_needed:
 				match_needed = assets
 			assets = assets - match_needed
@@ -34,7 +37,7 @@ def calculate_results(assets, income, comp_401k, match_401k, match_percent,
 		ira_needed = assets
 	assets = assets - ira_needed
 
-	if comp_401k == "yes":
+	if comp_401k == "Yes":
 		if assets < ret401k_needed:
 			ret401k_needed = assets
 		assets = assets - ret401k_needed
