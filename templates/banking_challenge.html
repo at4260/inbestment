@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+	<form action="/banklogin/challenge" method="POST">
+		<div>Enter banking userid: <input type="text" name="usr_name" /></div>
+   		<div>Enter banking password: <input type="password" name="usr_password" /></div>
+    	<div>Input the challenge question from r.content.text: <input type="password" name="challenge" /></div>
+    	<input type="submit" value="Confirm Challenges" />
+	</form>
+</body>
+</html>
+
+{% endblock %}
