@@ -73,7 +73,8 @@ def access_bank():
 	password = request.form["usr_password"]
 	credentials["USERID"] = username
 	credentials["PASSWORD"] = password
-	account = accounts.discover_add_account(accounts.create_client(), credentials)
+	account = accounts.discover_add_account(accounts.create_client(), 
+		credentials)
 	# assumes all accounts are checking accounts
 	checking_balance = account.balance_amount
 
@@ -115,25 +116,56 @@ def create_inputs():
 	return render_template("inputs.html")
 
 @app.route("/results")
-def show_results():
-	assets = float(request.args.get("assets"))
-	income = float(request.args.get("income"))
-	comp_401k = request.args.get("401k")
-	match_401k = request.args.get("match")
-	match_percent = float(request.args.get("match_percent"))
-	match_salary = float(request.args.get("salary_percent"))
+def show_existing_results():
+	""" This route relies on pulling inputs from the database, rather
+	than user input (post request) and calculating results. """
+	email = f_session["email"]
+	user = m_session.query(model.User).filter_by(email = email).one()
+	user_assets = m_session.query(model.UserBanking).filter_by(
+		user_id = user.id).one()
+
+	assets = user_assets.checking_amt
+	income = user.income
+	comp_401k = user.company_401k
+	match_401k = user.company_match
+	match_percent = user.match_percent
+	match_salary = user.match_salary
 
 	# unpacking the list from the calculate_results function
 	checking_needed, savings_needed, match_needed, ira_needed, \
 	ret401k_needed, investment_needed = utils.calculate_results(assets, 
 		income, comp_401k, match_401k, match_percent, match_salary)
 
-	risk_tolerance = request.args.get("risk_tolerance")
+	return render_template("results.html", 
+		checking=utils.format_currency(checking_needed),
+		savings=utils.format_currency(savings_needed), 
+		match=utils.format_currency(match_needed),
+		ira=utils.format_currency(ira_needed),
+		ret401k=utils.format_currency(ret401k_needed), 
+		investment=utils.format_currency(investment_needed))
+
+@app.route("/results", methods=["POST"])
+def show_results():
+	""" This route relies on pulling inputs from user input 
+	(as a post request) and calculating results. """
+	assets = float(request.form["assets"])
+	income = float(request.form["income"])
+	comp_401k = request.form["401k"]
+	match_401k = request.form["match"]
+	match_percent = float(request.form["match_percent"])
+	match_salary = float(request.form["salary_percent"])
+
+	# unpacking the list from the calculate_results function
+	checking_needed, savings_needed, match_needed, ira_needed, \
+	ret401k_needed, investment_needed = utils.calculate_results(assets, 
+		income, comp_401k, match_401k, match_percent, match_salary)
+
+	risk_tolerance = request.form["risk_tolerance"]
 	risk_profile_id = m_session.query(model.RiskProfile).filter_by(name = 
 		risk_tolerance).one().id
 
 	# find user id using f_session and then update the database with the 
-	# user's financial inputs
+		# user's financial inputs
 	email = f_session["email"]
 	user = m_session.query(model.User).filter_by(email = email).one()
 	update_user = m_session.query(model.User).filter_by(id = 
@@ -141,6 +173,13 @@ def show_results():
 		comp_401k, model.User.company_match: match_401k, 
 		model.User.match_percent: match_percent, model.User.match_salary: 
 		match_salary, model.User.risk_profile_id:risk_profile_id})
+	m_session.commit()
+
+	# FIXME prevent duplicate user banking info from saving
+	# assumes that all assets will be in checkings
+	new_account = model.UserBanking(user_id=user.id, 
+		checking_amt=assets)
+	m_session.add(new_account)
 	m_session.commit()
 
 	return render_template("results.html", 
