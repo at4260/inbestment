@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block body %}
-
 	<h1> Let's start </h1>
 	<form action="/input" method="POST">
 		<label >How much money do you have (checking only)? <input type="text" name="assets">
@@ -71,5 +70,10 @@
 		<br> 
 	    <input type="submit">
 	</form>
-
+	<br>
+	<br>
+	<form action="/banklogin">
+		<h4> Want to add a bank account? </h4>
+		<button type="submit"> Add my account </button>
+	</form>
 {% endblock %}

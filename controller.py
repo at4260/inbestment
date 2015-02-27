@@ -67,9 +67,6 @@ def process_acct():
 	    f_session["email"] = email
 	    return redirect("/input")
 
-
-# FIXME- need to link to rest of app, incorporate account logic
-	# into "inputs"
 @app.route("/banklogin")
 def login_bank():
 	return render_template("banking.html")
@@ -81,6 +78,8 @@ def access_bank():
 	password = request.form["usr_password"]
 	credentials["USERID"] = username
 	credentials["PASSWORD"] = password
+	# FIXME - if returns http error code, flash account does not exist or
+	# password is incorrect.
 	account = accounts.discover_add_account(accounts.create_client(), 
 		credentials)
 	# assumes all accounts are savings accounts
@@ -101,8 +100,8 @@ def access_bank():
 		m_session.add(new_account)
 	m_session.commit()
 	
-	print account.account_nickname
-	print account.balance_amount
+	# print account.account_nickname
+	# print account.balance_amount
 
 	return redirect("/input")
 
@@ -115,9 +114,15 @@ def show_existing_inputs():
 	email = f_session["email"]
 	user = m_session.query(model.User).filter_by(email = 
 		email).first()
+	user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
+		user.id).first()
+	total_assets = user_assets.checking_amt + user_assets.savings_amt + \
+		user_assets.IRA_amt + user_assets.comp401k_amt + \
+		user_assets.investment_amt
 	risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
 		user.risk_profile_id).first()
 	return render_template("profile_inputs.html", 
+		assets=utils.format_currency(total_assets),
 		income=utils.format_currency(user.income), 
 		company_401k=user.company_401k, 
 		company_match=user.company_match, 
@@ -170,7 +175,8 @@ def show_results():
 		update_assets = m_session.query(model.UserBanking).filter_by(user_id =
 		user.id).update({model.UserBanking.checking_amt: assets})
 	else:
-		new_account = model.UserBanking(user_id=user.id, checking_amt=assets)
+		new_account = model.UserBanking(user_id=user.id, checking_amt=assets,
+			savings_amt=0, IRA_amt=0, comp401k_amt=0, investment_amt=0)
 		m_session.add(new_account)
 	m_session.commit()
 
@@ -187,7 +193,9 @@ def show_existing_results():
 	user_assets = m_session.query(model.UserBanking).filter_by(
 		user_id = user.id).one()
 
-	assets = user_assets.checking_amt
+	assets = user_assets.checking_amt + user_assets.savings_amt + \
+		user_assets.IRA_amt + user_assets.comp401k_amt + \
+		user_assets.investment_amt
 	income = user.income
 	comp_401k = user.company_401k
 	match_401k = user.company_match
