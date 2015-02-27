@@ -1,6 +1,6 @@
 """ This file will be to create the app routes and framework of the app. """
 
-from flask import Flask, render_template, redirect, request, flash
+from flask import Flask, render_template, redirect, request, flash, g
 from flask import session as f_session
 from model import session as m_session
 import model
@@ -9,6 +9,15 @@ import accounts
 
 app = Flask(__name__)
 app.secret_key = 'thisisasecretkey'
+
+@app.before_request
+def before_request():
+	if "email" in f_session:
+		g.status = "Log Out"
+		g.logged_in = True
+	else:
+		g.status = "Log In"
+		g.logged_in = False
 
 @app.route("/")
 def home_page():
@@ -51,7 +60,7 @@ def create_acct():
 @app.route("/create", methods=["POST"])
 def process_acct():
 	email = request.form["email"]
-	password =request.form["password"]
+	password = request.form["password"]
 
 	user = m_session.query(model.User).filter_by(email = email).first()
 
@@ -111,31 +120,38 @@ def show_existing_inputs():
 	This shows the user's current saved inputs and allows them 
 	to either move on or edit it. 
 	"""
-	email = f_session["email"]
-	user = m_session.query(model.User).filter_by(email = 
-		email).first()
-	user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
-		user.id).first()
-	total_assets = user_assets.checking_amt + user_assets.savings_amt + \
-		user_assets.IRA_amt + user_assets.comp401k_amt + \
-		user_assets.investment_amt
-	risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
-		user.risk_profile_id).first()
-	return render_template("profile_inputs.html", 
-		assets=utils.format_currency(total_assets),
-		income=utils.format_currency(user.income), 
-		company_401k=user.company_401k, 
-		company_match=user.company_match, 
-		match_percent=utils.format_percentage(user.match_percent), 
-		match_salary=utils.format_percentage(user.match_salary), 
-		risk_profile=risk_prof.name)
+	if g.logged_in == True:
+		email = f_session["email"]
+		user = m_session.query(model.User).filter_by(email = 
+			email).first()
+
+		user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
+			user.id).first()
+		total_assets = user_assets.checking_amt + user_assets.savings_amt + \
+			user_assets.IRA_amt + user_assets.comp401k_amt + \
+			user_assets.investment_amt
+		risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
+			user.risk_profile_id).first()
+		return render_template("profile_inputs.html", 
+			assets=utils.format_currency(total_assets),
+			income=utils.format_currency(user.income), 
+			company_401k=user.company_401k, 
+			company_match=user.company_match, 
+			match_percent=utils.format_percentage(user.match_percent), 
+			match_salary=utils.format_percentage(user.match_salary), 
+			risk_profile=risk_prof.name)
+	else:
+		return redirect("/login")
 
 @app.route("/input")
 def create_inputs():
 	""" 
 	This allows the user to enter their financial inputs. 
 	"""
-	return render_template("inputs.html")
+	if g.logged_in == True:
+		return render_template("inputs.html")
+	else:
+		return redirect("/login")
 
 @app.route("/input", methods=["POST"])
 def show_results():
@@ -188,48 +204,60 @@ def show_existing_results():
 	This route accesses saved data from the database and 
 	calculates the results. 
 	"""
-	email = f_session["email"]
-	user = m_session.query(model.User).filter_by(email = email).one()
-	user_assets = m_session.query(model.UserBanking).filter_by(
-		user_id = user.id).one()
+	if g.logged_in == True:
+		email = f_session["email"]
+		user = m_session.query(model.User).filter_by(email = email).one()
+		user_assets = m_session.query(model.UserBanking).filter_by(
+			user_id = user.id).one()
 
-	assets = user_assets.checking_amt + user_assets.savings_amt + \
-		user_assets.IRA_amt + user_assets.comp401k_amt + \
-		user_assets.investment_amt
-	income = user.income
-	comp_401k = user.company_401k
-	match_401k = user.company_match
-	match_percent = user.match_percent
-	match_salary = user.match_salary
+		assets = user_assets.checking_amt + user_assets.savings_amt + \
+			user_assets.IRA_amt + user_assets.comp401k_amt + \
+			user_assets.investment_amt
+		income = user.income
+		comp_401k = user.company_401k
+		match_401k = user.company_match
+		match_percent = user.match_percent
+		match_salary = user.match_salary
 
-	results = utils.calc_financial_results(assets, income, comp_401k, match_401k, 
-		match_percent, match_salary)
+		results = utils.calc_financial_results(assets, income, comp_401k, match_401k, 
+			match_percent, match_salary)
 
-	return render_template("results.html",
-		checking=utils.format_currency(results["checking"]),
-		savings=utils.format_currency(results["savings"]), 
-		match=utils.format_currency(results["match"]),
-		ira=utils.format_currency(results["ira"]),
-		ret401k=utils.format_currency(results["ret401k"]), 
-		investment=utils.format_currency(results["investment"]))
+		return render_template("results.html",
+			checking=utils.format_currency(results["checking"]),
+			savings=utils.format_currency(results["savings"]), 
+			match=utils.format_currency(results["match"]),
+			ira=utils.format_currency(results["ira"]),
+			ret401k=utils.format_currency(results["ret401k"]), 
+			investment=utils.format_currency(results["investment"]))
+	else:
+		return redirect("/login")
 
 @app.route("/investments")
 def show_investments():
-	email = f_session["email"]
-	user_risk_id = m_session.query(model.User).filter_by(email = 
-		email).one().risk_profile_id
-	
-	risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
-		user_risk_id).one()
+	if g.logged_in == True:
+		email = f_session["email"]
+		user_risk_id = m_session.query(model.User).filter_by(email = 
+			email).one().risk_profile_id
+		
+		risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
+			user_risk_id).one()
 
-	ticker_dict = {}
-	for ticker in risk_prof.allocation:
-		ticker_name = m_session.query(model.Ticker).get(ticker.ticker_id).name
-		weight = ticker.ticker_weight_percent
-		ticker_dict[ticker_name] = weight
+		ticker_dict = {}
+		for ticker in risk_prof.allocation:
+			ticker_name = m_session.query(model.Ticker).get(ticker.ticker_id).name
+			weight = ticker.ticker_weight_percent
+			ticker_dict[ticker_name] = weight
 
-	return render_template("investments.html", risk_prof=risk_prof.name, 
-		ticker_dict=ticker_dict)
+		return render_template("investments.html", risk_prof=risk_prof.name, 
+			ticker_dict=ticker_dict)
+	else:
+		return redirect("/login")
+
+@app.route("/logout")
+def process_logout():
+	f_session.clear()
+	flash("You are succesfully logged out.")
+	return redirect("/")
 
 if __name__ == "__main__":
     app.run(debug = True)

@@ -5,7 +5,15 @@
 	 	<div class="container">
 	    	<h1>inBestment</h1>
 	    	<p>This is the financial tool of your dreams.</p>
+
+    		{% if g.logged_in == True %}
+	    	<p><a class="btn btn-primary btn-lg" href="/input" role="button">Let's Get Started</a></p>
+
+	    	{% else %}
 	    	<p><a class="btn btn-primary btn-lg" href="/login" role="button">Let's Get Started</a></p>
+
+	    	{% endif %}
+
 	  	</div>
 	</div>
 
