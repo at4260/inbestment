@@ -108,8 +108,10 @@ def access_bank():
 
 @app.route("/profile")
 def show_existing_inputs():
-	""" This shows the user's current saved inputs and allows them 
-	to either move on or edit it. """
+	""" 
+	This shows the user's current saved inputs and allows them 
+	to either move on or edit it. 
+	"""
 	email = f_session["email"]
 	user = m_session.query(model.User).filter_by(email = 
 		email).first()
@@ -125,13 +127,18 @@ def show_existing_inputs():
 
 @app.route("/input")
 def create_inputs():
-	""" This allows the user to enter their financial inputs. """
+	""" 
+	This allows the user to enter their financial inputs. 
+	"""
 	return render_template("inputs.html")
 
-@app.route("/results", methods=["POST"])
+@app.route("/input", methods=["POST"])
 def show_results():
-	""" This route relies on pulling inputs from user input 
-	(as a post request) and calculating results. """
+	""" 
+	This route relies on pulling inputs from user input 
+	(as a post request), saving to database, and routes to /results
+	to perform the calculations.
+	"""
 	assets = float(request.form["assets"])
 	income = float(request.form["income"])
 	comp_401k = request.form["401k"]
@@ -139,29 +146,24 @@ def show_results():
 	match_percent = float(request.form["match_percent"])
 	match_salary = float(request.form["salary_percent"])
 
-	# unpacking the list from the calculate_results function
-	checking_needed, savings_needed, match_needed, ira_needed, \
-	ret401k_needed, investment_needed = utils.calculate_results(assets, 
-		income, comp_401k, match_401k, match_percent, match_salary)
-
 	risk_tolerance = request.form["risk_tolerance"]
 	risk_profile_id = m_session.query(model.RiskProfile).filter_by(name = 
 		risk_tolerance).one().id
 
-	# find user id using f_session and then update the database with the 
-		# user's financial inputs
+	# Find user id using f_session and then update the database with the 
+	# user's financial inputs
 	email = f_session["email"]
 	user = m_session.query(model.User).filter_by(email = email).first()
 	update_user = m_session.query(model.User).filter_by(id = 
 		user.id).update({model.User.income: income, model.User.company_401k: 
 		comp_401k, model.User.company_match: match_401k, 
 		model.User.match_percent: match_percent, model.User.match_salary: 
-		match_salary, model.User.risk_profile_id:risk_profile_id})
+		match_salary, model.User.risk_profile_id: risk_profile_id})
 	m_session.commit()
 
-    # checks that user's assets are getting updated each time they change
-    	# their input, and not getting added to the database
-	# assumes that all assets will be in checkings
+    # Checks that user's assets are getting updated each time they change
+    # their input, and not getting added to the database.
+	# Assumes that all assets will be in checkings
 	user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
 		user.id).first()
 	if user_assets != None:
@@ -172,18 +174,14 @@ def show_results():
 		m_session.add(new_account)
 	m_session.commit()
 
-	return render_template("results.html", 
-		checking=utils.format_currency(checking_needed),
-		savings=utils.format_currency(savings_needed), 
-		match=utils.format_currency(match_needed),
-		ira=utils.format_currency(ira_needed),
-		ret401k=utils.format_currency(ret401k_needed), 
-		investment=utils.format_currency(investment_needed))
+	return redirect("/results")
 
 @app.route("/results")
 def show_existing_results():
-	""" This route relies on pulling inputs from the database, rather
-	than user input (post request) and calculating results. """
+	""" 
+	This route accesses saved data from the database and 
+	calculates the results. 
+	"""
 	email = f_session["email"]
 	user = m_session.query(model.User).filter_by(email = email).one()
 	user_assets = m_session.query(model.UserBanking).filter_by(
@@ -196,18 +194,16 @@ def show_existing_results():
 	match_percent = user.match_percent
 	match_salary = user.match_salary
 
-	# unpacking the list from the calculate_results function
-	checking_needed, savings_needed, match_needed, ira_needed, \
-	ret401k_needed, investment_needed = utils.calculate_results(assets, 
-		income, comp_401k, match_401k, match_percent, match_salary)
+	results = utils.calc_financial_results(assets, income, comp_401k, match_401k, 
+		match_percent, match_salary)
 
-	return render_template("results.html", 
-		checking=utils.format_currency(checking_needed),
-		savings=utils.format_currency(savings_needed), 
-		match=utils.format_currency(match_needed),
-		ira=utils.format_currency(ira_needed),
-		ret401k=utils.format_currency(ret401k_needed), 
-		investment=utils.format_currency(investment_needed))
+	return render_template("results.html",
+		checking=utils.format_currency(results["checking"]),
+		savings=utils.format_currency(results["savings"]), 
+		match=utils.format_currency(results["match"]),
+		ira=utils.format_currency(results["ira"]),
+		ret401k=utils.format_currency(results["ret401k"]), 
+		investment=utils.format_currency(results["investment"]))
 
 @app.route("/investments")
 def show_investments():
