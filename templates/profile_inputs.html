@@ -1,11 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
 
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
 	<h1> This is your current profile: </h1>
 	<p> Income: {{income}} </p>
 	<p> Does your company have a 401k? {{company_401k}} </p>
@@ -23,8 +18,6 @@
 	<form action="/investments">
 	    <button type="submit"> Show my investments </button>
 	</form>
-</body>
-</html>
 
 {% endblock %}
 

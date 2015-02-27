@@ -1,11 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
 
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
 	<form method="POST">
 	    <h1> Please Sign In </h1>
 	    <input type="email" name="email" placeholder="Email" required autofocus />
@@ -19,7 +14,6 @@
 	<p> No account? </p>
 	<form action="/create">
 		<button type="submit"> Create Account </button>
-</body>
-</html>
+	</form>
 
 {% endblock %}
