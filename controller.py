@@ -15,6 +15,8 @@ def before_request():
 	if "email" in f_session:
 		g.status = "Log Out"
 		g.logged_in = True
+		g.email = f_session["email"]
+		g.user = m_session.query(model.User).filter_by(email = g.email).first()
 	else:
 		g.status = "Log In"
 		g.logged_in = False
@@ -121,24 +123,20 @@ def show_existing_inputs():
 	to either move on or edit it. 
 	"""
 	if g.logged_in == True:
-		email = f_session["email"]
-		user = m_session.query(model.User).filter_by(email = 
-			email).first()
-
 		user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
-			user.id).first()
+			g.user.id).first()
 		total_assets = user_assets.checking_amt + user_assets.savings_amt + \
 			user_assets.IRA_amt + user_assets.comp401k_amt + \
 			user_assets.investment_amt
 		risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
-			user.risk_profile_id).first()
+			g.user.risk_profile_id).first()
 		return render_template("profile_inputs.html", 
 			assets=utils.format_currency(total_assets),
-			income=utils.format_currency(user.income), 
-			company_401k=user.company_401k, 
-			company_match=user.company_match, 
-			match_percent=utils.format_percentage(user.match_percent), 
-			match_salary=utils.format_percentage(user.match_salary), 
+			income=utils.format_currency(g.user.income), 
+			company_401k=g.user.company_401k, 
+			company_match=g.user.company_match, 
+			match_percent=utils.format_percentage(g.user.match_percent), 
+			match_salary=utils.format_percentage(g.user.match_salary), 
 			risk_profile=risk_prof.name)
 	else:
 		return redirect("/login")
@@ -173,10 +171,8 @@ def show_results():
 
 	# Find user id using f_session and then update the database with the 
 	# user's financial inputs
-	email = f_session["email"]
-	user = m_session.query(model.User).filter_by(email = email).first()
 	update_user = m_session.query(model.User).filter_by(id = 
-		user.id).update({model.User.income: income, model.User.company_401k: 
+		g.user.id).update({model.User.income: income, model.User.company_401k: 
 		comp_401k, model.User.company_match: match_401k, 
 		model.User.match_percent: match_percent, model.User.match_salary: 
 		match_salary, model.User.risk_profile_id: risk_profile_id})
@@ -186,12 +182,12 @@ def show_results():
     # their input, and not getting added to the database.
 	# Assumes that all assets will be in checkings
 	user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
-		user.id).first()
+		g.user.id).first()
 	if user_assets != None:
 		update_assets = m_session.query(model.UserBanking).filter_by(user_id =
-		user.id).update({model.UserBanking.checking_amt: assets})
+		g.user.id).update({model.UserBanking.checking_amt: assets})
 	else:
-		new_account = model.UserBanking(user_id=user.id, checking_amt=assets,
+		new_account = model.UserBanking(user_id=g.user.id, checking_amt=assets,
 			savings_amt=0, IRA_amt=0, comp401k_amt=0, investment_amt=0)
 		m_session.add(new_account)
 	m_session.commit()
@@ -205,19 +201,17 @@ def show_existing_results():
 	calculates the results. 
 	"""
 	if g.logged_in == True:
-		email = f_session["email"]
-		user = m_session.query(model.User).filter_by(email = email).one()
 		user_assets = m_session.query(model.UserBanking).filter_by(
-			user_id = user.id).one()
+			user_id = g.user.id).one()
 
 		assets = user_assets.checking_amt + user_assets.savings_amt + \
 			user_assets.IRA_amt + user_assets.comp401k_amt + \
 			user_assets.investment_amt
-		income = user.income
-		comp_401k = user.company_401k
-		match_401k = user.company_match
-		match_percent = user.match_percent
-		match_salary = user.match_salary
+		income = g.user.income
+		comp_401k = g.user.company_401k
+		match_401k = g.user.company_match
+		match_percent = g.user.match_percent
+		match_salary = g.user.match_salary
 
 		results = utils.calc_financial_results(assets, income, comp_401k, match_401k, 
 			match_percent, match_salary)
@@ -235,12 +229,8 @@ def show_existing_results():
 @app.route("/investments")
 def show_investments():
 	if g.logged_in == True:
-		email = f_session["email"]
-		user_risk_id = m_session.query(model.User).filter_by(email = 
-			email).one().risk_profile_id
-		
 		risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
-			user_risk_id).one()
+			g.user.risk_profile_id).one()
 
 		ticker_dict = {}
 		for ticker in risk_prof.allocation:
