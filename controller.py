@@ -17,6 +17,10 @@ def before_request():
 		g.logged_in = True
 		g.email = f_session["email"]
 		g.user = m_session.query(model.User).filter_by(email = g.email).first()
+		if g.user.income != None:
+			g.inputs = True
+		else:
+			g.inputs = False
 	else:
 		g.status = "Log In"
 		g.logged_in = False
@@ -40,14 +44,7 @@ def process_login():
 		if email == user.email and password == user.password:
 			f_session["email"] = email
 			flash ("Login successful.")
-			# deals with edge case where user has logged in before
-				# but has not provided any inputs
-			if user.income == None:
-				flash ("We do not have any financial data on you. \
-					Please input now.")
-				return redirect("/input")
-			else:
-				return redirect("/profile")
+			return redirect("/profile")
 		else:
 			flash ("Incorrect password. Try again.")
 			return redirect("/login")
@@ -123,21 +120,26 @@ def show_existing_inputs():
 	to either move on or edit it. 
 	"""
 	if g.logged_in == True:
-		user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
-			g.user.id).first()
-		total_assets = user_assets.checking_amt + user_assets.savings_amt + \
-			user_assets.IRA_amt + user_assets.comp401k_amt + \
-			user_assets.investment_amt
-		risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
-			g.user.risk_profile_id).first()
-		return render_template("profile_inputs.html", 
-			assets=utils.format_currency(total_assets),
-			income=utils.format_currency(g.user.income), 
-			company_401k=g.user.company_401k, 
-			company_match=g.user.company_match, 
-			match_percent=utils.format_percentage(g.user.match_percent), 
-			match_salary=utils.format_percentage(g.user.match_salary), 
-			risk_profile=risk_prof.name)
+		if g.inputs == True:
+			user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
+				g.user.id).first()
+			total_assets = user_assets.checking_amt + user_assets.savings_amt + \
+				user_assets.IRA_amt + user_assets.comp401k_amt + \
+				user_assets.investment_amt
+			risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
+				g.user.risk_profile_id).first()
+			return render_template("profile_inputs.html", 
+				assets=utils.format_currency(total_assets),
+				income=utils.format_currency(g.user.income), 
+				company_401k=g.user.company_401k, 
+				company_match=g.user.company_match, 
+				match_percent=utils.format_percentage(g.user.match_percent), 
+				match_salary=utils.format_percentage(g.user.match_salary), 
+				risk_profile=risk_prof.name)
+		else:
+			flash ("We do not have any financial data on you. \
+					Please input now.")
+			return redirect("/input")	
 	else:
 		return redirect("/login")
 
@@ -201,45 +203,55 @@ def show_existing_results():
 	calculates the results. 
 	"""
 	if g.logged_in == True:
-		user_assets = m_session.query(model.UserBanking).filter_by(
-			user_id = g.user.id).one()
+		if g.inputs == True:
+			user_assets = m_session.query(model.UserBanking).filter_by(
+				user_id = g.user.id).one()
 
-		assets = user_assets.checking_amt + user_assets.savings_amt + \
-			user_assets.IRA_amt + user_assets.comp401k_amt + \
-			user_assets.investment_amt
-		income = g.user.income
-		comp_401k = g.user.company_401k
-		match_401k = g.user.company_match
-		match_percent = g.user.match_percent
-		match_salary = g.user.match_salary
+			assets = user_assets.checking_amt + user_assets.savings_amt + \
+				user_assets.IRA_amt + user_assets.comp401k_amt + \
+				user_assets.investment_amt
+			income = g.user.income
+			comp_401k = g.user.company_401k
+			match_401k = g.user.company_match
+			match_percent = g.user.match_percent
+			match_salary = g.user.match_salary
 
-		results = utils.calc_financial_results(assets, income, comp_401k, match_401k, 
-			match_percent, match_salary)
+			results = utils.calc_financial_results(assets, income, comp_401k, match_401k, 
+				match_percent, match_salary)
 
-		return render_template("results.html",
-			checking=utils.format_currency(results["checking"]),
-			savings=utils.format_currency(results["savings"]), 
-			match=utils.format_currency(results["match"]),
-			ira=utils.format_currency(results["ira"]),
-			ret401k=utils.format_currency(results["ret401k"]), 
-			investment=utils.format_currency(results["investment"]))
+			return render_template("results.html",
+				checking=utils.format_currency(results["checking"]),
+				savings=utils.format_currency(results["savings"]), 
+				match=utils.format_currency(results["match"]),
+				ira=utils.format_currency(results["ira"]),
+				ret401k=utils.format_currency(results["ret401k"]), 
+				investment=utils.format_currency(results["investment"]))
+		else:
+			flash ("We do not have any financial data on you. \
+					Please input now.")
+			return redirect("/input")	
 	else:
 		return redirect("/login")
 
 @app.route("/investments")
 def show_investments():
 	if g.logged_in == True:
-		risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
-			g.user.risk_profile_id).one()
+		if g.inputs == True:
+			risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
+				g.user.risk_profile_id).one()
 
-		ticker_dict = {}
-		for ticker in risk_prof.allocation:
-			ticker_name = m_session.query(model.Ticker).get(ticker.ticker_id).name
-			weight = ticker.ticker_weight_percent
-			ticker_dict[ticker_name] = weight
+			ticker_dict = {}
+			for ticker in risk_prof.allocation:
+				ticker_name = m_session.query(model.Ticker).get(ticker.ticker_id).name
+				weight = ticker.ticker_weight_percent
+				ticker_dict[ticker_name] = weight
 
-		return render_template("investments.html", risk_prof=risk_prof.name, 
-			ticker_dict=ticker_dict)
+			return render_template("investments.html", risk_prof=risk_prof.name, 
+				ticker_dict=ticker_dict)
+		else:
+			flash ("We do not have any financial data on you. \
+					Please input now.")
+			return redirect("/input")	
 	else:
 		return redirect("/login")
 
