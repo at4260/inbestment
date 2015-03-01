@@ -9,6 +9,59 @@
 	<p> Weighting: {{weight}}% </p>
 	{% endfor %}
 
+	<!-- FIXME - too many x-axis labels showing -->
+	<canvas id="prices" width="1000" height="400"></canvas>
+	<script>
+	var dates = {{dates|safe}};
+	var prices = {{prices|safe}};
+
+	var pricesData = {
+		labels : dates,
+		datasets : [
+			{
+				fillColor : "rgba(172,194,132,0.4)",
+				strokeColor : "#ACC26D",
+				pointColor : "#fff",
+				pointStrokeColor : "#9DB86D",
+				data : prices
+			}
+		]
+	}
+	var prices = document.getElementById('prices').getContext('2d');
+	new Chart(prices).Line(pricesData, {
+		// pointDot : false,
+		showXLabels: 50
+	});
+	</script>
+
+
+	<canvas id="countries" width="600" height="400"></canvas>
+	<script>
+	var data = [
+	    {
+	        value: 300,
+	        color:"#F7464A",
+	        highlight: "#FF5A5E",
+	        label: "Red"
+	    },
+	    {
+	        value: 50,
+	        color: "#46BFBD",
+	        highlight: "#5AD3D1",
+	        label: "Green"
+	    },
+	    {
+	        value: 100,
+	        color: "#FDB45C",
+	        highlight: "#FFC870",
+	        label: "Yellow"
+	    }
+	]
+	var countries = document.getElementById('countries').getContext('2d');
+	new Chart(countries).Doughnut(data);
+	</script>
+
+
 	<form action="/results">
 		<button type="submit"> Show results </button>
 	</form> 
@@ -17,4 +70,5 @@
 		<button type="submit"> Let me look at my profile again </button>
 	</form> 
 	
+
 {% endblock %}

@@ -6,6 +6,7 @@ from model import session as m_session
 import model
 import utils
 import accounts
+import json
 
 app = Flask(__name__)
 app.secret_key = 'thisisasecretkey'
@@ -246,8 +247,22 @@ def show_investments():
 				weight = ticker.ticker_weight_percent
 				ticker_dict[ticker_name] = weight
 
+			# FIXME - aggregate all data for one risk profile
+			ticker_7 = m_session.query(model.Price).filter_by(ticker_id = 
+				7).all()
+			dates = []
+			prices = []
+			for value in ticker_7:
+				date = str(value.date)
+				price = value.close_price
+				dates.append(date)
+				prices.append(price)
+			dates.reverse()
+			prices.reverse()
+
 			return render_template("investments.html", risk_prof=risk_prof.name, 
-				ticker_dict=ticker_dict)
+				ticker_dict=ticker_dict, dates=json.dumps(dates), 
+				prices=json.dumps(prices))
 		else:
 			flash ("We do not have any financial data on you. \
 					Please input now.")
