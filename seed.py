@@ -69,10 +69,13 @@ def load_ticker_data(ticker_url_list, session):
 	session.commit()
 
 def calc_daily_change(session):
-"""
-This function calculates the daily difference in percentage and saves
-that value to the daily_change column in the database.
-"""
+	"""
+	This function calculates the percent change since inception and saves
+	that value to the daily_change column in the database.
+
+	All values are being benchmarked against the very first data point 
+	(earliest date).
+	"""
 
 	ticker_id = 0
 	for i in range(len(ticker_list)):
@@ -81,22 +84,14 @@ that value to the daily_change column in the database.
 			ticker_id).all()
 		
 		new_index = 0
-		# sets the first ticker object (the most recent data point) 
-		# to zero; storing the change in the same row as the original
-		# (old) data point
-		first_daily_change_id =ticker[0].id
-		first_daily_change = model.session.query(model.Price).filter_by(
-			id=first_daily_change_id).update({model.Price.daily_change: ""}) 
-		
 		for i in range(len(ticker) - 1):
-			old_index = new_index + 1
-			old_close_price = ticker[old_index].close_price
+			old_close_price = ticker[-1].close_price
 			new_close_price = ticker[new_index].close_price
 			difference = round((new_close_price - old_close_price)/
 				old_close_price, 4)
-			old_daily_change_id = ticker[old_index].id
-			old_daily_change = model.session.query(model.Price).filter_by(
-				id=old_daily_change_id).update({model.Price.daily_change: difference}) 
+			new_daily_change_id = ticker[new_index].id
+			new_daily_change = model.session.query(model.Price).filter_by(
+				id=new_daily_change_id).update({model.Price.daily_change: difference}) 
 			new_index = new_index + 1
 		session.commit()
 
