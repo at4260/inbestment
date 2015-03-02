@@ -102,6 +102,7 @@ class Price(Base):
     ticker_id = Column(String(8), ForeignKey('tickers.id'), nullable=False)
     date = Column(Date, nullable=False)
     close_price = Column(Integer, nullable=False)
+    daily_change = Column(Integer, nullable=True)
 
     def __repr__(self):
         return "<Ticker ID=%s Date=%s Close Price=%d>" % (self.ticker_id, 
