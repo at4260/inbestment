@@ -251,18 +251,18 @@ def show_investments():
 			ticker_7 = m_session.query(model.Price).filter_by(ticker_id = 
 				7).all()
 			dates = []
-			prices = []
+			percent_prices = []
 			for value in ticker_7:
 				date = str(value.date)
-				price = value.close_price
+				percent_price = value.daily_change
 				dates.append(date)
-				prices.append(price)
+				percent_prices.append(percent_price)
 			dates.reverse()
-			prices.reverse()
+			percent_prices.reverse()
 
 			return render_template("investments.html", risk_prof=risk_prof.name, 
 				ticker_dict=ticker_dict, dates=json.dumps(dates), 
-				prices=json.dumps(prices))
+				prices=json.dumps(percent_prices))
 		else:
 			flash ("We do not have any financial data on you. \
 					Please input now.")
