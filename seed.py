@@ -89,7 +89,6 @@ def calc_daily_change(session):
 				"2007-04-10", ticker_id=ticker_id).first().close_price
 		old_date = datetime.strptime("2007-04-10", "%Y-%m-%d").date()
 
-		# for i in range(len(ticker) - 1):
 		while ticker[new_index].date > old_date:
 			new_close_price = ticker[new_index].close_price
 			difference = round((new_close_price - old_close_price)/

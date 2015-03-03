@@ -9,14 +9,15 @@
 	<p> Weighting: {{weight}}% </p>
 	{% endfor %}
 
-	<div id="performance" style="width:100%; height:400px;"></div>
+	<div id="performance" style="width:75%; height:400px;"></div>
 	<script>
 	var dates = {{dates|safe}};
-	var prices = {{prices|safe}};
+	var total_performance = {{total_performance|safe}};
 	$(function () { 
     	$('#performance').highcharts({
 	        chart: {
-	            type: 'area'
+	            type: 'area',
+	            align: 'center'
 	        },
 	        title: {
 	            text: 'Portfolio Performance'
@@ -34,7 +35,7 @@
 	        },
 	        series: [{
 	            name: 'Fund 1',
-	            data: prices
+	            data: total_performance
 	        }]
     	});
 	});
