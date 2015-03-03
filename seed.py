@@ -68,6 +68,16 @@ def load_ticker_data(ticker_url_list, session):
     # commit after all instances are added
 	session.commit()
 
+def load_ticker_category(session):
+	filename = open("./seed_data/ticker_categories.csv")
+	ticker_id = 1
+	for line in filename:
+		category = line.strip()
+		new_category = model.session.query(model.Ticker).filter_by(id=
+			ticker_id).update({model.Ticker.category: category})
+		ticker_id = ticker_id + 1 
+	session.commit()
+
 def calc_daily_change(session):
 	"""
 	This function calculates the percent change since 4/10/2007 and saves
@@ -100,9 +110,10 @@ def calc_daily_change(session):
 		session.commit()
 
 def main(session):
-	# load_ticker_data(build_ticker_url(ticker_list), session)
-	# load_risk_profs(session)
-	# load_prof_allocs(session)
+	load_ticker_data(build_ticker_url(ticker_list), session)
+	load_ticker_category(session)
+	load_risk_profs(session)
+	load_prof_allocs(session)
 	calc_daily_change(session)
 
 if __name__ == "__main__":

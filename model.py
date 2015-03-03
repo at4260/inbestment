@@ -36,8 +36,9 @@ class User(Base):
         backref=backref("users", order_by=id))
  
     def __repr__(self):
-        return "<User ID=%s Email=%s Password=%s Income=%s Risk Profile ID=%s>" % (self.id, self.email,
-            self.password, self.income, self.risk_profile_id)
+        return "<User ID=%s Email=%s Password=%s Income=%s Risk Profile ID= \
+            %s>" % (self.id, self.email, self.password, self.income, 
+            self.risk_profile_id)
 
 class UserBanking(Base):
     __tablename__ = "u_bank"
@@ -79,7 +80,8 @@ class ProfileAllocation(Base):
         backref=backref("profile_allocations", order_by=id))
 
     def __repr__(self):
-        return "<Risk Profile ID=%s Ticker ID=%s Ticker Weight=%s>" %(self.risk_profile_id, self.ticker_id, self.ticker_weight_percent)
+        return "<Risk Profile ID=%s Ticker ID=%s Ticker Weight=%s>" %(
+            self.risk_profile_id, self.ticker_id, self.ticker_weight_percent)
 
 class Ticker(Base):
     __tablename__ = "tickers"
@@ -87,13 +89,14 @@ class Ticker(Base):
     id = Column(Integer, primary_key = True)
     symbol = Column(String(8), nullable=False)
     name = Column(String(100), nullable=False)
+    category = Column(String(100), nullable=True)
 
     price = relationship("Price",
             backref=backref("ticker", order_by=id))
     
     def __repr__(self):
-        return "<Ticker ID=%s Symbol=%s Name=%s>" % (self.id, self.symbol, 
-            self.name)
+        return "<Ticker ID=%s Symbol=%s Name=%s Category=%s>" % (self.id, 
+            self.symbol, self.name, self.category)
 
 class Price(Base):
     __tablename__ = "prices"
