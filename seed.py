@@ -110,11 +110,11 @@ def calc_daily_change(session):
 		session.commit()
 
 def main(session):
-	load_ticker_data(build_ticker_url(ticker_list), session)
+	# load_ticker_data(build_ticker_url(ticker_list), session)
 	load_ticker_category(session)
-	load_risk_profs(session)
-	load_prof_allocs(session)
-	calc_daily_change(session)
+	# load_risk_profs(session)
+	# load_prof_allocs(session)
+	# calc_daily_change(session)
 
 if __name__ == "__main__":
     session = model.session
