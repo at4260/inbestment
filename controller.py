@@ -254,7 +254,7 @@ def show_investments():
 			percent_prices = []
 			for value in ticker_7:
 				date = str(value.date)
-				percent_price = value.daily_change
+				percent_price = value.percent_change
 				dates.append(date)
 				percent_prices.append(percent_price)
 			dates.reverse()
