@@ -25,7 +25,7 @@ def load_prof_allocs(session):
 		session.add(new_profile_allocation)
 	session.commit()
 
-ticker_list = ["NYSEARCA_VV", "NYSEARCA_VB", "NASDAQ_VXUS", 
+ticker_list = ["NYSEARCA_VV", "NYSEARCA_VB", "NYSEARCA_VEU", 
 	"NYSEARCA_BIV", "NYSEARCA_BSV", "NYSEARCA_VWO", "NYSEARCA_BND"]
 ticker_url_list = []
 
@@ -82,7 +82,7 @@ def calc_daily_change(session):
 		ticker_id = ticker_id + 1
 		ticker = model.session.query(model.Price).filter_by(ticker_id=
 			ticker_id).all()
-		
+
 		new_index = 0
 		for i in range(len(ticker) - 1):
 			old_close_price = ticker[-1].close_price
@@ -91,15 +91,15 @@ def calc_daily_change(session):
 				old_close_price, 4)
 			new_daily_change_id = ticker[new_index].id
 			new_daily_change = model.session.query(model.Price).filter_by(
-				id=new_daily_change_id).update({model.Price.daily_change: difference}) 
+				id=new_daily_change_id).update({model.Price.percent_change: difference}) 
 			new_index = new_index + 1
 		session.commit()
 
 def main(session):
-	# load_ticker_data(build_ticker_url(ticker_list), session)
-	# load_risk_profs(session)
-	# load_prof_allocs(session)
-	calc_daily_change(session)
+	load_ticker_data(build_ticker_url(ticker_list), session)
+	load_risk_profs(session)
+	load_prof_allocs(session)
+	# calc_daily_change(session)
 
 if __name__ == "__main__":
     session = model.session
