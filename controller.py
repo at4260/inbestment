@@ -299,7 +299,7 @@ def show_investments():
 						* matched_weight_percent
 					matched_total_performance = matched_total_performance \
 						+ matched_ticker_performance
-				total_performance.append(matched_total_performance)
+				total_performance.append(round(matched_total_performance, 3))
 				
 			# FIXME - print each individual component fund, use dict
 			# # ex: {'lst_300': [], 'lst_75': [], 'lst_100': [], 'lst_2': [], 'lst_4': []}
