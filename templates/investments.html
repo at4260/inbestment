@@ -1,96 +1,59 @@
 {% extends 'base.html' %}
 {% block body %}
 
-	<h1> This is what you should be invested in: </h1>
-	<p> This is your risk tolerance: {{risk_prof}} </p>
-
-	{% for ticker, weight in ticker_dict.items() %}
-	<p> Ticker: {{ticker}} </p>
-	<p> Weighting: {{weight}}% </p>
-	{% endfor %}
-
-	<div id="performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto"> </div>
-	<script>
-	var dates = {{dates|safe}};
-	var total_performance = {{total_performance|safe}};
-	$(function () { 
-    	$('#performance').highcharts({
-	        chart: {
-	            type: 'area',
-	        },
-	        title: {
-	            text: 'Portfolio Performance'
-	        },
-	        xAxis: {
-            categories: dates
-	        },
-	        yAxis: {
-	        	title: {
-	        		text: 'Percent Change'
-	        	}
-	        },
-	        credits: {
-	            enabled: false
-	        },
-	        series: [{
-	            name: 'Fund 1',
-	            data: total_performance
-	        }]
-    	});
-	});
-	</script>
+	<h3> Risk tolerance: {{risk_prof}} </h3>
+	<br>
 
 	<div id="allocation" style="width:100%; height:400px;"></div>
 	<script>
+	var chart_ticker_dict = {{chart_ticker_dict|safe}};
+
+	chart_categories = Object.keys(chart_ticker_dict);
+
+	chart_stock_data = chart_ticker_dict["Stocks"];
+	chart_stock_funds = Object.keys(chart_stock_data);
+	chart_stock_weights = chart_stock_funds.map(function(key){
+		return chart_stock_data[key];
+	});
+
+	var chart_stock_sum = 0;
+	var len = chart_stock_weights.length
+    for(var i = 0; i < len; i++){
+        chart_stock_sum = chart_stock_sum + chart_stock_weights[i]
+    }
+
+	chart_bond_data = chart_ticker_dict["Bonds"];
+	chart_bond_funds = Object.keys(chart_bond_data);
+	chart_bond_weights = chart_bond_funds.map(function(key){
+		return chart_bond_data[key];
+	});
+
+	var chart_bond_sum = 0;
+	var len = chart_bond_weights.length
+    for(var i = 0; i < len; i++){
+        chart_bond_sum = chart_bond_sum + chart_bond_weights[i]
+    }
+
 	$(function () {
 	    var colors = Highcharts.getOptions().colors,
-	        categories = ['MSIE', 'Firefox', 'Chrome', 'Safari', 'Opera'],
+	        categories = chart_categories,
 	        data = [{
-	            y: 55.11,
+	            y: chart_stock_sum,
 	            color: colors[0],
 	            drilldown: {
-	                name: 'MSIE versions',
-	                categories: ['MSIE 6.0', 'MSIE 7.0', 'MSIE 8.0', 'MSIE 9.0'],
-	                data: [10.85, 7.35, 33.06, 2.81],
+	                name: "Stocks Funds",
+	                categories: chart_stock_funds,
+	                data: chart_stock_weights,
 	                color: colors[0]
 	            }
 	        }, {
-	            y: 21.63,
+	            y: chart_bond_sum,
 	            color: colors[1],
 	            drilldown: {
-	                name: 'Firefox versions',
-	                categories: ['Firefox 2.0', 'Firefox 3.0', 'Firefox 3.5', 'Firefox 3.6', 'Firefox 4.0'],
-	                data: [0.20, 0.83, 1.58, 13.12, 5.43],
+	                name: "Bonds Funds",
+	                categories: chart_bond_funds,
+	                data: chart_bond_weights,
 	                color: colors[1]
-	            }
-	        }, {
-	            y: 11.94,
-	            color: colors[2],
-	            drilldown: {
-	                name: 'Chrome versions',
-	                categories: ['Chrome 5.0', 'Chrome 6.0', 'Chrome 7.0', 'Chrome 8.0', 'Chrome 9.0',
-	                    'Chrome 10.0', 'Chrome 11.0', 'Chrome 12.0'],
-	                data: [0.12, 0.19, 0.12, 0.36, 0.32, 9.91, 0.50, 0.22],
-	                color: colors[2]
-	            }
-	        }, {
-	            y: 7.15,
-	            color: colors[3],
-	            drilldown: {
-	                name: 'Safari versions',
-	                categories: ['Safari 5.0', 'Safari 4.0', 'Safari Win 5.0', 'Safari 4.1', 'Safari/Maxthon',
-	                    'Safari 3.1', 'Safari 4.1'],
-	                data: [4.55, 1.42, 0.23, 0.21, 0.20, 0.19, 0.14],
-	                color: colors[3]
-	            }
-	        }, {
-	            y: 2.14,
-	            color: colors[4],
-	            drilldown: {
-	                name: 'Opera versions',
-	                categories: ['Opera 9.x', 'Opera 10.x', 'Opera 11.x'],
-	                data: [ 0.12, 0.37, 1.65],
-	                color: colors[4]
 	            }
 	        }],
 	        browserData = [],
@@ -129,12 +92,15 @@
 	            type: 'pie'
 	        },
 	        title: {
-	            text: 'Browser market share, April, 2011'
+	            text: 'Recommended Allocation'
 	        },
 	        yAxis: {
 	            title: {
-	                text: 'Total percent market share'
+	                text: 'Total percent allocation'
 	            }
+	        },
+	        credits: {
+	            enabled: false
 	        },
 	        plotOptions: {
 	            pie: {
@@ -146,7 +112,7 @@
 	            valueSuffix: '%'
 	        },
 	        series: [{
-	            name: 'Browsers',
+	            name: 'Category',
 	            data: browserData,
 	            size: '60%',
 	            dataLabels: {
@@ -157,7 +123,7 @@
 	                distance: -30
 	            }
 	        }, {
-	            name: 'Versions',
+	            name: 'Fund',
 	            data: versionsData,
 	            size: '80%',
 	            innerSize: '60%',
@@ -171,7 +137,38 @@
 	    });
 	});
 	</script>
+	<br>
 
+	<div id="performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto"> </div>
+	<script>
+	var dates = {{dates|safe}};
+	var total_performance = {{total_performance|safe}};
+	$(function () { 
+    	$('#performance').highcharts({
+	        chart: {
+	            type: 'area',
+	        },
+	        title: {
+	            text: 'Portfolio Performance'
+	        },
+	        xAxis: {
+            categories: dates
+	        },
+	        yAxis: {
+	        	title: {
+	        		text: 'Percent Change'
+	        	}
+	        },
+	        credits: {
+	            enabled: false
+	        },
+	        series: [{
+	            name: 'Total',
+	            data: total_performance
+	        }]
+    	});
+	});
+	</script>
 
 	<form action="/results">
 		<button type="submit"> Show results </button>

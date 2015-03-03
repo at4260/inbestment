@@ -244,7 +244,12 @@ def show_investments():
 				g.user.risk_profile_id).one()
 
 			ticker_dict = {}
-			prof_ticker_list = []
+
+			prof_ticker_id_list = []
+			
+			chart_ticker_dict = {}
+			stock_data = {}
+			bond_data = {}
 
 			# Risk_prof.allocation is list of
 			# <Risk Profile ID=2 Ticker ID=1 Ticker Weight=25>.			
@@ -257,7 +262,14 @@ def show_investments():
 				weight = prof_ticker.ticker_weight_percent
 				ticker_dict[ticker_name] = weight
 
-				prof_ticker_list.append(prof_ticker.ticker_id)
+				prof_ticker_id_list.append(prof_ticker.ticker_id)
+				
+				if individual_ticker.category == "Stocks":
+					stock_data[ticker_name] = weight
+					chart_ticker_dict["Stocks"] = stock_data
+				else:
+					bond_data[ticker_name] = weight
+					chart_ticker_dict["Bonds"] = bond_data
 
 			dates = []
 			total_performance = []
@@ -284,7 +296,7 @@ def show_investments():
 				# allocation and meets the date requirement.
 				matched_ticker_prices = m_session.query(model.Price).filter(
 					model.Price.date==incrementing_date, model.Price.ticker_id
-					.in_(prof_ticker_list)).all()
+					.in_(prof_ticker_id_list)).all()
 				dates.append(str(incrementing_date))
 											
 
@@ -321,9 +333,12 @@ def show_investments():
 			# 	percent_prices.reverse()
 
 
-			return render_template("investments.html", risk_prof=risk_prof.name, 
-				ticker_dict=ticker_dict, dates=json.dumps(dates), 
-				total_performance=json.dumps(total_performance))
+
+			return render_template("investments.html", 
+				risk_prof=risk_prof.name, 
+				dates=json.dumps(dates), 
+				total_performance=json.dumps(total_performance),
+				chart_ticker_dict=json.dumps(chart_ticker_dict))
 		else:
 			flash ("We do not have any financial data on you. \
 					Please input now.")
