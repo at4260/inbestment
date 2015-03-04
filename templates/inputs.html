@@ -1,69 +1,178 @@
 {% extends 'base.html' %}
 {% block body %}
+
 	<h1> Let's start </h1>
 	<form action="/input" method="POST">
-		<label >How much money do you have (checking only)? <input type="text" name="assets" value={{}}>
+		<label >How much money do you have (checking only)? <input type="text" name="assets" required autofocus value={{assets}}>
 	    </label>
 	    <br>
 
-	    <label >What's your income? <input type="text" name="income">
+	    <label >What's your income? <input type="text" name="income" required value={{income}}>
 	    </label>
 	    <br>
 
 	    Does your company have a 401k? 
-	    <label><input type="radio" name="401k" value="Yes"> Yes 
-	    </label>
-	    <label><input type="radio" name="401k" value="No"> No 
-	    </label>
+	    {% if comp_401k == "Yes" %}
+		    <label><input type="radio" name="401k" value="Yes" checked="checked"> Yes 
+		    </label>
+		    <label><input type="radio" name="401k" value="No"> No 
+		    </label>
+	    {% else %}
+		    <label><input type="radio" name="401k" value="Yes"> Yes 
+		    </label>
+		    <label><input type="radio" name="401k" value="No" checked="checked"> No 
+		    </label>
+	    {% endif %}
 	    <br>
 
 	    Does your company offer a 401k match?
-	    <label><input type="radio" name="match" value="Yes"> Yes 
-	    </label>
-	    <label><input type="radio" name="match" value="No"> No 
-	    </label>
+	    {% if match_401k == "Yes" %}
+		    <label><input type="radio" name="match" value="Yes" checked="checked"> Yes 
+		    </label>
+		    <label><input type="radio" name="match" value="No"> No 
+		    </label>
+	    {% else %}
+		    <label><input type="radio" name="match" value="Yes" > Yes 
+		    </label>
+		    <label><input type="radio" name="match" value="No" checked="checked"> No 
+		    </label>
+	    {% endif %}
 	    <br>
 
 	    What are the match terms? <br>
 	    For example: 100% of the first 6%, meaning your company will match 100% up to 6% of your salary. <br> If your salary is $50,000 and you contributed 6% (or $3,000), your employer will match 100% of that (receive $3,000).
 		<br>
 	    <label>Percentage of match
-			<select name="match_percent">
-				<label><option value="0.0">0%</option>
-				</label>
-				<label><option value="0.5">50%</option>
-				</label>
-				<label><option value="1.0">100%</option>
-				</label>
-			</select>
+			{% if match_percent == 1.0 %}
+				<select name="match_percent">
+					<label><option value="0.0" >0%</option>
+					</label>
+					<label><option value="0.5" >50%</option>
+					</label>
+					<label><option value="1.0" selected="selected">100%</option>
+					</label>
+				</select>
+			{% elif match_percent == 0.5 %}
+				<select name="match_percent">
+					<label><option value="0.0" >0%</option>
+					</label>
+					<label><option value="0.5" selected="selected">50%</option>
+					</label>
+					<label><option value="1.0" >100%</option>
+					</label>
+				</select>
+			{% else %}
+				<select name="match_percent">
+					<label><option value="0.0" selected="selected">0%</option>
+					</label>
+					<label><option value="0.5" >50%</option>
+					</label>
+					<label><option value="1.0" >100%</option>
+					</label>
+				</select>
+			{% endif %}
 		</label>
 		<br>
 
 		<label >Percentage of salary
-			<select name="salary_percent">
-				<label><option value="0.00">0%</option>
-				</label>
-				<label><option value="0.03">3%</option>
-				</label>
-				<label><option value="0.04">4%</option>
-				</label>
-				<label><option value="0.05">5%</option>
-				</label>
-				<label><option value="0.06">6%</option>
-				</label>
-			</select>
+			{% if match_salary == 0.03 %}
+				<select name="salary_percent">
+					<label><option value="0.00">0%</option>
+					</label>
+					<label><option value="0.03" selected="selected">3%</option>
+					</label>
+					<label><option value="0.04">4%</option>
+					</label>
+					<label><option value="0.05">5%</option>
+					</label>
+					<label><option value="0.06">6%</option>
+					</label>
+				</select>
+			{% elif match_percent == 0.04 %}
+				<select name="salary_percent">
+					<label><option value="0.00">0%</option>
+					</label>
+					<label><option value="0.03">3%</option>
+					</label>
+					<label><option value="0.04" selected="selected">4%</option>
+					</label>
+					<label><option value="0.05">5%</option>
+					</label>
+					<label><option value="0.06">6%</option>
+					</label>
+				</select>
+			{% elif match_percent == 0.05 %}
+				<select name="salary_percent">
+					<label><option value="0.00">0%</option>
+					</label>
+					<label><option value="0.03">3%</option>
+					</label>
+					<label><option value="0.04">4%</option>
+					</label>
+					<label><option value="0.05" selected="selected">5%</option>
+					</label>
+					<label><option value="0.06">6%</option>
+					</label>
+				</select>
+			{% elif match_percent == 0.06 %}
+				<select name="salary_percent">
+					<label><option value="0.00">0%</option>
+					</label>
+					<label><option value="0.03">3%</option>
+					</label>
+					<label><option value="0.04">4%</option>
+					</label>
+					<label><option value="0.05">5%</option>
+					</label>
+					<label><option value="0.06" selected="selected">6%</option>
+					</label>
+				</select>
+			{% else %}
+				<select name="salary_percent">
+					<label><option value="0.00" selected="selected">0%</option>
+					</label>
+					<label><option value="0.03">3%</option>
+					</label>
+					<label><option value="0.04">4%</option>
+					</label>
+					<label><option value="0.05">5%</option>
+					</label>
+					<label><option value="0.06">6%</option>
+					</label>
+				</select>
+			{% endif %}
 		</label>
 		<br>
 
 	    <label >What is your risk tolerance?
-			<select name="risk_tolerance">
-				<label><option value="Conservative">Conservative</option>
-				</label>
-				<label><option value="Moderate">Moderate</option>
-				</label>
-				<label><option value="Aggressive">Aggressive</option>
-				</label>
-			</select>
+	    	{% if risk_tolerance == "Moderate" %}
+				<select name="risk_tolerance">
+					<label><option value="Conservative">Conservative</option>
+					</label>
+					<label><option value="Moderate" selected="selected">Moderate</option>
+					</label>
+					<label><option value="Aggressive">Aggressive</option>
+					</label>
+				</select>
+			{% elif risk_tolerance == "Aggressive" %}
+				<select name="risk_tolerance">
+					<label><option value="Conservative">Conservative</option>
+					</label>
+					<label><option value="Moderate">Moderate</option>
+					</label>
+					<label><option value="Aggressive" selected="selected">Aggressive</option>
+					</label>
+				</select>
+			{% else %}
+				<select name="risk_tolerance">
+					<label><option value="Conservative" selected="selected">Conservative</option>
+					</label>
+					<label><option value="Moderate">Moderate</option>
+					</label>
+					<label><option value="Aggressive">Aggressive</option>
+					</label>
+				</select>
+			{% endif %}
 		</label>
 		<br>
 

@@ -148,10 +148,38 @@ def show_existing_inputs():
 @app.route("/input")
 def create_inputs():
 	""" 
-	This allows the user to enter their financial inputs. 
+	This allows the user to enter and edit their financial inputs. 
 	"""
 	if g.logged_in == True:
-		return render_template("inputs.html")
+		if g.inputs == True:
+			assets = m_session.query(model.UserBanking).filter_by(
+				user_id = g.user.id).first().checking_amt
+			income = m_session.query(model.User).filter_by(id = 
+				g.user.id).first().income
+			comp_401k = m_session.query(model.User).filter_by(id = 
+				g.user.id).first().company_401k
+			match_401k = m_session.query(model.User).filter_by(id = 
+				g.user.id).first().company_match
+			match_percent = m_session.query(model.User).filter_by(id = 
+				g.user.id).first().match_percent
+			match_salary = m_session.query(model.User).filter_by(id = 
+				g.user.id).first().match_salary
+
+			risk_tolerance_id = m_session.query(model.User).filter_by(id = 
+				g.user.id).first().risk_profile_id
+			risk_tolerance = m_session.query(model.RiskProfile).filter_by(
+				id = risk_tolerance_id).first().name
+ 		else:
+			assets = income = comp_401k = match_401k = match_percent = \
+			match_salary = risk_tolerance = 0
+		return render_template("inputs.html",
+			assets=assets,
+			income=income,
+			comp_401k=comp_401k,
+			match_401k=match_401k,
+			match_percent=match_percent,
+			match_salary=match_salary,
+			risk_tolerance=risk_tolerance)
 	else:
 		return redirect("/login")
 
