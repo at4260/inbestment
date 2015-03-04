@@ -1,13 +1,66 @@
 {% extends 'base.html' %}
 {% block body %}
 
-	<h1> Here are your results: (in order of priority) </h1>
+	<h3> Priorities: </h3>
 	<p> Checking Account: {{checking}} </p>
 	<p> Savings Account: {{savings}} </p>
 	<p> 401k Match: {{match}} </p>
 	<p> IRA: {{ira}} </p>
 	<p> 401k Account: {{ret401k}} </p>
 	<p> Brokerage Account: {{investment}} </p>
+
+	<div class="accounts" style="width:50%; height:300px; margin-left: auto; margin-right: auto"> </div>
+	<script>
+	$(function () {
+	    $('.accounts').highcharts({
+	        chart: {
+	            plotBackgroundColor: null,
+	            plotBorderWidth: 0,
+	            plotShadow: false
+	        },
+	        title: {
+	            text: 'Checking<br>Account',
+	            align: 'center',
+	            verticalAlign: 'middle',
+	            y: 50
+	        },
+	        credits: {
+	            enabled: false
+	        },
+	        tooltip: {
+	            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                dataLabels: {
+	                    enabled: true,
+	                    distance: -50,
+	                    style: {
+	                        fontWeight: 'bold',
+	                        color: 'white',
+	                        textShadow: '0px 1px 2px black'
+	                    }
+	                },
+	                startAngle: -90,
+	                endAngle: 90,
+	                center: ['50%', '75%']
+	            }
+	        },
+	        series: [{
+	            type: 'pie',
+	            name: 'Value',
+	            innerSize: '50%',
+	            data: [
+	                ['Amount Funded', 45.0],
+	                ['Amount Needed', 26.8],
+	            ]
+	        }]
+	    });
+	});
+
+	
+	</script>
+	<br>
 
 	<form action="/investments">
 		<button type="submit"> Show me my investments </button>
