@@ -246,8 +246,10 @@ def show_existing_results():
 			match_percent = g.user.match_percent
 			match_salary = g.user.match_salary
 
-			results = utils.calc_financial_results(assets, income, comp_401k, match_401k, 
-				match_percent, match_salary)
+			results = utils.calc_financial_results(assets, income, comp_401k, 
+				match_401k, match_percent, match_salary)
+			max_results = utils.calc_max_financials(income, comp_401k, 
+				match_401k, match_percent, match_salary)
 
 			return render_template("results.html",
 				checking=utils.format_currency(results["checking"]),
@@ -255,7 +257,9 @@ def show_existing_results():
 				match=utils.format_currency(results["match"]),
 				ira=utils.format_currency(results["ira"]),
 				ret401k=utils.format_currency(results["ret401k"]), 
-				investment=utils.format_currency(results["investment"]))
+				investment=utils.format_currency(results["investment"]),
+				results=json.dumps(results),
+				max_results=json.dumps(max_results))
 		else:
 			flash ("We do not have any financial data on you. \
 					Please input now.")

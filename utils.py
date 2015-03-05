@@ -128,6 +128,13 @@ def calc_user_401k(assets, match_percent, match_salary, income,
 
 def calc_financial_results(assets, income, comp_401k, match_401k, 
 	match_percent, match_salary):
+	"""
+	Calculates how much the user will be able to put into each type
+	of account based on assets. 
+
+	Calls all of the functions defined above. Returns a "results"
+	dictionary with all of the accounts and amounts.
+	"""
 	results = {}
 	# Setting all values to 0 in case a variable never gets updated 
 	# (due to lack of assets).
@@ -161,3 +168,35 @@ def calc_financial_results(assets, income, comp_401k, match_401k,
 	results["investment"] = assets
 	
 	return results
+
+def calc_max_financials(income, comp_401k, match_401k, 
+	match_percent, match_salary):
+	"""
+	Calculates how much the user should be putting into each type
+	of account.
+
+	Calls all of the MAX functions defined above. Returns a "max_
+	results" dictionary with all of the accounts and max amounts
+	to feed onto the "results" page for semi-circle donut graphs.
+	"""
+	max_results = {}
+ 	monthly_expense = calc_monthly_expense(income)
+ 	max_results["checking"] = calc_max_checking(income)
+	max_results["savings"] = calc_max_savings(income)
+	max_results["ira"] = 5500
+
+	if comp_401k == "Yes":
+		if match_401k == "Yes":
+			max_results["match"] = calc_max_match(match_percent, 
+				match_salary, income)
+		 	max_results["ret401k"] = 18000 - max_results["match"]
+		else:
+			max_results["match"] = 0
+			max_results["ret401k"] = 18000
+	else:
+		max_results["match"] = 0
+		max_results["ret401k"] = 0
+
+	max_results["investment"] = 0
+	
+	return max_results
