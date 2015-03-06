@@ -1,15 +1,21 @@
 """ This file will be to create the app routes and framework of the app. """
 
-from flask import Flask, render_template, redirect, request, flash, g
-from flask import session as f_session
-from model import session as m_session
 import model
 import utils
 import accounts
 import json
 
+from flask import Flask, render_template, redirect, request, flash, g
+from flask import session as f_session
+from flask.ext.cache import Cache
+
+from model import session as m_session
+
+
 app = Flask(__name__)
 app.secret_key = 'thisisasecretkey'
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+cache.init_app(app)
 
 @app.before_request
 def before_request():
@@ -268,6 +274,12 @@ def show_existing_results():
 
 @app.route("/investments")
 def show_investments():
+	
+	@cache.cached(timeout=300, key_prefix=g.email)
+	def calc_total_performance():
+		return utils.generate_performance_total_linegraph(
+			utils.save_prof_tickers(risk_prof))
+
 	if g.logged_in == True:
 		if g.inputs == True:
 			# Risk_prof is <Risk Profile ID=2 Name=Moderate>
@@ -277,8 +289,7 @@ def show_investments():
 			chart_ticker_data = utils.generate_allocation_piechart(risk_prof)
 			dates = utils.generate_performance_dates_linegraph(
 				utils.save_prof_tickers(risk_prof))
-			total_performance = utils.generate_performance_total_linegraph(
-				utils.save_prof_tickers(risk_prof))
+			total_performance = calc_total_performance()
 
 			return render_template("investments.html", 
 				risk_prof=risk_prof.name, 
