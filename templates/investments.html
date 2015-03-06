@@ -6,28 +6,28 @@
 
 	<div id="allocation" style="width:100%; height:400px;"></div>
 	<script>
-	var chart_ticker_dict = {{chart_ticker_dict|safe}};
+	var chart_ticker_data = {{chart_ticker_data|safe}};
 
-	chart_categories = Object.keys(chart_ticker_dict);
+	chart_categories = Object.keys(chart_ticker_data);
 
-	chart_stock_data = chart_ticker_dict["Stocks"];
+	chart_stock_data = chart_ticker_data["Stocks"];
 	chart_stock_funds = Object.keys(chart_stock_data);
 	chart_stock_weights = chart_stock_funds.map(function(key){
 		return chart_stock_data[key];
 	});
-
+	// Creates inner circle of total stock allocation
 	var chart_stock_sum = 0;
 	var len = chart_stock_weights.length
     for(var i = 0; i < len; i++){
         chart_stock_sum = chart_stock_sum + chart_stock_weights[i]
     }
 
-	chart_bond_data = chart_ticker_dict["Bonds"];
+	chart_bond_data = chart_ticker_data["Bonds"];
 	chart_bond_funds = Object.keys(chart_bond_data);
 	chart_bond_weights = chart_bond_funds.map(function(key){
 		return chart_bond_data[key];
 	});
-
+	// Creates inner circle of total bond allocation
 	var chart_bond_sum = 0;
 	var len = chart_bond_weights.length
     for(var i = 0; i < len; i++){

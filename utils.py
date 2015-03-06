@@ -200,3 +200,30 @@ def calc_max_financials(income, comp_401k, match_401k,
 	max_results["investment"] = 0
 	
 	return max_results
+
+def generate_allocation_piechart(risk_prof):
+	chart_ticker_data = {}
+	stock_data = {}
+	bond_data = {}
+	# Risk_prof.allocation is list of
+	# <Risk Profile ID=2 Ticker ID=1 Ticker Weight=25>.			
+	for prof_ticker in risk_prof.allocation:
+		# Ticker_description is using the ticker relationship
+		# to get the object <Ticker ID=6 Symbol=VWO 
+		# Name=Vanguard FTSE Emerging Markets ETF (VWO)>.
+		ticker_description = prof_ticker.ticker
+		ticker_name = ticker_description.name
+		ticker_weight = prof_ticker.ticker_weight_percent
+		
+		# Creates a stocks and bonds dictionary within the
+		# chart_ticker_data dictionary.
+		if ticker_description.category == "Stocks":
+			stock_data[ticker_name] = ticker_weight
+			chart_ticker_data["Stocks"] = stock_data
+		else:
+			bond_data[ticker_name] = ticker_weight
+			chart_ticker_data["Bonds"] = bond_data
+
+	return chart_ticker_data
+
+
