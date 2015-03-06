@@ -274,14 +274,13 @@ def show_existing_results():
 
 @app.route("/investments")
 def show_investments():
-	
-	@cache.cached(timeout=300, key_prefix=g.email)
-	def calc_total_performance():
-		return utils.generate_performance_total_linegraph(
-			utils.save_prof_tickers(risk_prof))
-
 	if g.logged_in == True:
 		if g.inputs == True:
+			@cache.cached(timeout=300, key_prefix=g.email)
+			def calc_total_performance():
+				return utils.generate_performance_total_linegraph(
+					utils.save_prof_tickers(risk_prof))
+				
 			# Risk_prof is <Risk Profile ID=2 Name=Moderate>
 			risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
 				g.user.risk_profile_id).one()
