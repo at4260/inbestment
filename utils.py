@@ -1,6 +1,7 @@
 from model import session as m_session
 import model
 from datetime import datetime, timedelta
+import time
 
 def format_currency(value):
 	return "${:,.2f}".format(value)
@@ -304,6 +305,7 @@ def generate_performance_total_linegraph(prof_ticker_data):
 	The data gets accumulated into a total using each ticker's 
 	weighting in the user's risk profile allocation.
 	"""
+	beginning = time.time()
 	total_performance = []
 	first_date = calc_first_date()
 	final_date = calc_final_date()
@@ -322,6 +324,7 @@ def generate_performance_total_linegraph(prof_ticker_data):
 		matched_ticker_prices = m_session.query(model.Price).filter(
 			model.Price.date==incrementing_date, model.Price.ticker_id
 			.in_(prof_ticker_data.keys())).all()
+		print time.time() - beginning
 
 		matched_total_performance = 0
 		for matched_ticker_price in matched_ticker_prices:
