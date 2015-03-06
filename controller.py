@@ -7,7 +7,6 @@ import model
 import utils
 import accounts
 import json
-from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.secret_key = 'thisisasecretkey'
@@ -276,55 +275,14 @@ def show_investments():
 				g.user.risk_profile_id).one()
 
 			chart_ticker_data = utils.generate_allocation_piechart(risk_prof)
-
-			prof_ticker_data = {}
-			for prof_ticker in risk_prof.allocation:
-				prof_ticker_data[prof_ticker.ticker_id] = prof_ticker.ticker_weight_percent
-
-			dates = []
-			total_performance = []
-
-			# Marking the date of the most recent data point-
-			# this date will be the same for all tickers.
-			final_date = m_session.query(model.Price).filter_by(id=1).first().date
-			
-			# This is the start date for all funds.
-			first_date = datetime.strptime("2007-04-10", "%Y-%m-%d").date()
-
-			# Deals with 2007-04-10 case where percent change is None
-			# Str- changes datetime to a JSON serializable object
-			dates.append(str(first_date))
-			total_performance.append(0)
-			
-			days_value = 0
-			incrementing_date = first_date		
-			
-			while incrementing_date < final_date:
-				days_value = days_value + 1	
-				incrementing_date = first_date + timedelta(days=days_value)
-				# Checks for all Price instances that are part of the profile 
-				# allocation and meets the date requirement.		
-				matched_ticker_prices = m_session.query(model.Price).filter(
-					model.Price.date==incrementing_date, model.Price.ticker_id
-					.in_(prof_ticker_data.keys())).all()
-				dates.append(str(incrementing_date))
-											
-
-				matched_total_performance = 0
-				for matched_ticker_price in matched_ticker_prices:
-					matched_ticker_percent_change = matched_ticker_price.percent_change
-					matched_ticker_id = matched_ticker_price.ticker_id
-					matched_weighting = round(float(prof_ticker_data
-						[matched_ticker_id])/100, 4)
-					matched_ticker_performance = matched_ticker_percent_change \
-						* matched_weighting
-					matched_total_performance = matched_total_performance \
-						+ matched_ticker_performance
-				total_performance.append(round(matched_total_performance, 3))
+			dates = utils.generate_performance_dates_linegraph(
+				utils.save_prof_tickers(risk_prof))
+			total_performance = utils.generate_performance_total_linegraph(
+				utils.save_prof_tickers(risk_prof))
 
 			return render_template("investments.html", 
 				risk_prof=risk_prof.name, 
-				dates=json.dumps(dates), 
+				dates=json.dumps(dates),
 				total_performance=json.dumps(total_performance),
 				chart_ticker_data=json.dumps(chart_ticker_data))
 		else:

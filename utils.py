@@ -1,3 +1,7 @@
+from model import session as m_session
+import model
+from datetime import datetime, timedelta
+
 def format_currency(value):
 	return "${:,.2f}".format(value)
 
@@ -202,6 +206,14 @@ def calc_max_financials(income, comp_401k, match_401k,
 	return max_results
 
 def generate_allocation_piechart(risk_prof):
+	"""
+	Queries for the ticker names and weights based on the
+	user's risk profile and the profile's allocation.
+
+	Returns a dictionary of dictionaries with "Stocks" and
+	"Bonds" as the key with a value of ticker name as key
+	and weight as value.
+	"""
 	chart_ticker_data = {}
 	stock_data = {}
 	bond_data = {}
@@ -225,5 +237,104 @@ def generate_allocation_piechart(risk_prof):
 			chart_ticker_data["Bonds"] = bond_data
 
 	return chart_ticker_data
+
+def save_prof_tickers(risk_prof):
+	"""
+	Queries for the tickers that make up the user's selected
+	risk profile allocation.
+
+	Returns a dictionary with ticker id as key and weight
+	as the value.
+	"""
+	prof_ticker_data = {}
+	for prof_ticker in risk_prof.allocation:
+		prof_ticker_data[prof_ticker.ticker_id] = \
+			prof_ticker.ticker_weight_percent
+	return prof_ticker_data
+
+def calc_first_date():
+	"""
+	This is the start date for all funds.
+	"""
+	first_date = datetime.strptime("2007-04-10", "%Y-%m-%d").date()
+	return first_date
+
+def calc_final_date():
+	"""
+	This is the final or most recent date for all funds.
+	This date is the same for all of the tickers.
+	"""
+	final_date = m_session.query(model.Price).filter_by(id=1).first().date
+	return final_date
+
+def generate_performance_dates_linegraph(prof_ticker_data):
+	"""
+	Pulls all of the dates for the line graph showing performance.
+
+	Keeping the dates and performance values in separate lists
+	because a dictionary cannot keep the dates in order.
+	"""
+	dates = []
+	first_date = calc_first_date()
+	final_date = calc_final_date()
+
+	# Deals with 2007-04-10 case where percent change is None
+	# Str- changes datetime to a JSON serializable object
+	dates.append(str(first_date))
+	
+	days_value = 0
+	incrementing_date = first_date		
+	
+	while incrementing_date < final_date:
+		days_value = days_value + 1	
+		incrementing_date = first_date + timedelta(days=days_value)
+		dates.append(str(incrementing_date))
+
+	return dates
+
+def generate_performance_total_linegraph(prof_ticker_data):
+	"""
+	Pulls the performance data for the line graph showing 
+	performance.
+
+	Keeping the dates and performance values in separate lists
+	because a dictionary cannot keep the dates in order.
+
+	Queries the database for all price data	matching a specific date. 
+	The data gets accumulated into a total using each ticker's 
+	weighting in the user's risk profile allocation.
+	"""
+	total_performance = []
+	first_date = calc_first_date()
+	final_date = calc_final_date()
+
+	# Deals with 2007-04-10 case where percent change is None
+	total_performance.append(0)
+	
+	days_value = 0
+	incrementing_date = first_date		
+	
+	while incrementing_date < final_date:
+		days_value = days_value + 1	
+		incrementing_date = first_date + timedelta(days=days_value)
+		# Checks for all Price instances that are part of the profile 
+		# allocation and meets the date requirement.		
+		matched_ticker_prices = m_session.query(model.Price).filter(
+			model.Price.date==incrementing_date, model.Price.ticker_id
+			.in_(prof_ticker_data.keys())).all()
+
+		matched_total_performance = 0
+		for matched_ticker_price in matched_ticker_prices:
+			matched_ticker_percent_change = matched_ticker_price.percent_change
+			matched_ticker_id = matched_ticker_price.ticker_id
+			matched_weighting = round(float(prof_ticker_data
+				[matched_ticker_id])/100, 4)
+			matched_ticker_performance = matched_ticker_percent_change \
+				* matched_weighting
+			matched_total_performance = matched_total_performance \
+				+ matched_ticker_performance
+		total_performance.append(round(matched_total_performance, 3))
+
+	return total_performance
 
 
