@@ -244,10 +244,7 @@ def generate_allocation_piechart(risk_prof):
 def generate_performance_linegraph(risk_prof):
 	"""
 	Pulls the performance data for the line graph showing 
-	performance.
-
-	Keeping the dates and performance values in separate lists
-	because a dictionary cannot keep the dates in order.
+	total performance.
 
 	Queries the database for all price data	matching a specific date. 
 	The data gets accumulated into a total using each ticker's 
