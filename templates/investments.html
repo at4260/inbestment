@@ -146,18 +146,22 @@
 	$(function () { 
     	$('#total_performance').highcharts({
 	        chart: {
-	            type: 'area',
+	            type: 'area'
 	        },
 	        title: {
 	            text: 'Total Portfolio Performance'
 	        },
 	        xAxis: {
-            categories: dates
+            	categories: dates,
+            	tickInterval: 125
 	        },
 	        yAxis: {
 	        	title: {
 	        		text: 'Percent Change'
 	        	}
+	        },
+	        tooltip: {
+	            pointFormat: '{series.name}: <b>{point.y:,.4f}</b>'
 	        },
 	        credits: {
 	            enabled: false
@@ -181,12 +185,16 @@
 	            text: 'Individual Fund Performance'
 	        },
 	        xAxis: {
-            categories: dates
+            	categories: dates,
+            	tickInterval: 125
 	        },
 	        yAxis: {
 	        	title: {
 	        		text: 'Percent Change'
 	        	}
+	        },
+	        tooltip: {
+	            pointFormat: '{series.name}: <b>{point.y:,.4f}</b>'
 	        },
 	        credits: {
 	            enabled: false
