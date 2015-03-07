@@ -37,7 +37,8 @@
 	Highcharts.setOptions({
 		lang: {
 			thousandsSep: ","
-		}
+		},
+		colors: ['#7cb5ec', '#434348', '#ACA88C']
 	});
 	
 	$(function () {
@@ -227,8 +228,6 @@
 		            data: [
 		            	['', 0],
 		            	['', 0],
-		            	['', 0],
-		            	['', 0],
 		                ['Not Applicable', 100],
 		            ]
 		        }],
@@ -371,14 +370,10 @@
 		            type: 'pie',
 		            name: 'Value',
 		            innerSize: '50%',
-		            // Including 4 empty arrays in order to get the color 
-		            // that I want from the Highcharts Color list.
 		            data: [
 		            	['', 0],
 		            	['', 0],
-		            	['', 0],
-		            	['', 0],
-		                ['Not Applicable', 100],
+		            	['Not Applicable', 100],
                 	]
 		        }]
 		    });
@@ -473,8 +468,6 @@
 		            name: 'Value',
 		            innerSize: '50%',
 		            data: [
-		                ['', 0],
-		            	['', 0],
 		            	['', 0],
 		            	['', 0],
 		                ['Not Applicable', 100],

@@ -149,7 +149,7 @@
 	            type: 'area',
 	        },
 	        title: {
-	            text: 'Portfolio Performance'
+	            text: 'Total Portfolio Performance'
 	        },
 	        xAxis: {
             categories: dates
@@ -170,12 +170,15 @@
 	});
 
 	$(function () { 
+		Highcharts.setOptions({
+			colors: ['#7cb5ec', '#263640', '#576E7F', '#88B0BF', '#ACA88C']
+		});
     	$('#all_performance').highcharts({
 	        chart: {
 	            type: 'area',
 	        },
 	        title: {
-	            text: 'Portfolio Performance'
+	            text: 'Individual Fund Performance'
 	        },
 	        xAxis: {
             categories: dates
