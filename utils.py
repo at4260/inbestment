@@ -241,6 +241,23 @@ def generate_allocation_piechart(risk_prof):
 
 	return chart_ticker_data
 
+def save_prof_tickers(risk_prof):
+	"""
+	Queries for the tickers that make up the user's selected
+	risk profile allocation.
+	"""
+	prof_ticker_ids = []
+	prof_ticker_names = []
+	for prof_ticker in risk_prof.allocation:
+		prof_ticker_ids.append(prof_ticker.ticker_id)
+		prof_ticker_names.append(prof_ticker.ticker.name)
+
+	prof_ticker_data = []
+	prof_ticker_data.append(prof_ticker_ids)
+	prof_ticker_data.append(prof_ticker_names)
+
+	return prof_ticker_data
+
 def generate_performance_linegraph(risk_prof):
 	"""
 	Pulls the performance data for the line graph showing 
@@ -260,13 +277,13 @@ def generate_performance_linegraph(risk_prof):
 	GROUP by prices.date
 	ORDER by prices.date
 	"""
-	result = connection.execute(text(linegraph_sql_query), sql_risk_prof 
+	total_performance_result = connection.execute(text(linegraph_sql_query), sql_risk_prof 
 		= risk_prof.id)
 	
 	dates = []
 	total_performance = []
 
-	for row in result:
+	for row in total_performance_result:
 		dates.append(row[0])
 		total_performance.append(row[1]/100)
 
@@ -275,3 +292,25 @@ def generate_performance_linegraph(risk_prof):
 	total_linegraph.append(total_performance)
 
 	return total_linegraph
+
+def generate_individual_ticker_linegraph(ticker_id):
+	"""
+
+	"""
+	connection = model.engine.connect()
+	linegraph_sql_query = """ 
+	SELECT percent_change
+	FROM prices 
+	WHERE prices.ticker_id == :sql_ticker_id
+	AND prices.date > "2007-04-10"
+	ORDER by prices.date
+	"""
+	individual_performance_result = connection.execute(text(linegraph_sql_query), sql_ticker_id
+		= ticker_id)
+	
+	individual_performance = []
+
+	for row in individual_performance_result:
+		individual_performance.append(row[0])
+
+	return individual_performance

@@ -3,13 +3,12 @@
 
 	<h3> Risk tolerance: {{risk_prof}} </h3>
 	<br>
+	
 
 	<div id="allocation" style="width:100%; height:400px;"></div>
 	<script>
 	var chart_ticker_data = {{chart_ticker_data|safe}};
-
 	chart_categories = Object.keys(chart_ticker_data);
-
 	chart_stock_data = chart_ticker_data["Stocks"];
 	chart_stock_funds = Object.keys(chart_stock_data);
 	chart_stock_weights = chart_stock_funds.map(function(key){
@@ -21,7 +20,6 @@
     for(var i = 0; i < len; i++){
         chart_stock_sum = chart_stock_sum + chart_stock_weights[i]
     }
-
 	chart_bond_data = chart_ticker_data["Bonds"];
 	chart_bond_funds = Object.keys(chart_bond_data);
 	chart_bond_weights = chart_bond_funds.map(function(key){
@@ -33,7 +31,6 @@
     for(var i = 0; i < len; i++){
         chart_bond_sum = chart_bond_sum + chart_bond_weights[i]
     }
-
 	$(function () {
 	    var colors = Highcharts.getOptions().colors,
 	        categories = chart_categories,
@@ -63,17 +60,14 @@
 	        dataLen = data.length,
 	        drillDataLen,
 	        brightness;
-
 	    // Build the data arrays
 	    for (i = 0; i < dataLen; i += 1) {
-
 	        // add browser data
 	        browserData.push({
 	            name: categories[i],
 	            y: data[i].y,
 	            color: data[i].color
 	        });
-
 	        // add version data
 	        drillDataLen = data[i].drilldown.data.length;
 	        for (j = 0; j < drillDataLen; j += 1) {
@@ -85,7 +79,6 @@
 	            });
 	        }
 	    }
-
 	    // Create the chart
 	    $('#allocation').highcharts({
 	        chart: {
@@ -139,12 +132,19 @@
 	</script>
 	<br>
 
-	<div id="performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto"> </div>
+	<div id="total_performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto"> </div>
+ 	<div id="all_performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto"> </div>
 	<script>
 	var dates = {{dates|safe}};
 	var total_performance = {{total_performance|safe}};
+	var prof_ticker_data = {{prof_ticker_data|safe}};
+	var ticker_query_1 = {{ticker_query_1|safe}};
+	var ticker_query_2 = {{ticker_query_2|safe}};
+	var ticker_query_3 = {{ticker_query_3|safe}};
+	var ticker_query_4 = {{ticker_query_4|safe}};
+	var ticker_query_5 = {{ticker_query_5|safe}};
 	$(function () { 
-    	$('#performance').highcharts({
+    	$('#total_performance').highcharts({
 	        chart: {
 	            type: 'area',
 	        },
@@ -168,6 +168,44 @@
 	        }]
     	});
 	});
+
+	$(function () { 
+    	$('#all_performance').highcharts({
+	        chart: {
+	            type: 'area',
+	        },
+	        title: {
+	            text: 'Portfolio Performance'
+	        },
+	        xAxis: {
+            categories: dates
+	        },
+	        yAxis: {
+	        	title: {
+	        		text: 'Percent Change'
+	        	}
+	        },
+	        credits: {
+	            enabled: false
+	        },
+	        series: [{
+   	        	name: prof_ticker_data[1][0],
+	            data: ticker_query_1
+            }, {
+	        	name: prof_ticker_data[1][1],
+	            data: ticker_query_2
+            }, {
+	        	name: prof_ticker_data[1][2],
+	            data: ticker_query_3
+            }, {
+	        	name: prof_ticker_data[1][3],
+	            data: ticker_query_4
+            }, {
+	        	name: prof_ticker_data[1][4],
+	            data: ticker_query_5
+	        }]
+    	});
+	});
 	</script>
 
 	<form action="/results">
@@ -177,6 +215,5 @@
 	<form action="/profile">
 		<button type="submit"> Let me look at my profile again </button>
 	</form> 
-	
 
 {% endblock %}

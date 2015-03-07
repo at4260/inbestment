@@ -275,17 +275,30 @@ def show_investments():
 		if g.inputs == True:			
 			# Risk_prof is <Risk Profile ID=2 Name=Moderate>
 			risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
-				g.user.risk_profile_id).one()
+				g.user.risk_profile_id).first()
 
 			chart_ticker_data = utils.generate_allocation_piechart(risk_prof)
 			dates = utils.generate_performance_linegraph(risk_prof)[0]
-			total_performance = utils.generate_performance_linegraph(risk_prof)[1]			
+			total_performance = utils.generate_performance_linegraph(risk_prof)[1]
+
+			prof_ticker_data = utils.save_prof_tickers(risk_prof)
+			ticker_query_1 = utils.generate_individual_ticker_linegraph(prof_ticker_data[0][0])
+			ticker_query_2 = utils.generate_individual_ticker_linegraph(prof_ticker_data[0][1])
+			ticker_query_3 = utils.generate_individual_ticker_linegraph(prof_ticker_data[0][2])
+			ticker_query_4 = utils.generate_individual_ticker_linegraph(prof_ticker_data[0][3])
+			ticker_query_5 = utils.generate_individual_ticker_linegraph(prof_ticker_data[0][4])
 
 			return render_template("investments.html", 
 				risk_prof=risk_prof.name, 
 				dates=json.dumps(dates),
 				total_performance=json.dumps(total_performance),
-				chart_ticker_data=json.dumps(chart_ticker_data))
+				chart_ticker_data=json.dumps(chart_ticker_data),
+				prof_ticker_data=json.dumps(prof_ticker_data),
+				ticker_query_1=json.dumps(ticker_query_1),
+				ticker_query_2=json.dumps(ticker_query_2),
+				ticker_query_3=json.dumps(ticker_query_3),
+				ticker_query_4=json.dumps(ticker_query_4),
+				ticker_query_5=json.dumps(ticker_query_5))
 		else:
 			flash ("We do not have any financial data on you. \
 					Please input now.")
