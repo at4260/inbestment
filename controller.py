@@ -7,15 +7,12 @@ import json
 
 from flask import Flask, render_template, redirect, request, flash, g
 from flask import session as f_session
-from flask.ext.cache import Cache
 
 from model import session as m_session
 
 
 app = Flask(__name__)
 app.secret_key = 'thisisasecretkey'
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
-cache.init_app(app)
 
 @app.before_request
 def before_request():
@@ -270,25 +267,19 @@ def show_existing_results():
 					Please input now.")
 			return redirect("/input")	
 	else:
-		return redirect("/login")
+		return redirect("/login")		
 
 @app.route("/investments")
 def show_investments():
 	if g.logged_in == True:
-		if g.inputs == True:
-			@cache.cached(timeout=300, key_prefix=g.email)
-			def calc_total_performance():
-				return utils.generate_performance_total_linegraph(
-					utils.save_prof_tickers(risk_prof))
-				
+		if g.inputs == True:			
 			# Risk_prof is <Risk Profile ID=2 Name=Moderate>
 			risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
 				g.user.risk_profile_id).one()
 
 			chart_ticker_data = utils.generate_allocation_piechart(risk_prof)
-			dates = utils.generate_performance_dates_linegraph(
-				utils.save_prof_tickers(risk_prof))
-			total_performance = calc_total_performance()
+			dates = utils.generate_performance_linegraph(risk_prof)[0]
+			total_performance = utils.generate_performance_linegraph(risk_prof)[1]			
 
 			return render_template("investments.html", 
 				risk_prof=risk_prof.name, 
