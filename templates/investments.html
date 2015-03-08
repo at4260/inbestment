@@ -131,10 +131,24 @@
 	});
 	</script>
 	<br>
+	<div class="btn-group" role="group" aria-label="...">
+  		<button type="button" class="btn btn-default" id="total">Total Performance</button>
+  		<button type="button" class="btn btn-default" id="individual">Individual Breakout</button>
+	</div>
 
 	<div id="total_performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto"> </div>
- 	<div id="all_performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto"> </div>
+ 	<div id="all_performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto; display: none"> </div>
+	
 	<script>
+	$("#total").click(function() {
+		$("#total_performance").show();
+		$("#all_performance").hide();
+	});
+	$("#individual").click(function() {
+		$("#total_performance").hide();
+		$("#all_performance").show();
+	});
+
 	var dates = {{dates|safe}};
 	var total_performance = {{total_performance|safe}};
 	var prof_ticker_data = {{prof_ticker_data|safe}};
