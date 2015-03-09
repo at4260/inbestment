@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block body %}
+
+    
+	
+<form action="/input/match_401k" method="POST">		
+
+	<div class="container" style="width: 50%">
+		<div class="jumbotron">
+			
+			Does your company offer a 401k match?
+		    {% if match_401k == "Yes" %}
+			    <label><input type="radio" name="match" value="Yes" checked="checked"> Yes 
+			    </label>
+			    <label><input type="radio" name="match" value="No"> No 
+			    </label>
+		    {% else %}
+			    <label><input type="radio" name="match" value="Yes" > Yes 
+			    </label>
+			    <label><input type="radio" name="match" value="No" checked="checked"> No 
+			    </label>
+		    {% endif %}
+	    	
+			<p><button class="btn btn-primary btn-lg" type="submit">Next</button></p>
+			
+		</div>
+	</div>
+
+</form>
+
+
+
+{% endblock %}

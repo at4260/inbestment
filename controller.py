@@ -77,7 +77,7 @@ def process_acct():
 	    m_session.commit()
 	    flash("Your account has been succesfully added.")
 	    f_session["email"] = email
-	    return redirect("/input")
+	    return redirect("/input/assets")
 
 @app.route("/banklogin")
 def login_bank():
@@ -115,7 +115,7 @@ def access_bank():
 	# print account.account_nickname
 	# print account.balance_amount
 
-	return redirect("/input")
+	return redirect("/input/assets")
 
 @app.route("/profile")
 def show_existing_inputs():
@@ -143,74 +143,34 @@ def show_existing_inputs():
 		else:
 			flash ("We do not have any financial data on you. \
 					Please input now.")
-			return redirect("/input")	
+			return redirect("/input/assets")	
 	else:
 		return redirect("/login")
 
-@app.route("/input")
-def create_inputs():
-	""" 
-	This allows the user to enter and edit their financial inputs. 
+@app.route("/input/assets")
+def input_assets():
+	"""
+	This allows the user to enter and edit their financial assets. 
 	"""
 	if g.logged_in == True:
 		if g.inputs == True:
 			assets = m_session.query(model.UserBanking).filter_by(
 				user_id = g.user.id).first().checking_amt
-			income = m_session.query(model.User).filter_by(id = 
-				g.user.id).first().income
-			comp_401k = m_session.query(model.User).filter_by(id = 
-				g.user.id).first().company_401k
-			match_401k = m_session.query(model.User).filter_by(id = 
-				g.user.id).first().company_match
-			match_percent = m_session.query(model.User).filter_by(id = 
-				g.user.id).first().match_percent
-			match_salary = m_session.query(model.User).filter_by(id = 
-				g.user.id).first().match_salary
-
-			risk_tolerance_id = m_session.query(model.User).filter_by(id = 
-				g.user.id).first().risk_profile_id
-			risk_tolerance = m_session.query(model.RiskProfile).filter_by(
-				id = risk_tolerance_id).first().name
  		else:
-			assets = income = comp_401k = match_401k = match_percent = \
-			match_salary = risk_tolerance = 0
-		return render_template("inputs.html",
-			assets=assets,
-			income=income,
-			comp_401k=comp_401k,
-			match_401k=match_401k,
-			match_percent=match_percent,
-			match_salary=match_salary,
-			risk_tolerance=risk_tolerance)
+			assets = 0
+		return render_template("input_assets.html",
+			assets=assets)
 	else:
 		return redirect("/login")
 
-@app.route("/input", methods=["POST"])
-def show_results():
+@app.route("/input/assets", methods=["POST"])
+def save_assets():
 	""" 
-	This route relies on pulling inputs from user input 
-	(as a post request), saving to database, and routes to /results
-	to perform the calculations.
+	Pulls assets from user input (as a post request), save to 
+	database, and routes to next question (/results will perform
+	the calculations).
 	"""
 	assets = float(request.form["assets"])
-	income = float(request.form["income"])
-	comp_401k = request.form["401k"]
-	match_401k = request.form["match"]
-	match_percent = float(request.form["match_percent"])
-	match_salary = float(request.form["salary_percent"])
-
-	risk_tolerance = request.form["risk_tolerance"]
-	risk_profile_id = m_session.query(model.RiskProfile).filter_by(name = 
-		risk_tolerance).one().id
-
-	# Find user id using f_session and then update the database with the 
-	# user's financial inputs
-	update_user = m_session.query(model.User).filter_by(id = 
-		g.user.id).update({model.User.income: income, model.User.company_401k: 
-		comp_401k, model.User.company_match: match_401k, 
-		model.User.match_percent: match_percent, model.User.match_salary: 
-		match_salary, model.User.risk_profile_id: risk_profile_id})
-	m_session.commit()
 
     # Checks that user's assets are getting updated each time they change
     # their input, and not getting added to the database.
@@ -224,6 +184,210 @@ def show_results():
 		new_account = model.UserBanking(user_id=g.user.id, checking_amt=assets,
 			savings_amt=0, IRA_amt=0, comp401k_amt=0, investment_amt=0)
 		m_session.add(new_account)
+	m_session.commit()
+
+	return redirect("/input/income")
+
+@app.route("/input/income")
+def input_income():
+	"""
+	This allows the user to enter and edit their income. 
+	"""
+	if g.logged_in == True:
+		if g.inputs == True:
+			income = m_session.query(model.User).filter_by(id = 
+				g.user.id).first().income
+ 		else:
+			income = 0
+		return render_template("input_income.html",
+			income=income)
+	else:
+		return redirect("/login")
+
+@app.route("/input/income", methods=["POST"])
+def save_income():
+	""" 
+	Pulls income from user input (as a post request), save to 
+	database, and routes to next question (/results will perform
+	the calculations).
+	"""
+	income = float(request.form["income"])
+
+    # Find user id using f_session and then update the database with the 
+	# user's financial inputs
+	update_user = m_session.query(model.User).filter_by(id = 
+		g.user.id).update({model.User.income: income})
+	m_session.commit()
+
+	return redirect("/input/comp_401k")
+
+@app.route("/input/comp_401k")
+def input_comp_401k():
+	"""
+	This allows the user to enter and edit if their company has a 401k. 
+	"""
+	if g.logged_in == True:
+		if g.inputs == True:
+			comp_401k = m_session.query(model.User).filter_by(id = 
+				g.user.id).first().company_401k
+ 		else:
+			comp_401k = 0
+		return render_template("input_comp_401k.html",
+			comp_401k=comp_401k)
+	else:
+		return redirect("/login")
+
+@app.route("/input/comp_401k", methods=["POST"])
+def save_comp_401k():
+	""" 
+	Pulls company 401k from user input (as a post request), save to 
+	database, and routes to next question (/results will perform
+	the calculations).
+	"""
+	comp_401k = request.form["401k"]
+
+    # Find user id using f_session and then update the database with the 
+	# user's financial inputs
+	update_user = m_session.query(model.User).filter_by(id = 
+		g.user.id).update({model.User.company_401k: comp_401k})
+	m_session.commit()
+
+	return redirect("/input/match_401k")
+
+@app.route("/input/match_401k")
+def input_match_401k():
+	"""
+	This allows the user to enter and edit if their company has a 401k
+	match. 
+	"""
+	if g.logged_in == True:
+		if g.inputs == True:
+			match_401k = m_session.query(model.User).filter_by(id = 
+				g.user.id).first().company_match
+ 		else:
+			match_401k = 0
+		return render_template("input_match_401k.html",
+			match_401k=match_401k)
+	else:
+		return redirect("/login")
+
+@app.route("/input/match_401k", methods=["POST"])
+def save_match_401k():
+	""" 
+	Pulls company 401k match from user input (as a post request), save  
+	to database, and routes to next question (/results will perform
+	the calculations).
+	"""
+	match_401k = request.form["match"]
+
+    # Find user id using f_session and then update the database with the 
+	# user's financial inputs
+	update_user = m_session.query(model.User).filter_by(id = 
+		g.user.id).update({model.User.company_match: match_401k})
+	m_session.commit()
+
+	return redirect("/input/match_percent")
+
+@app.route("/input/match_percent")
+def input_match_percent():
+	"""
+	This allows the user to enter and edit the match percent of their
+	401k match.
+	"""
+	if g.logged_in == True:
+		if g.inputs == True:
+			match_percent = m_session.query(model.User).filter_by(id = 
+				g.user.id).first().match_percent
+ 		else:
+			match_percent = 0
+		return render_template("input_match_percent.html",
+			match_percent=match_percent)
+	else:
+		return redirect("/login")
+
+@app.route("/input/match_percent", methods=["POST"])
+def save_match_percent():
+	""" 
+	Pulls match percent from user input (as a post request), save  
+	to database, and routes to next question (/results will perform
+	the calculations).
+	"""
+	match_percent = float(request.form["match_percent"])
+
+    # Find user id using f_session and then update the database with the 
+	# user's financial inputs
+	update_user = m_session.query(model.User).filter_by(id = 
+		g.user.id).update({model.User.match_percent: match_percent})
+	m_session.commit()
+
+	return redirect("/input/match_salary")
+
+@app.route("/input/match_salary")
+def input_match_salary():
+	"""
+	This allows the user to enter and edit the max salary percent match.
+	"""
+	if g.logged_in == True:
+		if g.inputs == True:
+			match_salary = m_session.query(model.User).filter_by(id = 
+				g.user.id).first().match_salary
+ 		else:
+			match_salary = 0
+		return render_template("input_match_salary.html",
+			match_salary=match_salary)
+	else:
+		return redirect("/login")
+
+@app.route("/input/match_salary", methods=["POST"])
+def save_match_salary():
+	""" 
+	Pulls max salary percent match from user input (as a post request), 
+	save to database, and routes to next question (/results will perform
+	the calculations).
+	"""
+	match_salary = float(request.form["salary_percent"])
+
+    # Find user id using f_session and then update the database with the 
+	# user's financial inputs
+	update_user = m_session.query(model.User).filter_by(id = 
+		g.user.id).update({model.User.match_salary: match_salary})
+	m_session.commit()
+
+	return redirect("/input/risk_tolerance")
+
+@app.route("/input/risk_tolerance")
+def input_risk_tolerance():
+	"""
+	This allows the user to enter and edit their risk tolerance.
+	"""
+	if g.logged_in == True:
+		if g.inputs == True:
+			risk_tolerance_id = m_session.query(model.User).filter_by(id = 
+				g.user.id).first().risk_profile_id
+			risk_tolerance = m_session.query(model.RiskProfile).filter_by(
+				id = risk_tolerance_id).first().name
+ 		else:
+			risk_tolerance = 0
+		return render_template("input_risk_tolerance.html",
+			risk_tolerance=risk_tolerance)
+	else:
+		return redirect("/login")
+
+@app.route("/input/risk_tolerance", methods=["POST"])
+def save_risk_tolerance():
+	""" 
+	Pulls risk tolerance from user input (as a post request), 
+	save to database, and routes to next question (/results will perform
+	the calculations).
+	"""
+	risk_tolerance = request.form["risk_tolerance"]
+	risk_profile_id = m_session.query(model.RiskProfile).filter_by(name = 
+		risk_tolerance).one().id
+
+    # Find user id using f_session and then update the database with the 
+	# user's financial inputs
+	update_user = m_session.query(model.User).filter_by(id = 
+		g.user.id).update({model.User.risk_profile_id: risk_profile_id})
 	m_session.commit()
 
 	return redirect("/results")
@@ -265,7 +429,7 @@ def show_existing_results():
 		else:
 			flash ("We do not have any financial data on you. \
 					Please input now.")
-			return redirect("/input")	
+			return redirect("/input/assets")	
 	else:
 		return redirect("/login")		
 
@@ -302,7 +466,7 @@ def show_investments():
 		else:
 			flash ("We do not have any financial data on you. \
 					Please input now.")
-			return redirect("/input")	
+			return redirect("/input/assets")	
 	else:
 		return redirect("/login")
 

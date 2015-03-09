@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block body %}
+
+    
+	
+<form action="/input/risk_tolerance" method="POST">		
+
+	<div class="container" style="width: 50%">
+		<div class="jumbotron">
+			
+			<label >What is your risk tolerance?
+		    	{% if risk_tolerance == "Moderate" %}
+					<select name="risk_tolerance">
+						<label><option value="Conservative">Conservative</option>
+						</label>
+						<label><option value="Moderate" selected="selected">Moderate</option>
+						</label>
+						<label><option value="Aggressive">Aggressive</option>
+						</label>
+					</select>
+				{% elif risk_tolerance == "Aggressive" %}
+					<select name="risk_tolerance">
+						<label><option value="Conservative">Conservative</option>
+						</label>
+						<label><option value="Moderate">Moderate</option>
+						</label>
+						<label><option value="Aggressive" selected="selected">Aggressive</option>
+						</label>
+					</select>
+				{% else %}
+					<select name="risk_tolerance">
+						<label><option value="Conservative" selected="selected">Conservative</option>
+						</label>
+						<label><option value="Moderate">Moderate</option>
+						</label>
+						<label><option value="Aggressive">Aggressive</option>
+						</label>
+					</select>
+				{% endif %}
+			</label>
+	    	
+			<p><button class="btn btn-primary btn-lg" type="submit">Next</button></p>
+			
+		</div>
+	</div>
+
+</form>
+
+
+
+{% endblock %}

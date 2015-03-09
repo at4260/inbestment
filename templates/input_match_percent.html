@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block body %}
+
+    
+	
+<form action="/input/match_percent" method="POST">		
+
+	<div class="container" style="width: 50%">
+		<div class="jumbotron">
+			
+			What are the match terms? <br>
+		    For example: 100% of the first 6%, meaning your company will match 100% up to 6% of your salary. <br> If your salary is $50,000 and you contributed 6% (or $3,000), your employer will match 100% of that (receive $3,000).
+			<br>
+		    <label>Percentage of match
+				{% if match_percent == 1.0 %}
+					<select name="match_percent">
+						<label><option value="0.0" >0%</option>
+						</label>
+						<label><option value="0.5" >50%</option>
+						</label>
+						<label><option value="1.0" selected="selected">100%</option>
+						</label>
+					</select>
+				{% elif match_percent == 0.5 %}
+					<select name="match_percent">
+						<label><option value="0.0" >0%</option>
+						</label>
+						<label><option value="0.5" selected="selected">50%</option>
+						</label>
+						<label><option value="1.0" >100%</option>
+						</label>
+					</select>
+				{% else %}
+					<select name="match_percent">
+						<label><option value="0.0" selected="selected">0%</option>
+						</label>
+						<label><option value="0.5" >50%</option>
+						</label>
+						<label><option value="1.0" >100%</option>
+						</label>
+					</select>
+				{% endif %}
+			</label>
+	    	
+			<p><button class="btn btn-primary btn-lg" type="submit">Next</button></p>
+			
+		</div>
+	</div>
+
+</form>
+
+
+
+{% endblock %}
