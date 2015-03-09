@@ -25,16 +25,30 @@ def load_prof_allocs(session):
 		session.add(new_profile_allocation)
 	session.commit()
 
-ticker_list = ["NYSEARCA_VV", "NYSEARCA_VB", "NYSEARCA_VEU", 
-	"NYSEARCA_BIV", "NYSEARCA_BSV", "NYSEARCA_VWO", "NYSEARCA_BND"]
+# ticker_list = ["NYSEARCA_VV", "NYSEARCA_VB", "NYSEARCA_VEU", 
+# 	"NYSEARCA_BIV", "NYSEARCA_BSV", "NYSEARCA_VWO", "NYSEARCA_BND"]
+ticker_list = ["VV", "VB", "VEU", "BIV", "BSV", "VWO", "BND"]
+ticker_identifier_list = []
 ticker_url_list = []
 
-def build_ticker_url(ticker_list):
-	""" Queries the url using the desired ticker and token"""
-	for ticker in ticker_list:
-		url = "https://www.quandl.com/api/v1/datasets/GOOG/"
+def find_ticker(ticker_list, file_name):
+	"""Searches through csv file to find ticker and corresponding 
+	ticker url identifier.
+	"""
+	filename = open(file_name)
+	for line in filename:
+		data = line.strip().split(",")
+		for ticker in ticker_list:
+			if ticker == data[0]:
+				ticker_identifier_list.append(data[1])
+	return ticker_identifier_list
+
+def build_ticker_url(ticker_identifier_list):
+	""" Queries the url using the desired ticker identifier and token"""
+	for ticker_identifier in ticker_identifier_list:
+		url = "https://www.quandl.com/api/v1/datasets/"
 		token = open("quandl_tokens.txt").read()
-		ticker_url = url + ticker + ".json?auth_token=" + token
+		ticker_url = url + ticker_identifier + ".json?auth_token=" + token
 		ticker_url_list.append(ticker_url)
 	return ticker_url_list
 
@@ -47,13 +61,13 @@ def load_ticker_data(ticker_url_list, session):
 		ticker_symbol = (newdata["code"].split("_"))[1]
 		ticker_name = newdata["name"]
 
-		# create new instance of the Ticker class called new_ticker
+		# Create new instance of the Ticker class called new_ticker
 		new_ticker = Ticker(symbol=ticker_symbol, name=ticker_name)
-        # add each instance to session
+        # Add each instance to session
 		session.add(new_ticker)
 		session.commit()
 		
-		# prices pulls a list of lists (consisting of date, open, high, 
+		# Prices pulls a list of lists (consisting of date, open, high, 
 			# low, close, volume. adjusted close)
 		prices = newdata["data"]
 
@@ -110,8 +124,8 @@ def calc_daily_change(session):
 		session.commit()
 
 def main(session):
-	# load_ticker_data(build_ticker_url(ticker_list), session)
-	load_ticker_category(session)
+	# load_ticker_data(build_ticker_url(find_ticker(ticker_list, "seed_data/ETFs-GOOG.csv")), session)
+	# load_ticker_category(session)
 	# load_risk_profs(session)
 	# load_prof_allocs(session)
 	# calc_daily_change(session)
