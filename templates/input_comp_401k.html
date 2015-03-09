@@ -7,7 +7,18 @@
 
 	<div class="container" style="width: 50%">
 		<div class="jumbotron">
-			
+			<nav>
+				<ul class= "pagination">
+					<li><a href="/input/assets">1</a></li>
+					<li><a href="/input/income">2</a></li>
+					<li class="active"><a href="/input/comp_401k">Question 3</a></li>
+					<li><a href="/input/match_401k">4</a></li>
+					<li><a href="/input/match_percent">5</a></li>
+					<li><a href="/input/match_salary">6</a></li>
+					<li><a href="/input/risk_tolerance">7</a></li>
+				</ul>
+			</nav>
+
 			Does your company have a 401k? 
 	    	{% if comp_401k == "Yes" %}
 			    <label><input type="radio" name="401k" value="Yes" checked="checked"> Yes 
