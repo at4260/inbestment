@@ -14,27 +14,14 @@
 		    <label>Percentage of match
 				{% if match_percent == 1.0 %}
 					<select name="match_percent">
-						<label><option value="0.0" >0%</option>
-						</label>
 						<label><option value="0.5" >50%</option>
 						</label>
 						<label><option value="1.0" selected="selected">100%</option>
 						</label>
 					</select>
-				{% elif match_percent == 0.5 %}
-					<select name="match_percent">
-						<label><option value="0.0" >0%</option>
-						</label>
-						<label><option value="0.5" selected="selected">50%</option>
-						</label>
-						<label><option value="1.0" >100%</option>
-						</label>
-					</select>
 				{% else %}
 					<select name="match_percent">
-						<label><option value="0.0" selected="selected">0%</option>
-						</label>
-						<label><option value="0.5" >50%</option>
+						<label><option value="0.5" selected="selected">50%</option>
 						</label>
 						<label><option value="1.0" >100%</option>
 						</label>

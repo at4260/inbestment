@@ -21,7 +21,10 @@ def before_request():
 		g.logged_in = True
 		g.email = f_session["email"]
 		g.user = m_session.query(model.User).filter_by(email = g.email).first()
-		if g.user.income != None:
+		if g.user.income != None and g.user.company_401k != None and \
+			g.user.company_match != None and g.user.match_percent != \
+			None and g.user.match_salary != None and g.user.risk_profile_id \
+			!= None:
 			g.inputs = True
 		else:
 			g.inputs = False
@@ -116,36 +119,6 @@ def access_bank():
 	# print account.balance_amount
 
 	return redirect("/input/assets")
-
-@app.route("/profile")
-def show_existing_inputs():
-	""" 
-	This shows the user's current saved inputs and allows them 
-	to either move on or edit it. 
-	"""
-	if g.logged_in == True:
-		if g.inputs == True:
-			user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
-				g.user.id).first()
-			total_assets = user_assets.checking_amt + user_assets.savings_amt + \
-				user_assets.IRA_amt + user_assets.comp401k_amt + \
-				user_assets.investment_amt
-			risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
-				g.user.risk_profile_id).first()
-			return render_template("profile_inputs.html", 
-				assets=utils.format_currency(total_assets),
-				income=utils.format_currency(g.user.income), 
-				company_401k=g.user.company_401k, 
-				company_match=g.user.company_match, 
-				match_percent=utils.format_percentage(g.user.match_percent), 
-				match_salary=utils.format_percentage(g.user.match_salary), 
-				risk_profile=risk_prof.name)
-		else:
-			flash ("We do not have any financial data on you. \
-					Please input now.")
-			return redirect("/input/assets")	
-	else:
-		return redirect("/login")
 
 @app.route("/input/assets")
 def input_assets():
@@ -261,13 +234,27 @@ def input_match_401k():
 	match. 
 	"""
 	if g.logged_in == True:
-		if g.inputs == True:
-			match_401k = m_session.query(model.User).filter_by(id = 
-				g.user.id).first().company_match
- 		else:
-			match_401k = 0
-		return render_template("input_match_401k.html",
-			match_401k=match_401k)
+		# If user selects that they do not have a company 401k, skip
+		# all 401k-related questions.
+		comp_401k = m_session.query(model.User).filter_by(id = 
+			g.user.id).first().company_401k
+		if comp_401k == "Yes":
+			if g.inputs == True:
+				match_401k = m_session.query(model.User).filter_by(id = 
+					g.user.id).first().company_match
+	 		else:
+				match_401k = 0
+			return render_template("input_match_401k.html",
+				match_401k=match_401k)
+		else:
+			match_401k = "No"
+			match_percent = match_salary = 0
+			update_user = m_session.query(model.User).filter_by(id = 
+				g.user.id).update({model.User.company_match: match_401k, 
+				model.User.match_percent: match_percent, 
+				model.User.match_salary: match_salary})
+			m_session.commit()
+			return redirect("/input/risk_tolerance")
 	else:
 		return redirect("/login")
 
@@ -295,13 +282,25 @@ def input_match_percent():
 	401k match.
 	"""
 	if g.logged_in == True:
-		if g.inputs == True:
-			match_percent = m_session.query(model.User).filter_by(id = 
-				g.user.id).first().match_percent
- 		else:
-			match_percent = 0
-		return render_template("input_match_percent.html",
-			match_percent=match_percent)
+		# If user selects that they do not have a 401k match, skip
+		# all 401k match-related questions.
+		match_401k = m_session.query(model.User).filter_by(id = 
+			g.user.id).first().company_match
+		if match_401k == "Yes":
+			if g.inputs == True:
+				match_percent = m_session.query(model.User).filter_by(id = 
+					g.user.id).first().match_percent
+	 		else:
+				match_percent = 0
+			return render_template("input_match_percent.html",
+				match_percent=match_percent)
+		else:
+			match_percent = match_salary = 0
+			update_user = m_session.query(model.User).filter_by(id = 
+				g.user.id).update({model.User.match_percent: 
+				match_percent, model.User.match_salary: match_salary})
+			m_session.commit()
+			return redirect ("/input/risk_tolerance")
 	else:
 		return redirect("/login")
 
@@ -427,7 +426,37 @@ def show_existing_results():
 				results=json.dumps(results),
 				max_results=json.dumps(max_results))
 		else:
-			flash ("We do not have any financial data on you. \
+			flash ("Our financial data on you is incomplete. \
+					Please input now.")
+			return redirect("/input/assets")	
+	else:
+		return redirect("/login")
+
+@app.route("/profile")
+def show_existing_inputs():
+	""" 
+	This shows the user's current saved inputs and allows them 
+	to either move on or edit it. 
+	"""
+	if g.logged_in == True:
+		if g.inputs == True:
+			user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
+				g.user.id).first()
+			total_assets = user_assets.checking_amt + user_assets.savings_amt + \
+				user_assets.IRA_amt + user_assets.comp401k_amt + \
+				user_assets.investment_amt
+			risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
+				g.user.risk_profile_id).first()
+			return render_template("profile_inputs.html", 
+				assets=utils.format_currency(total_assets),
+				income=utils.format_currency(g.user.income), 
+				company_401k=g.user.company_401k, 
+				company_match=g.user.company_match, 
+				match_percent=utils.format_percentage(g.user.match_percent), 
+				match_salary=utils.format_percentage(g.user.match_salary), 
+				risk_profile=risk_prof.name)
+		else:
+			flash ("Our financial data on you is incomplete. \
 					Please input now.")
 			return redirect("/input/assets")	
 	else:
@@ -464,7 +493,7 @@ def show_investments():
 				ticker_query_4=json.dumps(ticker_query_4),
 				ticker_query_5=json.dumps(ticker_query_5))
 		else:
-			flash ("We do not have any financial data on you. \
+			flash ("Our financial data on you is incomplete. \
 					Please input now.")
 			return redirect("/input/assets")	
 	else:

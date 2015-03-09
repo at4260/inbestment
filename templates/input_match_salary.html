@@ -9,23 +9,8 @@
 		<div class="jumbotron">
 			
 			<label >Percentage of salary
-				{% if match_salary == 0.03 %}
+				{% if match_salary == 0.04 %}
 					<select name="salary_percent">
-						<label><option value="0.00">0%</option>
-						</label>
-						<label><option value="0.03" selected="selected">3%</option>
-						</label>
-						<label><option value="0.04">4%</option>
-						</label>
-						<label><option value="0.05">5%</option>
-						</label>
-						<label><option value="0.06">6%</option>
-						</label>
-					</select>
-				{% elif match_salary == 0.04 %}
-					<select name="salary_percent">
-						<label><option value="0.00">0%</option>
-						</label>
 						<label><option value="0.03">3%</option>
 						</label>
 						<label><option value="0.04" selected="selected">4%</option>
@@ -37,8 +22,6 @@
 					</select>
 				{% elif match_salary == 0.05 %}
 					<select name="salary_percent">
-						<label><option value="0.00">0%</option>
-						</label>
 						<label><option value="0.03">3%</option>
 						</label>
 						<label><option value="0.04">4%</option>
@@ -50,8 +33,6 @@
 					</select>
 				{% elif match_salary == 0.06 %}
 					<select name="salary_percent">
-						<label><option value="0.00">0%</option>
-						</label>
 						<label><option value="0.03">3%</option>
 						</label>
 						<label><option value="0.04">4%</option>
@@ -63,9 +44,7 @@
 					</select>
 				{% else %}
 					<select name="salary_percent">
-						<label><option value="0.00" selected="selected">0%</option>
-						</label>
-						<label><option value="0.03">3%</option>
+						<label><option value="0.03" selected="selected">3%</option>
 						</label>
 						<label><option value="0.04">4%</option>
 						</label>
