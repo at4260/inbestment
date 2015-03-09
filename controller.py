@@ -327,13 +327,25 @@ def input_match_salary():
 	This allows the user to enter and edit the max salary percent match.
 	"""
 	if g.logged_in == True:
-		if g.inputs == True:
-			match_salary = m_session.query(model.User).filter_by(id = 
-				g.user.id).first().match_salary
- 		else:
-			match_salary = 0
-		return render_template("input_match_salary.html",
-			match_salary=match_salary)
+		# If user selects that they do not have a 401k match, skip
+		# all 401k match-related questions.
+		match_401k = m_session.query(model.User).filter_by(id = 
+			g.user.id).first().company_match
+		if match_401k == "Yes":
+			if g.inputs == True:
+				match_salary = m_session.query(model.User).filter_by(id = 
+					g.user.id).first().match_salary
+	 		else:
+				match_salary = 0
+			return render_template("input_match_salary.html",
+				match_salary=match_salary)
+		else:
+			match_percent = match_salary = 0
+			update_user = m_session.query(model.User).filter_by(id = 
+				g.user.id).update({model.User.match_percent: 
+				match_percent, model.User.match_salary: match_salary})
+			m_session.commit()
+			return redirect ("/input/risk_tolerance")
 	else:
 		return redirect("/login")
 
