@@ -3,6 +3,7 @@
 import accounts
 import json
 import model
+import seed
 import utils
 
 from flask import Flask, render_template, redirect, request, flash, g
@@ -523,7 +524,7 @@ def show_investments():
 
 				# Makes API call to seed database
 				filename = "seed_data/Stocks-GOOG.csv"
-				ticker_identifier_list = utils.find_ticker(compare_ticker, filename)
+				ticker_identifier_list = seed.find_ticker([compare_ticker], filename)
 
 				# Checks if ticker is in "Stocks-GOOG.csv"
 				if ticker_identifier_list != []:
@@ -532,9 +533,9 @@ def show_investments():
 					# Checks if ticker data already exists in the database. If it doesn't,
 					# make API call and seed database.
 					if check_ticker is None:
-						ticker_url_list = utils.build_ticker_url(ticker_identifier_list)
-						utils.load_ticker_data(ticker_url_list, m_session)
-						utils.calc_percent_change(compare_ticker, m_session)
+						ticker_url_list = seed.build_ticker_url(ticker_identifier_list)
+						seed.load_ticker_data(ticker_url_list, m_session)
+						utils.calc_percent_change_compare(compare_ticker, m_session)
 					
 					# Generates data in list to plot on line graph
 					compare_ticker_id = model.session.query(model.Ticker).filter_by(symbol=

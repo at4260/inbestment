@@ -2,8 +2,8 @@
 
 import csv
 import json 
-import urllib 
 import model
+import requests
 
 from datetime import datetime, timedelta
 from model import session as m_session
@@ -43,8 +43,8 @@ def build_ticker_url(ticker_identifier_list):
 
 def load_ticker_data(ticker_url_list, session):
 	for ticker_url in ticker_url_list:	
-		u = urllib.urlopen(ticker_url)
-		data = u.read()
+		u = requests.get(ticker_url)
+		data = u.text
 		newdata = json.loads(data)
 
 		ticker_symbol = (newdata["code"].split("_"))[1]
@@ -82,10 +82,15 @@ def load_ticker_category(session):
 			symbol).update({model.Ticker.category: category})
 	session.commit()
 
-def calc_percent_change(ticker_list, session):
+def calc_percent_change_all(ticker_list, session):
 	"""
-	This function calculates the percent change since 4/10/2007 and saves
-	that value to the new_change column in the database.	
+	This function calculates the percent change since 4/10/2007 for all
+	loaded tickers and saves that value to the new_change column in the 
+	database.
+
+	All values are being benchmarked against 4/10/2007, which is the latest
+	inception date for all of the funds for apples-to-apples since-inception
+	comparison.	
 	"""
 	ticker_id = 0
 
@@ -137,7 +142,7 @@ def main(session):
 	load_ticker_data(build_ticker_url(find_ticker(ticker_list, 
 		"seed_data/ETFs-GOOG.csv")), m_session)
 	load_ticker_category(m_session)
-	calc_percent_change(ticker_list, m_session)
+	calc_percent_change_all(ticker_list, m_session)
 	load_risk_profs(m_session)
 	load_prof_allocs(m_session)
 
