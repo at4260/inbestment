@@ -1,8 +1,11 @@
 """ Autoloads database with QUANDL API data, risk profiles, profile allocations, fake user profiles and banking information """
 
-import json, urllib, csv
+import csv
+import json 
+import urllib 
 import model
-from model import User, UserBanking, RiskProfile, ProfileAllocation,Ticker, Price
+
+from model import User, UserBanking, RiskProfile, ProfileAllocation, Ticker, Price
 from datetime import datetime
 
 def load_risk_profs(session):
@@ -25,16 +28,13 @@ def load_prof_allocs(session):
 		session.add(new_profile_allocation)
 	session.commit()
 
-# ticker_list = ["NYSEARCA_VV", "NYSEARCA_VB", "NYSEARCA_VEU", 
-# 	"NYSEARCA_BIV", "NYSEARCA_BSV", "NYSEARCA_VWO", "NYSEARCA_BND"]
 ticker_list = ["VV", "VB", "VEU", "BIV", "BSV", "VWO", "BND"]
-ticker_identifier_list = []
-ticker_url_list = []
 
 def find_ticker(ticker_list, file_name):
 	"""Searches through csv file to find ticker and corresponding 
 	ticker url identifier.
 	"""
+	ticker_identifier_list = []
 	filename = open(file_name)
 	for line in filename:
 		data = line.strip().split(",")
@@ -45,6 +45,7 @@ def find_ticker(ticker_list, file_name):
 
 def build_ticker_url(ticker_identifier_list):
 	""" Queries the url using the desired ticker identifier and token"""
+	ticker_url_list = []
 	for ticker_identifier in ticker_identifier_list:
 		url = "https://www.quandl.com/api/v1/datasets/"
 		token = open("quandl_tokens.txt").read()
@@ -124,7 +125,8 @@ def calc_daily_change(session):
 		session.commit()
 
 def main(session):
-	# load_ticker_data(build_ticker_url(find_ticker(ticker_list, "seed_data/ETFs-GOOG.csv")), session)
+	# load_ticker_data(build_ticker_url(find_ticker(ticker_list, 
+	# 	"seed_data/ETFs-GOOG.csv")), session)
 	# load_ticker_category(session)
 	# load_risk_profs(session)
 	# load_prof_allocs(session)
