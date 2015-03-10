@@ -134,12 +134,12 @@ def load_prof_allocs(session):
 	session.commit()
 
 def main(session):
-	# load_ticker_data(build_ticker_url(find_ticker(ticker_list, 
-	# 	"seed_data/ETFs-GOOG.csv")), m_session)
-	# load_ticker_category(m_session)
-	# calc_percent_change(ticker_list, m_session)
-	# load_risk_profs(m_session)
-	# load_prof_allocs(m_session)
+	load_ticker_data(build_ticker_url(find_ticker(ticker_list, 
+		"seed_data/ETFs-GOOG.csv")), m_session)
+	load_ticker_category(m_session)
+	calc_percent_change(ticker_list, m_session)
+	load_risk_profs(m_session)
+	load_prof_allocs(m_session)
 
 if __name__ == "__main__":
     main(m_session)

@@ -480,6 +480,8 @@ def show_investments():
 			# Risk_prof is <Risk Profile ID=2 Name=Moderate>
 			risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
 				g.user.risk_profile_id).first()
+			print "-------", risk_prof
+			print risk_prof.id
 
 			chart_ticker_data = utils.generate_allocation_piechart(risk_prof)
 			dates = utils.generate_performance_linegraph(risk_prof)[0]
@@ -518,6 +520,7 @@ def show_investments_with_comparison():
 	API call, seed database, and plot data on line graph.
 	"""
 	compare_ticker = request.form["compare_ticker"]
+	compare_ticker = compare_ticker.upper()
 
 	# Makes API call to seed database
 	filename = "seed_data/Stocks-GOOG.csv"
@@ -565,6 +568,7 @@ def show_investments_with_comparison():
 			ticker_query_3=json.dumps(ticker_query_3),
 			ticker_query_4=json.dumps(ticker_query_4),
 			ticker_query_5=json.dumps(ticker_query_5),
+			compare_ticker_name=json.dumps([compare_ticker]),
 			compare_ticker_query=json.dumps(compare_ticker_query))
 	else:
 		flash ("Sorry, that ticker does not exist in our database.")

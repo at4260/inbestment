@@ -133,6 +133,9 @@ $("#individual").click(function() {
 
 // CREATES PERFORMANCE LINE GRAPHS
 $(function () { 
+    Highcharts.setOptions({
+        colors: ['#7cb5ec', '#D93E30']
+    });
 	$('#total_performance').highcharts({
         chart: {
             type: 'area'
@@ -158,13 +161,17 @@ $(function () {
         series: [{
             name: 'Total',
             data: total_performance
+        }, {
+            name: compare_ticker_name,
+            data: compare_ticker_query
         }]
 	});
 });
 
 $(function () { 
 	Highcharts.setOptions({
-		colors: ['#7cb5ec', '#263640', '#576E7F', '#88B0BF', '#ACA88C']
+		colors: ['#7cb5ec', '#263640', '#576E7F', '#88B0BF', '#ACA88C',
+        '#D93E30']
 	});
 	$('#all_performance').highcharts({
         chart: {
@@ -189,7 +196,7 @@ $(function () {
             enabled: false
         },
         series: [{
-	        	name: prof_ticker_data[1][0],
+        	name: prof_ticker_data[1][0],
             data: ticker_query_1
         }, {
         	name: prof_ticker_data[1][1],
@@ -204,7 +211,7 @@ $(function () {
         	name: prof_ticker_data[1][4],
             data: ticker_query_5
         }, {
-        	name: 'AAPL',
+        	name: compare_ticker_name,
         	data: compare_ticker_query
         }]
 	});

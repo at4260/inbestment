@@ -2,8 +2,8 @@
 
 import csv
 import json 
-import urllib 
 import model
+import requests
 import time
 
 from datetime import datetime
@@ -284,11 +284,13 @@ def generate_performance_linegraph(risk_prof):
 	"""
 	total_performance_result = connection.execute(text(linegraph_sql_query), sql_risk_prof 
 		= risk_prof.id)
+	print "-----", total_performance_result
 	
 	dates = []
 	total_performance = []
 
 	for row in total_performance_result:
+		print "----", row
 		dates.append(row[0])
 		total_performance.append(row[1]/100)
 
@@ -351,12 +353,9 @@ def build_ticker_url(ticker_identifier_list):
 	return ticker_url_list
 
 def load_ticker_data(ticker_url_list, session):
-	beginning = time.time()
 	for ticker_url in ticker_url_list:	
-		u = urllib.urlopen(ticker_url)
-		print "@@@", time.time() - beginning
-		data = u.read()
-		print "###", time.time() - beginning
+		u = requests.get(ticker_url)
+		data = u.text
 		newdata = json.loads(data)
 
 		ticker_symbol = (newdata["code"].split("_"))[1]
@@ -386,6 +385,7 @@ def calc_percent_change(compare_ticker, session):
 	inception date for all of the funds for apples-to-apples since-inception
 	comparison.
 	"""
+	beginning = time.time()
 	ticker_id = model.session.query(model.Ticker).filter_by(symbol=
 			compare_ticker).first().id
 	ticker = model.session.query(model.Price).filter_by(ticker_id=
@@ -405,3 +405,4 @@ def calc_percent_change(compare_ticker, session):
 			new_change_id).update({model.Price.percent_change: difference}) 
 		new_index = new_index + 1
 	session.commit()
+	print "&&&", time.time() - beginning
