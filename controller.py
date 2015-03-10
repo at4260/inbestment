@@ -1,13 +1,12 @@
 """ This file will be to create the app routes and framework of the app. """
 
-import model
-import utils
 import accounts
 import json
+import model
+import utils
 
 from flask import Flask, render_template, redirect, request, flash, g
 from flask import session as f_session
-
 from model import session as m_session
 
 
@@ -510,6 +509,66 @@ def show_investments():
 			return redirect("/input/assets")	
 	else:
 		return redirect("/login")
+
+@app.route("/investments", methods=["POST"])
+def show_investments_with_comparison():
+	""" 
+	Pulls comparison ticker from user input (as a post request),
+	checks Stocks-GOOG.csv file to find ticker url, make QUANDL
+	API call, seed database, and plot data on line graph.
+	"""
+	compare_ticker = request.form["compare_ticker"]
+
+	# Makes API call to seed database
+	filename = "seed_data/Stocks-GOOG.csv"
+	ticker_identifier_list = utils.find_ticker(compare_ticker, filename)
+
+	# Checks if ticker is in "Stocks-GOOG.csv"
+	if ticker_identifier_list != []:
+		check_ticker = m_session.query(model.Ticker).filter_by(symbol= 
+			compare_ticker).first()
+		# Checks if ticker data already exists in the database. If it doesn't,
+		# make API call and seed database.
+		if check_ticker is None:
+			ticker_url_list = utils.build_ticker_url(ticker_identifier_list)
+			utils.load_ticker_data(ticker_url_list, m_session)
+			utils.calc_percent_change(compare_ticker, m_session)
+		
+		# Generates data in list to plot on line graph
+		compare_ticker_id = model.session.query(model.Ticker).filter_by(symbol=
+			compare_ticker).first().id
+		compare_ticker_query = utils.generate_individual_ticker_linegraph(compare_ticker_id)
+
+		# Re-generates data from "/investments" 
+		risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
+			g.user.risk_profile_id).first()
+
+		chart_ticker_data = utils.generate_allocation_piechart(risk_prof)
+		dates = utils.generate_performance_linegraph(risk_prof)[0]
+		total_performance = utils.generate_performance_linegraph(risk_prof)[1]
+
+		prof_ticker_data = utils.save_prof_tickers(risk_prof)
+		ticker_query_1 = utils.generate_individual_ticker_linegraph(prof_ticker_data[0][0])
+		ticker_query_2 = utils.generate_individual_ticker_linegraph(prof_ticker_data[0][1])
+		ticker_query_3 = utils.generate_individual_ticker_linegraph(prof_ticker_data[0][2])
+		ticker_query_4 = utils.generate_individual_ticker_linegraph(prof_ticker_data[0][3])
+		ticker_query_5 = utils.generate_individual_ticker_linegraph(prof_ticker_data[0][4])
+
+		return render_template("investments_compare.html", 
+			risk_prof=risk_prof.name, 
+			dates=json.dumps(dates),
+			total_performance=json.dumps(total_performance),
+			chart_ticker_data=json.dumps(chart_ticker_data),
+			prof_ticker_data=json.dumps(prof_ticker_data),
+			ticker_query_1=json.dumps(ticker_query_1),
+			ticker_query_2=json.dumps(ticker_query_2),
+			ticker_query_3=json.dumps(ticker_query_3),
+			ticker_query_4=json.dumps(ticker_query_4),
+			ticker_query_5=json.dumps(ticker_query_5),
+			compare_ticker_query=json.dumps(compare_ticker_query))
+	else:
+		flash ("Sorry, that ticker does not exist in our database.")
+		return redirect("/investments")
 
 @app.route("/logout")
 def process_logout():

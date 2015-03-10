@@ -1,7 +1,12 @@
+""" Holds all of the utility functions that are called in controller.py. """
+
+import csv
+import json 
+import urllib 
 import model
 import time
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from model import session as m_session
 from sqlalchemy.sql import text
 
@@ -295,7 +300,8 @@ def generate_performance_linegraph(risk_prof):
 
 def generate_individual_ticker_linegraph(ticker_id):
 	"""
-
+	Pulls the performance data for the line graph showing
+	individual fund performance.
 	"""
 	connection = model.engine.connect()
 	linegraph_sql_query = """ 
@@ -314,3 +320,88 @@ def generate_individual_ticker_linegraph(ticker_id):
 		individual_performance.append(row[0])
 
 	return individual_performance
+
+def find_ticker(compare_ticker, file_name):
+	"""Searches through csv file to find ticker and corresponding 
+	ticker url identifier.
+	"""
+	ticker_identifier_list = []
+	filename = open(file_name)
+	for line in filename:
+		data = line.strip().split(",")
+		if compare_ticker == data[0]:
+			ticker_identifier_list.append(data[1])
+	return ticker_identifier_list
+
+def build_ticker_url(ticker_identifier_list):
+	""" 
+	Queries the url using the desired ticker identifier and token.
+
+	Trims the data set by start date. All values are being benchmarked 
+	against 4/10/2007, which is the latest inception date for all of 
+	the funds for apples-to-apples since-inception comparison.
+	"""
+	ticker_url_list = []
+	for ticker_identifier in ticker_identifier_list:
+		url = "https://www.quandl.com/api/v1/datasets/"
+		token = open("quandl_tokens.txt").read()
+		ticker_url = url + ticker_identifier + \
+			".json?trim_start=2007-04-10&auth_token=" + token
+		ticker_url_list.append(ticker_url)
+	return ticker_url_list
+
+def load_ticker_data(ticker_url_list, session):
+	beginning = time.time()
+	for ticker_url in ticker_url_list:	
+		u = urllib.urlopen(ticker_url)
+		print "@@@", time.time() - beginning
+		data = u.read()
+		print "###", time.time() - beginning
+		newdata = json.loads(data)
+
+		ticker_symbol = (newdata["code"].split("_"))[1]
+		ticker_name = newdata["name"]
+		new_ticker = model.Ticker(symbol=ticker_symbol, name=ticker_name)
+		session.add(new_ticker)
+		session.commit()
+		
+		prices = newdata["data"]
+		for price in prices:
+			date = price[0]
+			date_format = datetime.strptime(date, "%Y-%m-%d")
+			date_format = date_format.date()
+			close_price = price[4]
+			new_ticker_price = model.Price(ticker_id=new_ticker.id, date=date_format, 
+				close_price=close_price)
+			session.add(new_ticker_price)
+
+	session.commit()
+
+def calc_percent_change(compare_ticker, session):
+	"""
+	This function calculates the percent change since 4/10/2007 and saves
+	that value to the new_change column in the database.
+
+	All values are being benchmarked against 4/10/2007, which is the latest
+	inception date for all of the funds for apples-to-apples since-inception
+	comparison.
+	"""
+	ticker_id = model.session.query(model.Ticker).filter_by(symbol=
+			compare_ticker).first().id
+	ticker = model.session.query(model.Price).filter_by(ticker_id=
+		ticker_id).all()
+
+	new_index = 0
+	old_close_price = model.session.query(model.Price).filter_by(date=
+			"2007-04-10", ticker_id=ticker_id).first().close_price
+	old_date = datetime.strptime("2007-04-10", "%Y-%m-%d").date()
+
+	while ticker[new_index].date > old_date:
+		new_close_price = ticker[new_index].close_price
+		difference = round((new_close_price - old_close_price)/
+			old_close_price, 4)
+		new_change_id = ticker[new_index].id
+		new_change = model.session.query(model.Price).filter_by(id=
+			new_change_id).update({model.Price.percent_change: difference}) 
+		new_index = new_index + 1
+	session.commit()
