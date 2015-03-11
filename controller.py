@@ -573,7 +573,6 @@ def show_investments():
 			return redirect("/input/assets")	
 	else:
 		return redirect("/login")
-	
 
 @app.route("/logout")
 def process_logout():

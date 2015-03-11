@@ -14,15 +14,37 @@
 	<div class="container" style="width: 50%">
 		<div class="jumbotron">
 			<nav>
-				<ul class= "pagination">
-					<li><a href="/input/assets">1</a></li>
-					<li><a href="/input/income">2</a></li>
-					<li><a href="/input/comp_401k">3</a></li>
-					<li><a href="/input/match_401k">4</a></li>
-					<li><a href="/input/match_percent">5</a></li>
-					<li><a href="/input/match_salary">6</a></li>
-					<li class="active"><a href="/input/risk_tolerance">Question 7</a></li>
-				</ul>
+				{% if g.user.company_401k == "No" %}
+					<ul class= "pagination">
+						<li><a href="/input/assets">1</a></li>
+						<li><a href="/input/income">2</a></li>
+						<li><a href="/input/comp_401k">3</a></li>
+						<li class="disabled"><a href="/input/match_401k">4</a></li>
+						<li class="disabled"><a href="/input/match_percent">5</a></li>
+						<li class="disabled"><a href="/input/match_salary">6</a></li>
+						<li class="active"><a href="/input/risk_tolerance">Question 7</a></li>
+					</ul>
+				{% elif g.user.company_match == "No" %}
+					<ul class= "pagination">
+						<li><a href="/input/assets">1</a></li>
+						<li><a href="/input/income">2</a></li>
+						<li><a href="/input/comp_401k">3</a></li>
+						<li><a href="/input/match_401k">4</a></li>
+						<li class="disabled"><a href="/input/match_percent">5</a></li>
+						<li class="disabled"><a href="/input/match_salary">6</a></li>
+						<li class="active"><a href="/input/risk_tolerance">Question 7</a></li>
+					</ul>
+				{% else %}
+					<ul class= "pagination">
+						<li><a href="/input/assets">1</a></li>
+						<li><a href="/input/income">2</a></li>
+						<li><a href="/input/comp_401k">3</a></li>
+						<li><a href="/input/match_401k">4</a></li>
+						<li><a href="/input/match_percent">5</a></li>
+						<li><a href="/input/match_salary">6</a></li>
+						<li class="active"><a href="/input/risk_tolerance">Question 7</a></li>
+					</ul>
+				{% endif %}
 			</nav>
 			
 			<label >What is your risk tolerance?
