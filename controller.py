@@ -540,7 +540,8 @@ def show_investments():
 					# Generates data in list to plot on line graph
 					compare_ticker_id = model.session.query(model.Ticker).filter_by(symbol=
 						compare_ticker).first().id
-					compare_ticker_query = utils.generate_individual_ticker_linegraph(compare_ticker_id)
+					compare_ticker_query = utils.generate_individual_ticker_linegraph(
+						compare_ticker_id)
 
 					return render_template("investments_compare.html", 
 						risk_prof=risk_prof.name, 

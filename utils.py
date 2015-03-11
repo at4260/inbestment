@@ -5,7 +5,7 @@ import json
 import model
 import requests
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from model import session as m_session
 from sqlalchemy.sql import text
 
@@ -324,27 +324,47 @@ def generate_individual_ticker_linegraph(ticker_id):
 
 def calc_percent_change_compare(compare_ticker, session):
 	"""
-	This function calculates the percent change since 4/10/2007 for only
+	This function calculates the percent change since inception for only
 	the comparison ticker and saves that value to the new_change column 
 	in the database.
 
 	All values are being benchmarked against 4/10/2007, which is the latest
 	inception date for all of the funds for apples-to-apples since-inception
-	comparison.
+	comparison. EXCEPTION: if the comparison ticker has an inception date
+	after 4/10/2007, I am using the inception date. Comparison validity
+	is no longer applicable, but it at least allows the user to see the data.
 	"""
-
 	ticker_id = model.session.query(model.Ticker).filter_by(symbol=
 			compare_ticker).first().id
 	ticker = model.session.query(model.Price).filter_by(ticker_id=
 		ticker_id).all()
+	standard_date = datetime.strptime("2007-04-10", "%Y-%m-%d").date()
+
+	old_date = ticker[-1].date
+	find_old_date_id = m_session.query(model.Price).filter_by(date=
+	 	old_date, ticker_id=1).first().id
+	find_standard_date_id = m_session.query(model.Price).filter_by(date=
+	 	standard_date, ticker_id=1).first().id
+	number_of_blanks = find_standard_date_id - find_old_date_id
+
+	incrementing_date = 0
+	while incrementing_date < number_of_blanks:
+		incrementing_date = incrementing_date + 1
+		dummy_id = find_old_date_id + incrementing_date
+		find_dummy_date = m_session.query(model.Price).filter_by(id=
+	 		dummy_id).first().date
+		add_dummy_price = model.Price(ticker_id=ticker_id, date=find_dummy_date, 
+			close_price=0)
+		session.add(add_dummy_price)
+	session.commit()
 
 	new_index = 0
-	old_close_price = model.session.query(model.Price).filter_by(date=
-			"2007-04-10", ticker_id=ticker_id).first().close_price
-	old_date = datetime.strptime("2007-04-10", "%Y-%m-%d").date()
+	old_close_price = float(m_session.query(model.Price).filter_by(date=
+		ticker[-1].date, ticker_id=ticker_id).first().close_price)
+	old_date = ticker[-1].date
 
 	while ticker[new_index].date > old_date:
-		new_close_price = ticker[new_index].close_price
+		new_close_price = float(ticker[new_index].close_price)
 		difference = round((new_close_price - old_close_price)/
 			old_close_price, 4)
 		new_change_id = ticker[new_index].id
@@ -353,3 +373,5 @@ def calc_percent_change_compare(compare_ticker, session):
 		new_index = new_index + 1
 	session.commit()
 
+if __name__ == "__main__":
+    calc_percent_change_compare("TSLA", m_session)
