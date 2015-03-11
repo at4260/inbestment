@@ -1,10 +1,17 @@
+
 {% extends 'base.html' %}
 {% block body %}
 
-    
-	
-<form action="/input/assets" method="POST">		
+<ul class="nav nav-tabs">
+    <li role="presentation"><a href="/">Home</a></li>
+    <li role="presentation" class="active"><a href="/input/assets">Survey</a></li>
+    <li role="presentation"><a href="/profile">Profile</a></li>
+    <li role="presentation"><a href="/results">Results</a></li>
+    <li role="presentation"><a href="/investments">Investments</a></li>
+</ul>
+<br>
 
+<form action="/input/assets" method="POST">		
 	<div class="container" style="width: 50%">
 		<div class="jumbotron">
 			<nav>
@@ -26,9 +33,6 @@
 			
 		</div>
 	</div>
-
 </form>
-
-
 
 {% endblock %}

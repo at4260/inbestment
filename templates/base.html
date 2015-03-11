@@ -24,6 +24,10 @@
         #logo {
             font-family: minimo;
             font-size: 20px;
+        }
+        .form-group {
+            margin: 0 auto;
+            width: 30%;
         }                    
     </style>
 </head>
@@ -45,9 +49,6 @@
                     <form action="/logout" class="navbar-form navbar-right">
                         <button type="submit" class="btn btn-success">Log Out</button>
                     </form>
-                    <form action="/profile" class="navbar-form navbar-right">
-                        <button type="submit" class="btn btn-success">Profile</button>
-                    </form>
                 {% else %}
                     <form action="/create" class="navbar-form navbar-right">
                         <button type="submit" class="btn btn-success">New User?</button>
@@ -55,7 +56,6 @@
                     <form action="/login" class="navbar-form navbar-right">
                         <button type="submit" class="btn btn-success">Sign in</button>
                     </form>
-                
                 {% endif %}
             </div>
         </div>
@@ -70,6 +70,7 @@
         {% endif %}
         {% endwith %}
     </div>
+
     <div class="main_block">
         {% block body %}{% endblock %}
     </div>

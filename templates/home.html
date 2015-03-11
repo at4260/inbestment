@@ -1,20 +1,28 @@
 {% extends 'base.html' %}
 {% block body %}
 
-	<div class="jumbotron">
-	 	<div class="container">
-	    	<h1 id="logo" style="font-size: 70px"; >inbestment</h1>
-	    	<p>when the mattress won't cut it anymore</p>
+<ul class="nav nav-tabs">
+    <li role="presentation" class="active"><a href="/">Home</a></li>
+    <li role="presentation"><a href="/input/assets">Survey</a></li>
+    <li role="presentation"><a href="/profile">Profile</a></li>
+    <li role="presentation"><a href="/results">Results</a></li>
+    <li role="presentation"><a href="/investments">Investments</a></li>
+</ul>
 
-    		{% if g.logged_in == True %}
-	    	<p><a class="btn btn-primary btn-lg" href="/profile" role="button">Let's Get Started</a></p>
+<div class="jumbotron">
+ 	<div class="container">
+    	<h1 id="logo" style="font-size: 70px"; >inbestment</h1>
+    	<p>when the mattress won't cut it anymore</p>
 
-	    	{% else %}
-	    	<p><a class="btn btn-primary btn-lg" href="/login" role="button">Let's Get Started</a></p>
+		{% if g.logged_in == True %}
+    	<p><a class="btn btn-primary btn-lg" href="/profile" role="button">Let's Get Started</a></p>
 
-	    	{% endif %}
+    	{% else %}
+    	<p><a class="btn btn-primary btn-lg" href="/login" role="button">Let's Get Started</a></p>
 
-	  	</div>
-	</div>
+    	{% endif %}
+
+  	</div>
+</div>
 
 {% endblock %}

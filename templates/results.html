@@ -1,41 +1,36 @@
 {% extends 'base.html' %}
 {% block body %}
 
-	<h3> Priorities: </h3>
-	<p> Checking Account: {{checking}} </p>
-	<p> Savings Account: {{savings}} </p>
-	<p> 401k Match: {{match}} </p>
-	<p> IRA: {{ira}} </p>
-	<p> 401k Account: {{ret401k}} </p>
-	<p> Brokerage Account: {{investment}} </p>
+<ul class="nav nav-tabs">
+    <li role="presentation"><a href="/">Home</a></li>
+    <li role="presentation"><a href="/input/assets">Survey</a></li>
+    <li role="presentation"><a href="/profile">Profile</a></li>
+    <li role="presentation" class="active"><a href="/results">Results</a></li>
+    <li role="presentation"><a href="/investments">Investments</a></li>
+</ul>
+
+<h3> Results </h3>
 	
-	<div class="checkingaccount" style="width:500px; height:300px; display: inline-block"> 
-	</div>
-	<div class="savingsaccount" style="width:500px; height:300px; display: inline-block">
-	</div> 
-	<div class="matchaccount" style="width:500px; height:300px; display: inline-block"> 
-	</div> 
-	<div class="iraaccount" style="width:500px; height:300px; display: inline-block"> 
-	</div> 
-	<div class="ret401kaccount" style="width:500px; height:300px; display: inline-block"> 
-	</div> 
-	<div class="investmentaccount" style="width:500px; height:300px; display: inline-block"> 
-	</div>
+<div class="checkingaccount" style="width:500px; height:300px; 
+	display: inline-block"> 
+</div>
+<div class="savingsaccount" style="width:500px; height:300px; display: inline-block">
+</div> 
+<div class="matchaccount" style="width:500px; height:300px; display: inline-block"> 
+</div> 
+<div class="iraaccount" style="width:500px; height:300px; display: inline-block"> 
+</div> 
+<div class="ret401kaccount" style="width:500px; height:300px; display: inline-block"> 
+</div> 
+<div class="investmentaccount" style="width:500px; height:300px; display: inline-block"> 
+</div>
 
-	<script>
-	var results = {{results|safe}};
-	var max_results = {{max_results|safe}};
-	</script>
-	<script type="text/javascript" src="../static/results.js"></script>
-	<br>
+<script>
+var results = {{results|safe}};
+var max_results = {{max_results|safe}};
+</script>
+<script type="text/javascript" src="../static/results.js"></script>
+<br>
 
-	<form action="/investments">
-		<button type="submit"> Show me my investments </button>
-	</form> 
-
-	<form action="/profile">
-		<button type="submit"> Let me look at my profile again </button>
-	</form> 
-    
 {% endblock %}
 

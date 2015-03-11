@@ -38,7 +38,11 @@ def home_page():
 
 @app.route("/login")
 def show_login():
-    return render_template("login.html")
+	if g.logged_in == True:
+		flash ("You are already logged in.")
+		return redirect("/")
+	else:
+		return render_template("login.html")
 
 @app.route("/login", methods=["POST"])
 def process_login():
@@ -61,7 +65,11 @@ def process_login():
 
 @app.route("/create")
 def create_acct():
-    return render_template("create_acct.html")
+	if g.logged_in == True:
+		flash ("You are already logged in.")
+		return redirect("/")
+	else:
+		return render_template("create_acct.html")
 
 @app.route("/create", methods=["POST"])
 def process_acct():

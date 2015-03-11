@@ -1,29 +1,28 @@
 {% extends 'base.html' %}
 {% block body %}
 
-	<h1> This is your current profile: </h1>
-	<p> Assets: {{assets}} </p>
-	<p> Income: {{income}} </p>
-	<p> Does your company have a 401k? {{company_401k}} </p>
-	<p> Does your company have a 401k match? {{company_match}} </p>
-	<p> Percentage of match: {{match_percent}} </p>
-	<p> Percentage of salary: {{match_salary}} </p>
-	<p> Risk tolerance: {{risk_profile}} </p>
-	<form action="/input/assets">
-	    <button type="submit"> Want to change your profile? </button>
-	</form>
-	<br>
-	<form action="/results">
-	    <button type="submit"> Show results </button>
-	</form>
-	<form action="/investments">
-	    <button type="submit"> Show my investments </button>
-	</form>
-	<br>
-	<form action="/banklogin">
-		<h4> Want to add a bank account? </h4>
-		<button type="submit"> Add my account </button>
-	</form>
+<ul class="nav nav-tabs">
+    <li role="presentation"><a href="/">Home</a></li>
+    <li role="presentation"><a href="/input/assets">Survey</a></li>
+    <li role="presentation" class="active"><a href="/profile">Profile</a></li>
+    <li role="presentation"><a href="/results">Results</a></li>
+    <li role="presentation"><a href="/investments">Investments</a></li>
+</ul>
+
+<h1> This is your current profile: </h1>
+<p> Assets: {{assets}} </p>
+<p> Income: {{income}} </p>
+<p> Does your company have a 401k? {{company_401k}} </p>
+<p> Does your company have a 401k match? {{company_match}} </p>
+<p> Percentage of match: {{match_percent}} </p>
+<p> Percentage of salary: {{match_salary}} </p>
+<p> Risk tolerance: {{risk_profile}} </p>
+<br>
+
+<form action="/banklogin">
+	<h4> Want to add a bank account? </h4>
+	<button type="submit"> Add my account </button>
+</form>
 
 {% endblock %}
 

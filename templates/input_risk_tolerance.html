@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
 {% block body %}
 
-    
+<ul class="nav nav-tabs">
+    <li role="presentation"><a href="/">Home</a></li>
+    <li role="presentation" class="active"><a href="/input/assets">Survey</a></li>
+    <li role="presentation"><a href="/profile">Profile</a></li>
+    <li role="presentation"><a href="/results">Results</a></li>
+    <li role="presentation"><a href="/investments">Investments</a></li>
+</ul>
+<br>    
 	
 <form action="/input/risk_tolerance" method="POST">		
-
 	<div class="container" style="width: 50%">
 		<div class="jumbotron">
 			<nav>
@@ -50,13 +56,10 @@
 				{% endif %}
 			</label>
 	    	
-			<p><button class="btn btn-primary btn-lg" type="submit">Next</button></p>
+			<p><button class="btn btn-primary btn-lg" type="submit">Finish</button></p>
 			
 		</div>
 	</div>
-
 </form>
-
-
 
 {% endblock %}

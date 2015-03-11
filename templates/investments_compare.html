@@ -1,52 +1,45 @@
 {% extends 'base.html' %}
 {% block body %}
 
-	<h3> Risk tolerance: {{risk_prof}} </h3>
-	<br>
-	
-	<div id="allocation" style="width:100%; height:400px;"></div>
-	<br>
+<ul class="nav nav-tabs">
+    <li role="presentation"><a href="/">Home</a></li>
+    <li role="presentation"><a href="/input/assets">Survey</a></li>
+    <li role="presentation"><a href="/profile">Profile</a></li>
+    <li role="presentation"><a href="/results">Results</a></li>
+    <li role="presentation" class="active"><a href="/investments">Investments</a></li>
+</ul>
 
-	<div class="btn-group" role="group" aria-label="...">
-  		<button type="button" class="btn btn-default" id="total">Total Performance</button>
-  		<button type="button" class="btn btn-default" id="individual">Individual Breakout</button>
-	</div>
+<h3> Risk tolerance: {{risk_prof}} </h3>
+<br>
 
-	<div id="total_performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto"> </div>
- 	<div id="all_performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto; display: none"> </div>
-	
-	<form action="/investments" method="POST">	
-		<label >Compare: <input type="text" name="compare_ticker" placeholder="Enter ticker here">
-	    </label>
-		<button type="submit">Add</button>
-	</form> 
-	<form action="/investments">
-		<button type="submit">Clear</button>
-	</form>
+<div class="btn-group" role="group" aria-label="...">
+		<button type="button" class="btn btn-default" id="line_total">Total Performance</button>
+		<button type="button" class="btn btn-default" id="line_individual">Individual Breakout</button>
+		<button type="button" class="btn btn-default" id="pie">Portfolio Allocation</button>
+</div>
 
-	<br>
+<div id="total_performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto"> </div>
+	<div id="all_performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto; display: none"> </div>
+<div id="allocation" style="width:100%; height:400px; display: none"></div>
 
-	<form action="/results">
-		<button type="submit"> Show results </button>
-	</form> 
+<form action="/investments">
+	<button type="submit">Clear</button>
+</form>
+<br>
 
-	<form action="/profile">
-		<button type="submit"> Let me look at my profile again </button>
-	</form> 
-
-	<script>
-	var chart_ticker_data = {{chart_ticker_data|safe}};
-	var dates = {{dates|safe}};
-	var total_performance = {{total_performance|safe}};
-	var prof_ticker_data = {{prof_ticker_data|safe}};
-	var ticker_query_1 = {{ticker_query_1|safe}};
-	var ticker_query_2 = {{ticker_query_2|safe}};
-	var ticker_query_3 = {{ticker_query_3|safe}};
-	var ticker_query_4 = {{ticker_query_4|safe}};
-	var ticker_query_5 = {{ticker_query_5|safe}};
-	var compare_ticker_name = {{compare_ticker_name|safe}};
-	var compare_ticker_query = {{compare_ticker_query|safe}};
-	</script>
-	<script type="text/javascript" src="../static/investments_compare.js"></script>
+<script>
+var chart_ticker_data = {{chart_ticker_data|safe}};
+var dates = {{dates|safe}};
+var total_performance = {{total_performance|safe}};
+var prof_ticker_data = {{prof_ticker_data|safe}};
+var ticker_query_1 = {{ticker_query_1|safe}};
+var ticker_query_2 = {{ticker_query_2|safe}};
+var ticker_query_3 = {{ticker_query_3|safe}};
+var ticker_query_4 = {{ticker_query_4|safe}};
+var ticker_query_5 = {{ticker_query_5|safe}};
+var compare_ticker_name = {{compare_ticker_name|safe}};
+var compare_ticker_query = {{compare_ticker_query|safe}};
+</script>
+<script type="text/javascript" src="../static/investments_compare.js"></script>
 
 {% endblock %}

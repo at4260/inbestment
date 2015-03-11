@@ -1,3 +1,106 @@
+// CREATES PERFORMANCE TOGGLE
+$("#line_total").click(function() {
+    $("#allocation").hide();
+    $("#total_performance").show();
+    $("#all_performance").hide();
+});
+$("#line_individual").click(function() {
+    $("#allocation").hide();
+    $("#total_performance").hide();
+    $("#all_performance").show();
+});
+$("#pie").click(function() {
+    $("#allocation").show();
+    $("#total_performance").hide();
+    $("#all_performance").hide();
+});
+
+// CREATES PERFORMANCE LINE GRAPHS
+$(function () { 
+    Highcharts.setOptions({
+        colors: ['#7cb5ec', '#D93E30']
+    });
+    $('#total_performance').highcharts({
+        chart: {
+            type: 'area'
+        },
+        title: {
+            text: 'Total Portfolio Performance'
+        },
+        xAxis: {
+            categories: dates,
+            tickInterval: 125
+        },
+        yAxis: {
+            title: {
+                text: 'Percent Change'
+            }
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y:,.4f}</b>'
+        },
+        credits: {
+            enabled: false
+        },
+        series: [{
+            name: 'Total',
+            data: total_performance
+        }, {
+            name: compare_ticker_name,
+            data: compare_ticker_query
+        }]
+    });
+});
+
+$(function () { 
+    Highcharts.setOptions({
+        colors: ['#7cb5ec', '#263640', '#576E7F', '#88B0BF', '#ACA88C',
+        '#D93E30']
+    });
+    $('#all_performance').highcharts({
+        chart: {
+            type: 'area',
+        },
+        title: {
+            text: 'Individual Fund Performance'
+        },
+        xAxis: {
+            categories: dates,
+            tickInterval: 125
+        },
+        yAxis: {
+            title: {
+                text: 'Percent Change'
+            }
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y:,.4f}</b>'
+        },
+        credits: {
+            enabled: false
+        },
+        series: [{
+            name: prof_ticker_data[1][0],
+            data: ticker_query_1
+        }, {
+            name: prof_ticker_data[1][1],
+            data: ticker_query_2
+        }, {
+            name: prof_ticker_data[1][2],
+            data: ticker_query_3
+        }, {
+            name: prof_ticker_data[1][3],
+            data: ticker_query_4
+        }, {
+            name: prof_ticker_data[1][4],
+            data: ticker_query_5
+        }, {
+            name: compare_ticker_name,
+            data: compare_ticker_query
+        }]
+    });
+});
+
 // CREATES ALLOCATION PIE CHART
 chart_categories = Object.keys(chart_ticker_data);
 chart_stock_data = chart_ticker_data["Stocks"];
@@ -119,100 +222,4 @@ $(function () {
             }
         }]
     });
-});
-
-// CREATES PERFORMANCE TOGGLE
-$("#total").click(function() {
-	$("#total_performance").show();
-	$("#all_performance").hide();
-});
-$("#individual").click(function() {
-	$("#total_performance").hide();
-	$("#all_performance").show();
-});
-
-// CREATES PERFORMANCE LINE GRAPHS
-$(function () { 
-    Highcharts.setOptions({
-        colors: ['#7cb5ec', '#D93E30']
-    });
-	$('#total_performance').highcharts({
-        chart: {
-            type: 'area'
-        },
-        title: {
-            text: 'Total Portfolio Performance'
-        },
-        xAxis: {
-        	categories: dates,
-        	tickInterval: 125
-        },
-        yAxis: {
-        	title: {
-        		text: 'Percent Change'
-        	}
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.y:,.4f}</b>'
-        },
-        credits: {
-            enabled: false
-        },
-        series: [{
-            name: 'Total',
-            data: total_performance
-        }, {
-            name: compare_ticker_name,
-            data: compare_ticker_query
-        }]
-	});
-});
-
-$(function () { 
-	Highcharts.setOptions({
-		colors: ['#7cb5ec', '#263640', '#576E7F', '#88B0BF', '#ACA88C',
-        '#D93E30']
-	});
-	$('#all_performance').highcharts({
-        chart: {
-            type: 'area',
-        },
-        title: {
-            text: 'Individual Fund Performance'
-        },
-        xAxis: {
-        	categories: dates,
-        	tickInterval: 125
-        },
-        yAxis: {
-        	title: {
-        		text: 'Percent Change'
-        	}
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.y:,.4f}</b>'
-        },
-        credits: {
-            enabled: false
-        },
-        series: [{
-        	name: prof_ticker_data[1][0],
-            data: ticker_query_1
-        }, {
-        	name: prof_ticker_data[1][1],
-            data: ticker_query_2
-        }, {
-        	name: prof_ticker_data[1][2],
-            data: ticker_query_3
-        }, {
-        	name: prof_ticker_data[1][3],
-            data: ticker_query_4
-        }, {
-        	name: prof_ticker_data[1][4],
-            data: ticker_query_5
-        }, {
-        	name: compare_ticker_name,
-        	data: compare_ticker_query
-        }]
-	});
 });
