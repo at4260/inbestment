@@ -89,7 +89,7 @@ def process_acct():
 	    m_session.commit()
 	    flash("Your account has been succesfully added.")
 	    f_session["email"] = email
-	    return redirect("/input/assets")
+	    return redirect("/input/banking")
 
 @app.route("/banklogin")
 def login_bank():
@@ -207,6 +207,16 @@ def process_challenge():
 		flash ("There was an error authenticating your account. Please \
 			try again.")
 		return redirect("/banklogin/challenge")
+
+@app.route("/input/banking")
+def add_bank():
+	"""
+	This allows the user to add their external bank accounts.
+	"""
+	if g.logged_in == True:
+		return render_template("input_banking.html")
+	else:
+		return redirect("/login")
 
 @app.route("/input/assets")
 def input_assets():
@@ -528,7 +538,7 @@ def show_existing_results():
 		else:
 			flash ("Our financial data on you is incomplete. \
 					Please input now.")
-			return redirect("/input/assets")	
+			return redirect("/input/banking")	
 	else:
 		return redirect("/login")
 
@@ -558,7 +568,7 @@ def show_existing_inputs():
 		else:
 			flash ("Our financial data on you is incomplete. \
 					Please input now.")
-			return redirect("/input/assets")	
+			return redirect("/input/banking")	
 	else:
 		return redirect("/login")		
 
@@ -650,7 +660,7 @@ def show_investments():
 		else:
 			flash ("Our financial data on you is incomplete. \
 					Please input now.")
-			return redirect("/input/assets")	
+			return redirect("/input/banking")	
 	else:
 		return redirect("/login")
 

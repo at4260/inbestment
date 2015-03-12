@@ -2,9 +2,8 @@
 {% block body %}
 
 <ul class="nav nav-tabs">
-    <li role="presentation"><a href="/">Home</a></li>
-    <li role="presentation" class="active"><a href="/input/assets">Survey</a></li>
     <li role="presentation"><a href="/profile">Profile</a></li>
+    <li role="presentation" class="active"><a href="/input/banking">Survey</a></li>
     <li role="presentation"><a href="/results">Results</a></li>
     <li role="presentation"><a href="/investments">Investments</a></li>
 </ul>
@@ -16,33 +15,36 @@
 			<nav>
 				{% if g.user.company_401k == "No" %}
 					<ul class= "pagination">
-						<li><a href="/input/assets">1</a></li>
-						<li><a href="/input/income">2</a></li>
-						<li><a href="/input/comp_401k">3</a></li>
-						<li class="disabled"><a href="/input/match_401k">4</a></li>
-						<li class="disabled"><a href="/input/match_percent">5</a></li>
-						<li class="disabled"><a href="/input/match_salary">6</a></li>
-						<li class="active"><a href="/input/risk_tolerance">Question 7</a></li>
+						<li><a href="/input/banking">1</a></li>
+						<li><a href="/input/assets">2</a></li>
+						<li><a href="/input/income">3</a></li>
+						<li><a href="/input/comp_401k">4</a></li>
+						<li class="disabled"><a href="/input/match_401k">5</a></li>
+						<li class="disabled"><a href="/input/match_percent">6</a></li>
+						<li class="disabled"><a href="/input/match_salary">7</a></li>
+						<li class="active"><a href="/input/risk_tolerance">Question 8</a></li>
 					</ul>
 				{% elif g.user.company_match == "No" %}
 					<ul class= "pagination">
-						<li><a href="/input/assets">1</a></li>
-						<li><a href="/input/income">2</a></li>
-						<li><a href="/input/comp_401k">3</a></li>
-						<li><a href="/input/match_401k">4</a></li>
-						<li class="disabled"><a href="/input/match_percent">5</a></li>
-						<li class="disabled"><a href="/input/match_salary">6</a></li>
-						<li class="active"><a href="/input/risk_tolerance">Question 7</a></li>
+						<li><a href="/input/banking">1</a></li>
+						<li><a href="/input/assets">2</a></li>
+						<li><a href="/input/income">3</a></li>
+						<li><a href="/input/comp_401k">4</a></li>
+						<li><a href="/input/match_401k">5</a></li>
+						<li class="disabled"><a href="/input/match_percent">6</a></li>
+						<li class="disabled"><a href="/input/match_salary">7</a></li>
+						<li class="active"><a href="/input/risk_tolerance">Question 8</a></li>
 					</ul>
 				{% else %}
 					<ul class= "pagination">
-						<li><a href="/input/assets">1</a></li>
-						<li><a href="/input/income">2</a></li>
-						<li><a href="/input/comp_401k">3</a></li>
-						<li><a href="/input/match_401k">4</a></li>
-						<li><a href="/input/match_percent">5</a></li>
-						<li><a href="/input/match_salary">6</a></li>
-						<li class="active"><a href="/input/risk_tolerance">Question 7</a></li>
+						<li><a href="/input/banking">1</a></li>
+						<li><a href="/input/assets">2</a></li>
+						<li><a href="/input/income">3</a></li>
+						<li><a href="/input/comp_401k">4</a></li>
+						<li><a href="/input/match_401k">5</a></li>
+						<li><a href="/input/match_percent">6</a></li>
+						<li><a href="/input/match_salary">7</a></li>
+						<li class="active"><a href="/input/risk_tolerance">Question 8</a></li>
 					</ul>
 				{% endif %}
 			</nav>

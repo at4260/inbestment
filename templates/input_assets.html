@@ -1,11 +1,9 @@
-
 {% extends 'base.html' %}
 {% block body %}
 
 <ul class="nav nav-tabs">
-    <li role="presentation"><a href="/">Home</a></li>
-    <li role="presentation" class="active"><a href="/input/assets">Survey</a></li>
     <li role="presentation"><a href="/profile">Profile</a></li>
+    <li role="presentation" class="active"><a href="/input/banking">Survey</a></li>
     <li role="presentation"><a href="/results">Results</a></li>
     <li role="presentation"><a href="/investments">Investments</a></li>
 </ul>
@@ -16,18 +14,18 @@
 		<div class="jumbotron">
 			<nav>
 				<ul class= "pagination">
-					<li class="active"><a href="/input/assets">Question 1</a></li>
-					<li><a href="/input/income">2</a></li>
-					<li><a href="/input/comp_401k">3</a></li>
-					<li><a href="/input/match_401k">4</a></li>
-					<li><a href="/input/match_percent">5</a></li>
-					<li><a href="/input/match_salary">6</a></li>
-					<li><a href="/input/risk_tolerance">7</a></li>
+					<li><a href="/input/banking">1</a></li>
+					<li class="active"><a href="/input/assets">Question 2</a></li>
+					<li><a href="/input/income">3</a></li>
+					<li><a href="/input/comp_401k">4</a></li>
+					<li><a href="/input/match_401k">5</a></li>
+					<li><a href="/input/match_percent">6</a></li>
+					<li><a href="/input/match_salary">7</a></li>
+					<li><a href="/input/risk_tolerance">8</a></li>
 				</ul>
 			</nav>
 
-			<h3> Let's start </h3>
-			<label >How much money do you have (checking only)? <input type="text" name="assets" required autofocus value={{assets}}>
+			<label >How much money is under your mattress? <input type="text" name="assets" required autofocus value={{assets}}>
 		    </label>
 			<p><button class="btn btn-primary btn-lg" type="submit">Next</button></p>
 			
