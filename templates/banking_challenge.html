@@ -1,11 +1,38 @@
 {% extends 'base.html' %}
 {% block body %}
 
-	<form action="/banklogin/challenge" method="POST">
-		<div>Enter banking userid: <input type="text" name="usr_name" /></div>
-   		<div>Enter banking password: <input type="password" name="usr_password" /></div>
-    	<div>Input the challenge question from r.content.text: <input type="password" name="challenge" /></div>
-    	<input type="submit" value="Confirm Challenges" />
-	</form>
+<form action="/banklogin/challenge" method="POST">
+	<h3> Please authenticate your account </h3>
+	<br>
+
+    <label >Select your institution
+        <select name="institution">
+            <label><option value="Chase">Chase Bank</option>
+            </label>
+            <label><option value="TD Ameritrade" selected="selected">TD Ameritrade</option>
+            </label>
+        </select>           
+    </label>
+    <br>
+    <br>
+
+	<div class="form-group">
+	    <label for="exampleInputEmail1">Username</label>
+	    <input type="text" class="form-control" placeholder="Enter institution username" name="user_name">
+    </div>
+    <div class="form-group">
+    	<label for="exampleInputPassword1">Password</label>
+		<input type="password" class="form-control" placeholder="Enter institution password" name="user_password">
+    </div>
+    <br>
+    <div class="form-group">
+    	<label for="exampleInputPassword1">Input challenge question</label>
+		<input type="password" class="form-control" placeholder="Enter challenge response" name="challenge">
+    </div>
+    <br>
+
+	<button type="submit" class="btn btn-default"> Authenticate </button>
+    <br>    	
+</form>
 
 {% endblock %}

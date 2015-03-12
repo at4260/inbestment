@@ -3,6 +3,7 @@
 import accounts
 import json
 import model
+import requests
 import seed
 import utils
 
@@ -92,41 +93,120 @@ def process_acct():
 
 @app.route("/banklogin")
 def login_bank():
-	return render_template("banking.html")
+	if g.logged_in == True:
+		return render_template("banking.html")
+	else:
+		return redirect("/login")
 
 @app.route("/banklogin", methods=["POST"])
 def access_bank():
+	"""
+	Allows login to banking institutions using Intuit API and
+	Python library aggcat. Calls functions in accounts.py.
+
+	Assumes that all account assets will be savings accounts.
+	"""
+	institution = str(request.form["institution"])
+	username = request.form["user_name"]
+	password = request.form["user_password"]
+
+	user_fields = accounts.get_credential_fields(accounts.create_client(),
+		institution)
 	credentials = {}
-	username = request.form["usr_name"]
-	password = request.form["usr_password"]
-	credentials["USERID"] = username
-	credentials["PASSWORD"] = password
-	# FIXME - if returns http error code, flash account does not exist or
-	# password is incorrect.
-	account = accounts.discover_add_account(accounts.create_client(), 
-		credentials)
-	# assumes all accounts are savings accounts
-	savings_balance = account.balance_amount
+	credentials[user_fields["username"]] = username
+	credentials[user_fields["password"]] = password
 
-	email = f_session["email"]
-	user = m_session.query(model.User).filter_by(email = email).first()
-	# checks that user's assets are getting updated each time they change
-    	# their input, and not getting added to the database
-	user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
-		user.id).first()
-	if user_assets != None:
-		update_assets = m_session.query(model.UserBanking).filter_by(user_id = 
-			user.id).update({model.UserBanking.savings_amt: savings_balance})
-	else:
-		new_account = model.UserBanking(user_id=user.id, 
-			savings_amt=savings_balance)
-		m_session.add(new_account)
-	m_session.commit()
+	try:
+		account = accounts.discover_add_account(accounts.create_client(), 
+			institution, credentials)
+		account_data = account.content
+		
+		# Checks the HTTP error code if account needs further authentication
+		if account.status_code in [200, 201]:
+			savings_balance = account_data.balance_amount
+
+			# Checks that user's assets are getting updated each time they change
+			# their input, and not getting added to the database.
+			user_assets = m_session.query(model.UserBanking).filter_by(
+				user_id=g.user.id).first()
+			if user_assets != None:
+				update_assets = m_session.query(model.UserBanking).filter_by(
+					user_id=g.user.id).update({model.UserBanking.savings_amt: 
+					savings_balance})
+			else:
+				new_account = model.UserBanking(user_id=g.user.id, 
+					savings_amt=savings_balance)
+				m_session.add(new_account)
+			m_session.commit()
+			flash ("%s account XXXX%s with $%s has been added to your assets." %(
+				account_data.account_nickname, account_data.account_number[-4:],
+				account_data.balance_amount))
+			return redirect("/input/assets")	
+		else:
+			return redirect("/banklogin/challenge")	
+	except:
+		flash ("There was an error locating your account. Please try again.")
+		return redirect("/banklogin")
 	
-	# print account.account_nickname
-	# print account.balance_amount
+@app.route("/banklogin/challenge")
+def input_challenge():
+	if g.logged_in == True:
+		return render_template("banking_challenge.html")
+	else:
+		return redirect("/login")
 
-	return redirect("/input/assets")
+@app.route("/banklogin/challenge", methods=["POST"])
+def process_challenge():
+	"""
+	Authenticates access to banking institutions if there is a challenge
+	response with HTTP code 401. 
+	"""	
+	try:
+		institution = str(request.form["institution"])
+		username = request.form["user_name"]
+		password = request.form["user_password"]
+		# Responses must be in a list for XML to parse
+		responses = request.form[[challenge]]
+
+		user_fields = accounts.get_credential_fields(accounts.create_client(),
+			institution)
+		credentials = {}
+		credentials[user_fields["username"]] = username
+		credentials[user_fields["password"]] = password
+		
+		account = accounts.discover_and_add_accounts(accounts.create_client(), 
+			institution, credentials)
+		# Access "account" dictionary to pull the session and node id
+		challenge_session_id = account.headers["challengesessionid"]
+		challenge_node_id = account.headers["challengenodeid"]
+
+		confirmed_account = accounts.confirm_challenge(create_client(), 
+			institution, challenge_session_id, challenge_node_id,
+			responses)
+		
+		print accounts.content.account_nickname, accounts.content.account_number
+		savings_balance = confirmed_account.balance_amount
+
+		user_assets = m_session.query(model.UserBanking).filter_by(
+			user_id=g.user.id).first()
+		if user_assets != None:
+			update_assets = m_session.query(model.UserBanking).filter_by(
+				user_id=g.user.id).update({model.UserBanking.savings_amt: 
+				savings_balance})
+		else:
+			new_account = model.UserBanking(user_id=g.user.id, 
+				savings_amt=savings_balance)
+			m_session.add(new_account)
+		m_session.commit()
+		flash ("%s account XXXX%s with $%s has been added to your assets." %(
+			confirmed_account.content.account_nickname, 
+			confirmed_account.content.account_number[-4:],
+			confirmed_account.content.balance_amount))
+		return redirect("/input/assets")
+	except:
+		flash ("There was an error authenticating your account. Please \
+			try again.")
+		return redirect("/banklogin/challenge")
 
 @app.route("/input/assets")
 def input_assets():

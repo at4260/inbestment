@@ -373,5 +373,8 @@ def calc_percent_change_compare(compare_ticker, session):
 		new_index = new_index + 1
 	session.commit()
 
+def main():
+	pass
+	
 if __name__ == "__main__":
-    calc_percent_change_compare("TSLA", m_session)
+    main()
