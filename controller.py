@@ -10,6 +10,7 @@ import utils
 from flask import Flask, render_template, redirect, request, flash, g
 from flask import session as f_session
 from model import session as m_session
+from passlib.hash import pbkdf2_sha512
 
 
 app = Flask(__name__)
@@ -21,7 +22,7 @@ def before_request():
 		g.status = "Log Out"
 		g.logged_in = True
 		g.email = f_session["email"]
-		g.user = m_session.query(model.User).filter_by(email = g.email).first()
+		g.user = m_session.query(model.User).filter_by(email=g.email).first()
 		if g.user.income != None and g.user.company_401k != None and \
 			g.user.company_match != None and g.user.match_percent != \
 			None and g.user.match_salary != None and g.user.risk_profile_id \
@@ -50,15 +51,17 @@ def process_login():
 	email = request.form["email"]
 	password = request.form["password"]
 
-	user = m_session.query(model.User).filter_by(email = email).first()
-
+	user = m_session.query(model.User).filter_by(email=email).first()
+	
 	if user != None:
-		if email == user.email and password == user.password:
+		hashed_password = user.password
+		verify_password = pbkdf2_sha512.verify(password, hashed_password)
+		if email == user.email and verify_password == True:
 			f_session["email"] = email
 			flash ("Login successful.")
 			return redirect("/profile")
 		else:
-			flash ("Incorrect password. Try again.")
+			flash ("Incorrect username or password. Try again.")
 			return redirect("/login")
 	else:
 		flash ("Please create an account first.")
@@ -76,15 +79,16 @@ def create_acct():
 def process_acct():
 	email = request.form["email"]
 	password = request.form["password"]
+	hashed_password = pbkdf2_sha512.encrypt(password, salt=b'64', 
+		rounds=100000, salt_size=16)
 
-	user = m_session.query(model.User).filter_by(email = email).first()
-
-    # checks that user isn't creating a duplicate account
+	# Checks that user isn't creating a duplicate account
+	user = m_session.query(model.User).filter_by(email=email).first()
 	if user != None:
 		flash ("That account already exists. Please log in.")
 		return redirect("/login")
 	else:
-	    new_user_acct = model.User(email=email, password=password)
+	    new_user_acct = model.User(email=email, password=hashed_password)
 	    m_session.add(new_user_acct)
 	    m_session.commit()
 	    flash("Your account has been succesfully added.")
@@ -145,7 +149,7 @@ def access_bank():
 		else:
 			return redirect("/banklogin/challenge")	
 	except:
-		flash ("There was an error locating your account. Please try again.")
+		flash ("There was an error accessing your account. Please try again.")
 		return redirect("/banklogin")
 	
 @app.route("/banklogin/challenge")
