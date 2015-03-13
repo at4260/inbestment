@@ -51,14 +51,20 @@
             <div id="navbar" class="navbar-collapse collapse">
                 {% if g.logged_in == True %}
                     <form action="/logout" class="navbar-form navbar-right">
-                        <button type="submit" class="btn btn-success">Log Out</button>
+                        <button type="submit" class="btn btn-primary">Log Out</button>
+                    </form>
+                    <form action="/about" class="navbar-form navbar-right">
+                        <button type="submit" class="btn btn-link">About</button>
                     </form>
                 {% else %}
-                    <form action="/create" class="navbar-form navbar-right">
-                        <button type="submit" class="btn btn-success">New User?</button>
-                    </form>
                     <form action="/login" class="navbar-form navbar-right">
-                        <button type="submit" class="btn btn-success">Sign in</button>
+                        <button type="submit" class="btn btn-primary">Sign in</button>
+                    </form>
+                    <form action="/create" class="navbar-form navbar-right">
+                        <button type="submit" class="btn btn-primary">New User?</button>
+                    </form>
+                    <form action="/about" class="navbar-form navbar-right">
+                        <button type="submit" class="btn btn-link">About</button>
                     </form>
                 {% endif %}
             </div>

@@ -674,5 +674,9 @@ def process_logout():
 	flash("You are succesfully logged out.")
 	return redirect("/")
 
+@app.route("/about")
+def show_about():
+	return render_template("about.html")
+
 if __name__ == "__main__":
     app.run(debug = True)
