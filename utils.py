@@ -4,6 +4,7 @@ import csv
 import json 
 import model
 import requests
+import time
 
 from datetime import datetime, timedelta
 from model import session as m_session
@@ -310,8 +311,8 @@ def generate_individual_ticker_linegraph(ticker_id):
 	AND prices.date > "2007-04-10"
 	ORDER by prices.date
 	"""
-	individual_performance_result = connection.execute(text(linegraph_sql_query), sql_ticker_id
-		= ticker_id)
+	individual_performance_result = connection.execute(text(linegraph_sql_query), 
+		sql_ticker_id=ticker_id)
 	
 	individual_performance = []
 
@@ -332,12 +333,18 @@ def calc_percent_change_compare(compare_ticker, session):
 	after 4/10/2007, I am using the inception date. Comparison validity
 	is no longer applicable, but it at least allows the user to see the data.
 	"""
-	ticker_id = model.session.query(model.Ticker).filter_by(symbol=
-			compare_ticker).first().id
-	ticker = model.session.query(model.Price).filter_by(ticker_id=
-		ticker_id).all()
-	standard_date = datetime.strptime("2007-04-10", "%Y-%m-%d").date()
+	beginning = time.time()
+	compare_ticker = model.session.query(model.Ticker).filter_by(symbol=
+			compare_ticker).first()
+	ticker = compare_ticker.price
 
+	# This methodology needs improvement- some stocks have an inception
+	# date after 4/10/2007, so I created blank lines of data to be
+	# added to the database for the difference in days between 4/10/2007
+	# and the stock's inception date. I could not increment through dates,
+	# because the API data does not include weekends. Therefore, I am
+	# modelling the dates after ticker_id 1.
+	standard_date = datetime.strptime("2007-04-10", "%Y-%m-%d").date()
 	old_date = ticker[-1].date
 	find_old_date_id = m_session.query(model.Price).filter_by(date=
 	 	old_date, ticker_id=1).first().id
@@ -349,30 +356,30 @@ def calc_percent_change_compare(compare_ticker, session):
 	while incrementing_date < number_of_blanks:
 		incrementing_date = incrementing_date + 1
 		dummy_id = find_old_date_id + incrementing_date
-		find_dummy_date = m_session.query(model.Price).filter_by(id=
-	 		dummy_id).first().date
-		add_dummy_price = model.Price(ticker_id=ticker_id, date=find_dummy_date, 
-			close_price=0)
+		find_dummy_date = m_session.query(model.Price).filter_by(
+			id=dummy_id).first().date
+		add_dummy_price = model.Price(ticker_id=compare_ticker.id, 
+			date=find_dummy_date, close_price=0)
 		session.add(add_dummy_price)
 	session.commit()
 
 	new_index = 0
 	old_close_price = float(m_session.query(model.Price).filter_by(date=
-		ticker[-1].date, ticker_id=ticker_id).first().close_price)
+		ticker[-1].date, ticker_id=compare_ticker.id).first().close_price)
 	old_date = ticker[-1].date
 
 	while ticker[new_index].date > old_date:
 		new_close_price = float(ticker[new_index].close_price)
 		difference = round((new_close_price - old_close_price)/
 			old_close_price, 4)
-		new_change_id = ticker[new_index].id
-		new_change = model.session.query(model.Price).filter_by(id=
-			new_change_id).update({model.Price.percent_change: difference}) 
+		ticker[new_index].percent_change = difference 
 		new_index = new_index + 1
 	session.commit()
 
+
 def main():
-	pass
+	# pass
+	calc_percent_change_compare("VV", m_session)
 	
 if __name__ == "__main__":
     main()

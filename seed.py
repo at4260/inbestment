@@ -10,6 +10,7 @@ import requests
 
 from datetime import datetime, timedelta
 from model import session as m_session
+from sqlalchemy.sql import text
 
 ticker_list = ["VV", "VB", "VEU", "BIV", "BSV", "VWO", "BND"]
 
@@ -67,8 +68,10 @@ def load_ticker_data(ticker_url_list, session):
 		bond = "bond"
 		if stock in ticker_description:
 			ticker_category = "Stocks"
-		if bond in ticker_description:
+		elif bond in ticker_description:
 			ticker_category = "Bonds"
+		else:
+			ticker_category = ""
 
 		# Create new instance of the Ticker class called new_ticker
 		new_ticker = model.Ticker(symbol=ticker_symbol, 
@@ -119,12 +122,9 @@ def calc_percent_change_all(ticker_list, session):
 			new_close_price = ticker[new_index].close_price
 			difference = round((new_close_price - old_close_price) / 
 						old_close_price, 4)
-			new_change_id = ticker[new_index].id
-			new_change = m_session.query(model.Price).filter_by(
-						id=new_change_id).update({
-						model.Price.percent_change: difference})
+			ticker[new_index].percent_change = difference
 			new_index = new_index + 1
-		session.commit()
+	session.commit()
 
 
 def load_risk_profs(session):
@@ -155,10 +155,10 @@ def load_prof_allocs(session):
 
 
 def main(session):
-	load_ticker_data(build_ticker_url(find_ticker(ticker_list,
-				"seed_data/ETFs-GOOG.csv")), m_session)
+	# load_ticker_data(build_ticker_url(find_ticker(ticker_list,
+	# 			"seed_data/ETFs-GOOG.csv")), m_session)
 	# load_ticker_category(m_session)
-	# calc_percent_change_all(ticker_list, m_session)
+	calc_percent_change_all(ticker_list, m_session)
 	# load_risk_profs(m_session)
 	# load_prof_allocs(m_session)
 

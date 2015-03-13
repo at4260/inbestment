@@ -630,8 +630,8 @@ def show_investments():
 
 				# Checks if ticker is in "Stocks-GOOG.csv"
 				if ticker_identifier_list != []:
-					check_ticker = m_session.query(model.Ticker).filter_by(symbol= 
-						compare_ticker).first()
+					check_ticker = m_session.query(model.Ticker).filter_by(
+						symbol=compare_ticker).first()
 					# Checks if ticker data already exists in the database. If it doesn't,
 					# make API call and seed database.
 					if check_ticker is None:
