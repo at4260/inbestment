@@ -1,4 +1,4 @@
-""" Autoloads database with QUANDL API data, risk profiles, profile allocations, fake user profiles and banking information """
+""" Autoloads database with Quandl API data, risk profiles, profile allocations, fake user profiles and banking information """
 
 import csv
 import json 
@@ -42,6 +42,12 @@ def build_ticker_url(ticker_identifier_list):
 	return ticker_url_list
 
 def load_ticker_data(ticker_url_list, session):
+	"""
+	This function loads the tickers table and the daily close prices
+	for the prices table.
+
+	Both pull data from the Quandl API as a JSON object.
+	"""
 	for ticker_url in ticker_url_list:	
 		u = requests.get(ticker_url)
 		data = u.text
@@ -49,15 +55,24 @@ def load_ticker_data(ticker_url_list, session):
 
 		ticker_symbol = (newdata["code"].split("_"))[1]
 		ticker_name = newdata["name"]
+		ticker_description = newdata["description"]
+
+		stock = "stock"
+		bond = "bond"
+		if stock in ticker_description:
+			ticker_category = "Stocks"
+		if bond in ticker_description:
+			ticker_category = "Bonds"
 
 		# Create new instance of the Ticker class called new_ticker
-		new_ticker = model.Ticker(symbol=ticker_symbol, name=ticker_name)
+		new_ticker = model.Ticker(symbol=ticker_symbol, name=ticker_name,
+			category=ticker_category)
         # Add each instance to session
 		session.add(new_ticker)
 		session.commit()
-		
+
 		# Prices pulls a list of lists (consisting of date, open, high, 
-			# low, close, volume. adjusted close)
+		# low, close, volume. adjusted close).
 		prices = newdata["data"]
 
 		for price in prices:
@@ -70,16 +85,6 @@ def load_ticker_data(ticker_url_list, session):
 			session.add(new_ticker_price)
 
     # commit after all instances are added
-	session.commit()
-
-def load_ticker_category(session):
-	filename = open("./seed_data/ticker_categories.csv")
-	for line in filename:
-		data = line.strip().split(",")
-		symbol = data[0]
-		category = data[1]
-		new_category = m_session.query(model.Ticker).filter_by(symbol=
-			symbol).update({model.Ticker.category: category})
 	session.commit()
 
 def calc_percent_change_all(ticker_list, session):
@@ -141,10 +146,10 @@ def load_prof_allocs(session):
 def main(session):
 	load_ticker_data(build_ticker_url(find_ticker(ticker_list, 
 		"seed_data/ETFs-GOOG.csv")), m_session)
-	load_ticker_category(m_session)
-	calc_percent_change_all(ticker_list, m_session)
-	load_risk_profs(m_session)
-	load_prof_allocs(m_session)
+	# load_ticker_category(m_session)
+	# calc_percent_change_all(ticker_list, m_session)
+	# load_risk_profs(m_session)
+	# load_prof_allocs(m_session)
 
 if __name__ == "__main__":
     main(m_session)
