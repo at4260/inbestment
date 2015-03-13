@@ -8,14 +8,73 @@
     <li role="presentation"><a href="/investments">Investments</a></li>
 </ul>
 
-<h3> Profile </h3>
-<p> Assets: {{assets}} </p>
-<p> Income: {{income}} </p>
-<p> Does your company have a 401k? {{company_401k}} </p>
-<p> Does your company have a 401k match? {{company_match}} </p>
-<p> Percentage of match: {{match_percent}} </p>
-<p> Percentage of salary: {{match_salary}} </p>
-<p> Risk tolerance: {{risk_profile}} </p>
 <br>
+<br>
+
+<div class="container" style="width: 40%">
+	<div class="jumbotron">
+		<h3> Summary </h3>
+		<table class="table table-hover">
+			<col width="200">
+			<col width="100">
+			<col width="50">
+			<tr align="left">
+				<th>Survey Question</th>
+				<th>Response</th>
+				<th></th>
+			</tr>
+			<tr align="left">
+				<td>Assets</td>
+				<td>{{assets}}</td>
+				<td>
+					<a href="/input/assets">Edit</a>
+				</td>
+			</tr>
+			<tr align="left">
+				<td>Income</td>
+				<td>{{income}}</td>
+				<td>
+					<a href="/input/income">Edit</a>
+				</td>
+			</tr>
+			<tr align="left">
+				<td>Does your company have a 401k?</td>
+				<td>{{company_401k}}</td>
+				<td>
+					<a href="/input/comp_401k">Edit</a>
+				</td>
+			</tr>
+			<tr align="left">
+				<td>Does your company have a 401k match?</td>
+				<td>{{company_match}}</td>
+				<td>
+					<a href="/input/match_401k">Edit</a>
+				</td>
+			</tr>
+			<tr align="left">
+				<td>Percentage of match</td>
+				<td>{{match_percent}}</td>
+				<td>
+					<a href="/input/match_percent">Edit</a>
+				</td>
+			</tr>
+			<tr align="left">
+				<td>Percentage of salary</td>
+				<td>{{match_salary}}</td>
+				<td>
+					<a href="/input/match_salary">Edit</a>
+				</td>
+			</tr>
+			<tr align="left">
+				<td>Risk tolerance</td>
+				<td>{{risk_profile}}</td>
+				<td>
+					<a href="/input/risk_tolerance">Edit</a>
+				</td>
+			</tr>
+		</table>
+		<br>
+	</div>
+</div>
 
 {% endblock %}
