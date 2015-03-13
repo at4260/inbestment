@@ -48,7 +48,7 @@ $(function () {
 
 $(function () { 
     Highcharts.setOptions({
-        colors: ['#7cb5ec', '#263640', '#576E7F', '#88B0BF', '#ACA88C']
+        colors: ['#7cb5ec', '#434348', '#576E7F', '#88B0BF', '#B2B2B2']
     });
     $('#all_performance').highcharts({
         chart: {

@@ -283,13 +283,11 @@ def generate_performance_linegraph(risk_prof):
 	"""
 	total_performance_result = connection.execute(text(linegraph_sql_query), sql_risk_prof 
 		= risk_prof.id)
-	print "-----", total_performance_result
 	
 	dates = []
 	total_performance = []
 
 	for row in total_performance_result:
-		print "----", row
 		dates.append(row[0])
 		total_performance.append(row[1]/100)
 

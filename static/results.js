@@ -11,15 +11,16 @@ Highcharts.setOptions({
 	lang: {
 		thousandsSep: ","
 	},
-	colors: ['#7cb5ec', '#434348', '#ACA88C']
+	colors: ['#7cb5ec', '#434348', '#737373']
 });
 
 $(function () {
     $('.checkingaccount').highcharts({
         chart: {
-            plotBackgroundColor: null,
+            plotBackgroundColor: '#eeeeee',
             plotBorderWidth: 0,
-            plotShadow: false
+            plotShadow: false,
+            spacing: [0, 0, 0, 0]
         },
         title: {
             text: 'Checking<br>Account',
@@ -37,7 +38,7 @@ $(function () {
             pie: {
                 dataLabels: {
                     enabled: true,
-                    distance: -50,
+                    distance: -40,
                     style: {
                         fontWeight: 'bold',
                         color: 'white',
@@ -64,9 +65,10 @@ $(function () {
 $(function () {
     $('.savingsaccount').highcharts({
         chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: 0,
-            plotShadow: false
+            plotBackgroundColor: '#eeeeee',
+        	plotBorderWidth: 0,
+        	plotShadow: false,
+        	spacing: [0, 0, 0, 0]
         },
         title: {
             text: 'Savings<br>Account',
@@ -84,7 +86,7 @@ $(function () {
             pie: {
                 dataLabels: {
                     enabled: true,
-                    distance: -50,
+                    distance: -40,
                     style: {
                         fontWeight: 'bold',
                         color: 'white',
@@ -112,9 +114,10 @@ if (max_results["match"] !== 0) {
 	$(function () {
 		$('.matchaccount').highcharts({
 			chart: {
-	            plotBackgroundColor: null,
-	            plotBorderWidth: 0,
-	            plotShadow: false
+	            plotBackgroundColor: '#eeeeee',
+            	plotBorderWidth: 0,
+            	plotShadow: false,
+            	spacing: [0, 0, 0, 0]
 	        },
 	        credits: {
 	            enabled: false
@@ -126,7 +129,7 @@ if (max_results["match"] !== 0) {
 	            pie: {
 	                dataLabels: {
 	                    enabled: true,
-	                    distance: -50,
+	                    distance: -40,
 	                    style: {
 	                        fontWeight: 'bold',
 	                        color: 'white',
@@ -159,9 +162,10 @@ if (max_results["match"] !== 0) {
 	$(function () {
 		$('.matchaccount').highcharts({
 			chart: {
-	            plotBackgroundColor: null,
-	            plotBorderWidth: 0,
-	            plotShadow: false
+	            plotBackgroundColor: '#eeeeee',
+            	plotBorderWidth: 0,
+            	plotShadow: false,
+            	spacing: [0, 0, 0, 0]
 	        },
 	        credits: {
 	            enabled: false
@@ -174,7 +178,7 @@ if (max_results["match"] !== 0) {
 	            pie: {
 	                dataLabels: {
 	                    enabled: true,
-	                    distance: -50,
+	                    distance: -40,
 	                    style: {
 	                        fontWeight: 'bold',
 	                        color: 'white',
@@ -211,9 +215,10 @@ if (max_results["match"] !== 0) {
 $(function () {
     $('.iraaccount').highcharts({
         chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: 0,
-            plotShadow: false
+	            plotBackgroundColor: '#eeeeee',
+            	plotBorderWidth: 0,
+            	plotShadow: false,
+            	spacing: [0, 0, 0, 0]
         },
         title: {
             text: 'IRA',
@@ -231,7 +236,7 @@ $(function () {
             pie: {
                 dataLabels: {
                     enabled: true,
-                    distance: -50,
+                    distance: -40,
                     style: {
                         fontWeight: 'bold',
                         color: 'white',
@@ -259,9 +264,10 @@ if (max_results["ret401k"] !== 0) {
 	$(function () {
 	    $('.ret401kaccount').highcharts({
 	        chart: {
-	            plotBackgroundColor: null,
-	            plotBorderWidth: 0,
-	            plotShadow: false
+	            plotBackgroundColor: '#eeeeee',
+            	plotBorderWidth: 0,
+            	plotShadow: false,
+            	spacing: [0, 0, 0, 0]
 	        },
 	        title: {
 	            text: '401K<br>Account',
@@ -279,7 +285,7 @@ if (max_results["ret401k"] !== 0) {
 	            pie: {
 	                dataLabels: {
 	                    enabled: true,
-	                    distance: -50,
+	                    distance: -40,
 	                    style: {
 	                        fontWeight: 'bold',
 	                        color: 'white',
@@ -306,9 +312,10 @@ if (max_results["ret401k"] !== 0) {
 	$(function () {
 	    $('.ret401kaccount').highcharts({
 	        chart: {
-	            plotBackgroundColor: null,
-	            plotBorderWidth: 0,
-	            plotShadow: false
+	            plotBackgroundColor: '#eeeeee',
+            	plotBorderWidth: 0,
+            	plotShadow: false,
+            	spacing: [0, 0, 0, 0]
 	        },
 	        title: {
 	            text: '401K<br>Account',
@@ -327,7 +334,7 @@ if (max_results["ret401k"] !== 0) {
 	            pie: {
 	                dataLabels: {
 	                    enabled: true,
-	                    distance: -50,
+	                    distance: -40,
 	                    style: {
 	                        fontWeight: 'bold',
 	                        color: 'white',
@@ -357,9 +364,10 @@ if (results["investment"] !== 0) {
 	$(function () {
 	    $('.investmentaccount').highcharts({
 	        chart: {
-	            plotBackgroundColor: null,
-	            plotBorderWidth: 0,
-	            plotShadow: false
+	            plotBackgroundColor: '#eeeeee',
+            	plotBorderWidth: 0,
+            	plotShadow: false,
+            	spacing: [0, 0, 0, 0]
 	        },
 	        title: {
 	            text: 'Brokerage<br>Account',
@@ -377,7 +385,7 @@ if (results["investment"] !== 0) {
 	            pie: {
 	                dataLabels: {
 	                    enabled: true,
-	                    distance: -50,
+	                    distance: -40,
 	                    style: {
 	                        fontWeight: 'bold',
 	                        color: 'white',
@@ -403,9 +411,10 @@ if (results["investment"] !== 0) {
 	$(function () {
 	    $('.investmentaccount').highcharts({
 	        chart: {
-	            plotBackgroundColor: null,
-	            plotBorderWidth: 0,
-	            plotShadow: false
+	            plotBackgroundColor: '#eeeeee',
+            	plotBorderWidth: 0,
+            	plotShadow: false,
+            	spacing: [0, 0, 0, 0]
 	        },
 	        title: {
 	            text: 'Brokerage<br>Account',
@@ -424,7 +433,7 @@ if (results["investment"] !== 0) {
 	            pie: {
 	                dataLabels: {
 	                    enabled: true,
-	                    distance: -50,
+	                    distance: -40,
 	                    style: {
 	                        fontWeight: 'bold',
 	                        color: 'white',
