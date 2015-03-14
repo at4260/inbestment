@@ -1,18 +1,18 @@
 // CREATES PERFORMANCE TOGGLE
 $("#line_total").click(function() {
-    $("#allocation").hide();
     $("#total_performance").show();
-    $("#all_performance").hide();
+    $("#all_performance").hide();   
+    $("#allocation").hide();
 });
 $("#line_individual").click(function() {
-    $("#allocation").hide();
     $("#total_performance").hide();
     $("#all_performance").show();
+    $("#allocation").hide();
 });
 $("#pie").click(function() {
-    $("#allocation").show();
     $("#total_performance").hide();
     $("#all_performance").hide();
+    $("#allocation").show();
 });
 
 // CREATES PERFORMANCE LINE GRAPHS

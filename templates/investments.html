@@ -7,26 +7,31 @@
     <li role="presentation"><a href="/results">Results</a></li>
     <li role="presentation" class="active"><a href="/investments">Investments</a></li>
 </ul>
-
-<h3> Risk tolerance: {{risk_prof}} </h3>
 <br>
 
-<div class="btn-group" role="group" aria-label="...">
-		<button type="button" class="btn btn-default" id="line_total">Total Performance</button>
-		<button type="button" class="btn btn-default" id="line_individual">Individual Breakout</button>
-		<button type="button" class="btn btn-default" id="pie">Portfolio Allocation</button>
-</div>
+<div class="container" style="width: 65%">
+	<div class="jumbotron" style="padding: 5px">
 
-<div id="total_performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto"> </div>
-	<div id="all_performance" style="width:50%; height:400px; margin-left: auto; margin-right: auto; display: none"> </div>
-<div id="allocation" style="width:100%; height:400px; display: none"></div>
+		<h5> Risk tolerance: {{risk_prof}} </h5>
 
-<form action="/investments" method="POST">	
-	<label >Compare: <input type="text" name="compare_ticker" placeholder="Enter ticker here">
-    </label>
-	<button type="submit">Add</button>
-</form>
-<br>
+		<div class="btn-group" role="group" aria-label="...">
+			<button type="button" class="btn btn-default" id="line_total">Total Performance</button>
+			<button type="button" class="btn btn-default" id="line_individual">Individual Breakout</button>
+			<button type="button" class="btn btn-default" id="pie">Portfolio Allocation</button>
+		</div>
+
+		<div id="total_performance" style="width:90%; height:400px; margin-left: auto; margin-right: auto"> </div>
+		<div id="all_performance" style="width:90%; height:400px; margin-left: auto; margin-right: auto; display: none"> </div>
+		<div id="allocation" style="width:90%; height:400px; margin-left: auto; margin-right: auto; display: none"></div>
+
+		<form action="/investments" method="POST">	
+			<label >Compare: <input type="text" name="compare_ticker" placeholder="Enter ticker here">
+		    </label>
+			<button type="submit">Add</button>
+		</form>
+		<br>	
+	</div>
+</div>				
 
 <script>
 var chart_ticker_data = {{chart_ticker_data|safe}};
