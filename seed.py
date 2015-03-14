@@ -112,14 +112,15 @@ def calc_percent_change_all(ticker_list, session):
 	for ticker_data in range(len(ticker_list)):
 		ticker_id = ticker_id + 1
 		ticker = m_session.query(model.Price).filter_by(
-					ticker_id=ticker_id).all()	
+					ticker_id=ticker_id).all()  
 
-		old_close_price = m_session.query(model.Price).filter_by(
-					date="2007-04-10", ticker_id=ticker_id).first().close_price
+		old_close_price = float(m_session.query(model.Price).filter_by(
+					date="2007-04-10", 
+					ticker_id=ticker_id).first().close_price)
 		new_index = 0
 
 		for daily_ticker_price in ticker:
-			new_close_price = ticker[new_index].close_price
+			new_close_price = float(ticker[new_index].close_price)
 			difference = round((new_close_price - old_close_price) / 
 						old_close_price, 4)
 			ticker[new_index].percent_change = difference
@@ -155,12 +156,11 @@ def load_prof_allocs(session):
 
 
 def main(session):
-	# load_ticker_data(build_ticker_url(find_ticker(ticker_list,
-	# 			"seed_data/ETFs-GOOG.csv")), m_session)
-	# load_ticker_category(m_session)
+	load_ticker_data(build_ticker_url(find_ticker(ticker_list,
+				"seed_data/ETFs-GOOG.csv")), m_session)
 	calc_percent_change_all(ticker_list, m_session)
-	# load_risk_profs(m_session)
-	# load_prof_allocs(m_session)
+	load_risk_profs(m_session)
+	load_prof_allocs(m_session)
 
 if __name__ == "__main__":
 	main(m_session)

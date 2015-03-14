@@ -10,8 +10,8 @@ from sqlalchemy import Column, Integer, String, Date
 from sqlalchemy.orm import sessionmaker, relationship, backref, scoped_session
 
 engine = create_engine("sqlite:///database.db", echo=True)
-session = scoped_session(sessionmaker(bind=engine, autocommit = False, 
-    autoflush = False))
+session = scoped_session(sessionmaker(bind=engine, autocommit=False, 
+    autoflush=False))
 
 Base = declarative_base()
 Base.query = session.query_property()
@@ -36,15 +36,16 @@ class User(Base):
         backref=backref("users", order_by=id))
  
     def __repr__(self):
-        return "<User ID=%s Email=%s Password=%s Income=%s Risk Profile ID= \
-            %s>" % (self.id, self.email, self.password, self.income, 
-            self.risk_profile_id)
+        return "<User ID=%s Email=%s Password=%s Income=%s \
+            Risk Profile ID=%s>" % (self.id, self.email, self.password, 
+            self.income, self.risk_profile_id)
 
 class UserBanking(Base):
     __tablename__ = "u_bank"
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    inputted_assets = Column(Integer, nullable=True)
     checking_amt = Column(Integer, nullable=True)
     savings_amt = Column(Integer, nullable=True)
     IRA_amt = Column(Integer, nullable=True)
@@ -52,8 +53,8 @@ class UserBanking(Base):
     investment_amt = Column(Integer, nullable=True)
 
     def __repr__(self):
-        return "<User ID=%s Checkings=%s Savings=%s>" % (self.user_id, 
-            self.checking_amt, self.savings_amt)
+        return "<User ID=%s Asset=%s Checkings=%s>" % (self.user_id, 
+            self.inputted_assets, self.checking_amt)
 
 class RiskProfile(Base):
     __tablename__ = "risk_profs"
@@ -102,7 +103,7 @@ class Price(Base):
     __tablename__ = "prices"
 
     id = Column(Integer, primary_key=True)
-    ticker_id = Column(String(8), ForeignKey('tickers.id'), nullable=False)
+    ticker_id = Column(Integer, ForeignKey('tickers.id'), nullable=False)
     date = Column(Date, nullable=False)
     close_price = Column(Integer, nullable=False)
     percent_change = Column(Integer, nullable=True)
