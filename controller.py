@@ -9,8 +9,11 @@ import utils
 
 from flask import Flask, render_template, redirect, request, flash, g
 from flask import session as f_session
+from flask.ext.wtf import Form
 from model import session as m_session
 from passlib.hash import pbkdf2_sha512
+from wtforms import StringField, IntegerField, validators
+from wtforms.validators import DataRequired
 
 
 app = Flask(__name__)
@@ -224,6 +227,10 @@ def add_bank():
 	else:
 		return redirect("/login")
 
+class AssetsForm(Form):
+	assets = IntegerField("How much money is under your mattress?",
+		validators=[DataRequired()])
+
 @app.route("/input/assets")
 def input_assets():
 	"""
@@ -235,7 +242,7 @@ def input_assets():
 				user_id=g.user.id).first().inputted_assets
  		else:
 			assets = 0
-		return render_template("input_assets.html",
+		return render_template("input_assets.html", form=AssetsForm(),
 			assets=assets)
 	else:
 		return redirect("/login")
@@ -247,24 +254,29 @@ def save_assets():
 	database, and routes to next question (/results will perform
 	the calculations).
 	"""
-	assets = float(request.form["assets"])
+	form = AssetsForm(request.form)
+	if form.validate_on_submit():
+		assets = float(request.form["assets"])
 
-    # Checks that user's assets are getting updated each time they change
-    # their input, and not getting added to the database.
-	user_assets = m_session.query(model.UserBanking).filter_by(
-		user_id=g.user.id).first()
-	if user_assets != None:
-		update_assets = m_session.query(model.UserBanking).filter_by(
-			user_id=g.user.id).update(
-			{model.UserBanking.inputted_assets: assets})
+	    # Checks that user's assets are getting updated each time they change
+	    # their input, and not getting added to the database.
+		user_assets = m_session.query(model.UserBanking).filter_by(
+			user_id=g.user.id).first()
+		if user_assets != None:
+			update_assets = m_session.query(model.UserBanking).filter_by(
+				user_id=g.user.id).update(
+				{model.UserBanking.inputted_assets: assets})
+		else:
+			new_account = model.UserBanking(user_id=g.user.id, 
+				inputted_assets=assets,	checking_amt=0, savings_amt=0, IRA_amt=0,
+				comp401k_amt=0, investment_amt=0)
+			m_session.add(new_account)
+		m_session.commit()
+		return redirect("/input/income")
 	else:
-		new_account = model.UserBanking(user_id=g.user.id, 
-			inputted_assets=assets,	checking_amt=0, savings_amt=0, IRA_amt=0,
-			comp401k_amt=0, investment_amt=0)
-		m_session.add(new_account)
-	m_session.commit()
+		flash("Please enter an integer. No commas or symbols.")
+		return redirect("/input/assets")
 
-	return redirect("/input/income")
 
 @app.route("/input/income")
 def input_income():

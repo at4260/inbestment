@@ -24,11 +24,13 @@
 					<li><a href="/input/risk_tolerance">8</a></li>
 				</ul>
 			</nav>
-
-			<label >How much money is under your mattress? <input type="text" name="assets" required autofocus value={{assets}}>
-		    </label>
-			<p><button class="btn btn-primary btn-lg" type="submit">Next</button></p>
 			
+			{{ form.hidden_tag() }}
+			{{ form.assets.label }} 
+			{{ form.assets (autofocus=true, required=true) }}
+				
+			<p><button class="btn btn-primary btn-lg" type="submit">Next</button></p>
+			</div>
 		</div>
 	</div>
 </form>
