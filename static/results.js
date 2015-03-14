@@ -20,7 +20,7 @@ $(function () {
             plotBackgroundColor: '#eeeeee',
             plotBorderWidth: 0,
             plotShadow: false,
-            spacing: [0, 0, 0, 0]
+            spacing: [-50, -50, -50, -50],
         },
         title: {
             text: 'Checking<br>Account',
@@ -68,7 +68,7 @@ $(function () {
             plotBackgroundColor: '#eeeeee',
         	plotBorderWidth: 0,
         	plotShadow: false,
-        	spacing: [0, 0, 0, 0]
+        	spacing: [-50, -50, -50, -50],
         },
         title: {
             text: 'Savings<br>Account',
@@ -117,7 +117,7 @@ if (max_results["match"] !== 0) {
 	            plotBackgroundColor: '#eeeeee',
             	plotBorderWidth: 0,
             	plotShadow: false,
-            	spacing: [0, 0, 0, 0]
+            	spacing: [-50, -50, -50, -50],
 	        },
 	        credits: {
 	            enabled: false
@@ -165,7 +165,7 @@ if (max_results["match"] !== 0) {
 	            plotBackgroundColor: '#eeeeee',
             	plotBorderWidth: 0,
             	plotShadow: false,
-            	spacing: [0, 0, 0, 0]
+            	spacing: [-50, -50, -50, -50],
 	        },
 	        credits: {
 	            enabled: false
@@ -218,7 +218,7 @@ $(function () {
 	            plotBackgroundColor: '#eeeeee',
             	plotBorderWidth: 0,
             	plotShadow: false,
-            	spacing: [0, 0, 0, 0]
+            	spacing: [-50, -50, -50, -50],
         },
         title: {
             text: 'IRA',
@@ -267,7 +267,7 @@ if (max_results["ret401k"] !== 0) {
 	            plotBackgroundColor: '#eeeeee',
             	plotBorderWidth: 0,
             	plotShadow: false,
-            	spacing: [0, 0, 0, 0]
+            	spacing: [-50, -50, -50, -50],
 	        },
 	        title: {
 	            text: '401K<br>Account',
@@ -315,7 +315,7 @@ if (max_results["ret401k"] !== 0) {
 	            plotBackgroundColor: '#eeeeee',
             	plotBorderWidth: 0,
             	plotShadow: false,
-            	spacing: [0, 0, 0, 0]
+            	spacing: [-50, -50, -50, -50],
 	        },
 	        title: {
 	            text: '401K<br>Account',
@@ -367,7 +367,7 @@ if (results["investment"] !== 0) {
 	            plotBackgroundColor: '#eeeeee',
             	plotBorderWidth: 0,
             	plotShadow: false,
-            	spacing: [0, 0, 0, 0]
+            	spacing: [-50, -50, -50, -50],
 	        },
 	        title: {
 	            text: 'Brokerage<br>Account',
@@ -414,7 +414,7 @@ if (results["investment"] !== 0) {
 	            plotBackgroundColor: '#eeeeee',
             	plotBorderWidth: 0,
             	plotShadow: false,
-            	spacing: [0, 0, 0, 0]
+            	spacing: [-50, -50, -50, -50],
 	        },
 	        title: {
 	            text: 'Brokerage<br>Account',
