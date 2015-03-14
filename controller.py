@@ -108,7 +108,7 @@ def access_bank():
 	Allows login to banking institutions using Intuit API and
 	Python library aggcat. Calls functions in accounts.py.
 
-	Assumes that all account assets will be checking accounts.
+	Assumes that all account assets will be savings accounts.
 	"""
 	institution = str(request.form["institution"])
 	username = request.form["user_name"]
@@ -127,7 +127,7 @@ def access_bank():
 		
 		# Checks the HTTP error code if account needs further authentication
 		if account.status_code in [200, 201]:
-			checking_balance = account_data.balance_amount
+			savings_balance = account_data.balance_amount
 
 			# Checks that user's assets are getting updated each time they change
 			# their input, and not getting added to the database.
@@ -135,13 +135,11 @@ def access_bank():
 				user_id=g.user.id).first()
 			if user_assets != None:
 				update_assets = m_session.query(model.UserBanking).filter_by(
-					user_id=g.user.id).update({model.UserBanking.checking_amt: 
-					checking_balance})
+					user_id=g.user.id).update({model.UserBanking.savings_amt: 
+					savings_balance})
 			else:
-				new_account = model.UserBanking(user_id=g.user.id,
-					inputted_assets=0, checking_amt=checking_balance,
-					savings_amt=0, IRA_amt=0, comp401k_amt=0, 
-					investment_amt=0)
+				new_account = model.UserBanking(user_id=g.user.id, 
+					savings_amt=savings_balance)
 				m_session.add(new_account)
 			m_session.commit()
 			flash ("%s account XXXX%s with $%s has been added to your assets." %(
@@ -191,17 +189,17 @@ def process_challenge():
 			responses)
 		
 		print accounts.content.account_nickname, accounts.content.account_number
-		checking_balance = confirmed_account.balance_amount
+		savings_balance = confirmed_account.balance_amount
 
 		user_assets = m_session.query(model.UserBanking).filter_by(
 			user_id=g.user.id).first()
 		if user_assets != None:
 			update_assets = m_session.query(model.UserBanking).filter_by(
-				user_id=g.user.id).update({model.UserBanking.checking_amt: 
-				checking_balance})
+				user_id=g.user.id).update({model.UserBanking.savings_amt: 
+				savings_balance})
 		else:
 			new_account = model.UserBanking(user_id=g.user.id, 
-				checking_amt=checking_balance)
+				savings_amt=savings_balance)
 			m_session.add(new_account)
 		m_session.commit()
 		flash ("%s account XXXX%s with $%s has been added to your assets." %(
@@ -232,7 +230,7 @@ def input_assets():
 	if g.logged_in == True:
 		if g.inputs == True:
 			assets = m_session.query(model.UserBanking).filter_by(
-				user_id=g.user.id).first().inputted_assets
+				user_id = g.user.id).first().checking_amt
  		else:
 			assets = 0
 		return render_template("input_assets.html",
@@ -251,16 +249,15 @@ def save_assets():
 
     # Checks that user's assets are getting updated each time they change
     # their input, and not getting added to the database.
-	user_assets = m_session.query(model.UserBanking).filter_by(
-		user_id=g.user.id).first()
+	# Assumes that all assets will be in checkings
+	user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
+		g.user.id).first()
 	if user_assets != None:
-		update_assets = m_session.query(model.UserBanking).filter_by(
-			user_id=g.user.id).update(
-			{model.UserBanking.inputted_assets: assets})
+		update_assets = m_session.query(model.UserBanking).filter_by(user_id =
+		g.user.id).update({model.UserBanking.checking_amt: assets})
 	else:
-		new_account = model.UserBanking(user_id=g.user.id, 
-			inputted_assets=assets,	checking_amt=0, savings_amt=0, IRA_amt=0,
-			comp401k_amt=0, investment_amt=0)
+		new_account = model.UserBanking(user_id=g.user.id, checking_amt=assets,
+			savings_amt=0, IRA_amt=0, comp401k_amt=0, investment_amt=0)
 		m_session.add(new_account)
 	m_session.commit()
 
@@ -519,8 +516,7 @@ def show_existing_results():
 			user_assets = m_session.query(model.UserBanking).filter_by(
 				user_id = g.user.id).one()
 
-			total_assets = user_assets.inputted_assets + \
-				user_assets.checking_amt + user_assets.savings_amt + \
+			assets = user_assets.checking_amt + user_assets.savings_amt + \
 				user_assets.IRA_amt + user_assets.comp401k_amt + \
 				user_assets.investment_amt
 			income = g.user.income
@@ -529,8 +525,8 @@ def show_existing_results():
 			match_percent = g.user.match_percent
 			match_salary = g.user.match_salary
 
-			results = utils.calc_financial_results(total_assets, income, 
-				comp_401k, match_401k, match_percent, match_salary)
+			results = utils.calc_financial_results(assets, income, comp_401k, 
+				match_401k, match_percent, match_salary)
 			max_results = utils.calc_max_financials(income, comp_401k, 
 				match_401k, match_percent, match_salary)
 
@@ -560,8 +556,7 @@ def show_existing_inputs():
 		if g.inputs == True:
 			user_assets = m_session.query(model.UserBanking).filter_by(user_id = 
 				g.user.id).first()
-			total_assets = user_assets.inputted_assets + \
-				user_assets.checking_amt + user_assets.savings_amt + \
+			total_assets = user_assets.checking_amt + user_assets.savings_amt + \
 				user_assets.IRA_amt + user_assets.comp401k_amt + \
 				user_assets.investment_amt
 			risk_prof = m_session.query(model.RiskProfile).filter_by(id = 
