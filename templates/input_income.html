@@ -25,8 +25,9 @@
 				</ul>
 			</nav>
 
-			<label >What's your income? <input type="text" name="income" required value={{income}}>
-	    	</label>
+			{{ form.hidden_tag() }}
+			{{ form.income.label }} 
+			{{ form.income (autofocus=true, required=true, value=income) }}
 	    	
 			<p><button class="btn btn-primary btn-lg" type="submit">Next</button></p>
 			

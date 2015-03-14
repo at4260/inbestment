@@ -4,12 +4,14 @@
 <form method="POST">
 	<h3> Please Create an Account </h3>
 	<div class="form-group">
-	    <label for="exampleInputEmail1">Email address</label>
-	    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email" name="email">
-    </div>
-    <div class="form-group">
-    	<label for="exampleInputPassword1">Password</label>
-		<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="password">
+        {{ form.hidden_tag() }}
+        {{ form.email.label }} 
+        {{ form.email (type="email", class="form-control", autofocus=true, required=true, placeholder="Enter email") }}
+        <br>
+
+        {{ form.password.label }} 
+        {{ form.password (class="form-control", autofocus=true, required=true, placeholder="Create password") }}
+        <br>
     </div>
     <br>
     

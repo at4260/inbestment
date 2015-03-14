@@ -12,7 +12,7 @@ from flask import session as f_session
 from flask.ext.wtf import Form
 from model import session as m_session
 from passlib.hash import pbkdf2_sha512
-from wtforms import StringField, IntegerField, validators
+from wtforms import TextField, IntegerField, PasswordField, validators
 from wtforms.validators import DataRequired
 
 
@@ -41,34 +41,52 @@ def before_request():
 def home_page():
     return render_template("home.html")
 
+
+class LoginForm(Form):
+	email = TextField("Email",
+		validators=[DataRequired()])
+	password = PasswordField("Password",
+		validators=[DataRequired()])
+
 @app.route("/login")
 def show_login():
 	if g.logged_in == True:
 		flash ("You are already logged in.")
 		return redirect("/")
 	else:
-		return render_template("login.html")
+		return render_template("login.html", form=LoginForm())
 
 @app.route("/login", methods=["POST"])
 def process_login():
-	email = request.form["email"]
-	password = request.form["password"]
+	form = LoginForm(request.form)
+	if form.validate_on_submit():
+		email = request.form["email"]
+		password = request.form["password"]
 
-	user = m_session.query(model.User).filter_by(email=email).first()
-	
-	if user != None:
-		hashed_password = user.password
-		verify_password = pbkdf2_sha512.verify(password, hashed_password)
-		if email == user.email and verify_password == True:
-			f_session["email"] = email
-			flash ("Login successful.")
-			return redirect("/profile")
+		user = m_session.query(model.User).filter_by(email=email).first()
+		
+		if user != None:
+			hashed_password = user.password
+			verify_password = pbkdf2_sha512.verify(password, hashed_password)
+			if email == user.email and verify_password == True:
+				f_session["email"] = email
+				flash ("Login successful.")
+				return redirect("/profile")
+			else:
+				flash ("Incorrect username or password. Try again.")
+				return redirect("/login")
 		else:
-			flash ("Incorrect username or password. Try again.")
-			return redirect("/login")
+			flash ("Please create an account first.")
+			return redirect("/create")
 	else:
-		flash ("Please create an account first.")
-		return redirect("/create")
+		flash("Please enter a valid email and password.")
+		return redirect("/login")
+
+class CreateForm(Form):
+	email = TextField("Email",
+		validators=[DataRequired()])
+	password = PasswordField("Password",
+		validators=[DataRequired()])
 
 @app.route("/create")
 def create_acct():
@@ -76,32 +94,44 @@ def create_acct():
 		flash ("You are already logged in.")
 		return redirect("/")
 	else:
-		return render_template("create_acct.html")
+		return render_template("create_acct.html", form=CreateForm())
 
 @app.route("/create", methods=["POST"])
 def process_acct():
-	email = request.form["email"]
-	password = request.form["password"]
-	hashed_password = pbkdf2_sha512.encrypt(password, salt=b'64', 
-		rounds=100000, salt_size=16)
+	form = CreateForm(request.form)
+	print "$$$$", form.validate_on_submit()
+	if form.validate_on_submit():
+		email = request.form["email"]
+		password = request.form["password"]
+		hashed_password = pbkdf2_sha512.encrypt(password, salt=b'64', 
+			rounds=100000, salt_size=16)
 
-	# Checks that user isn't creating a duplicate account
-	user = m_session.query(model.User).filter_by(email=email).first()
-	if user != None:
-		flash ("That account already exists. Please log in.")
-		return redirect("/login")
+		# Checks that user isn't creating a duplicate account
+		user = m_session.query(model.User).filter_by(email=email).first()
+		if user != None:
+			flash ("That account already exists. Please log in.")
+			return redirect("/login")
+		else:
+		    new_user_acct = model.User(email=email, password=hashed_password)
+		    m_session.add(new_user_acct)
+		    m_session.commit()
+		    flash("Your account has been succesfully added.")
+		    f_session["email"] = email
+		    return redirect("/input/banking")
 	else:
-	    new_user_acct = model.User(email=email, password=hashed_password)
-	    m_session.add(new_user_acct)
-	    m_session.commit()
-	    flash("Your account has been succesfully added.")
-	    f_session["email"] = email
-	    return redirect("/input/banking")
+		flash("Please enter a valid email and password.")
+		return redirect("/create")
+
+class BankLoginForm(Form):
+	user_name = TextField("Username",
+		validators=[DataRequired()])
+	user_password = PasswordField("Password",
+		validators=[DataRequired()])
 
 @app.route("/banklogin")
 def login_bank():
 	if g.logged_in == True:
-		return render_template("banking.html")
+		return render_template("banking.html", form=BankLoginForm())
 	else:
 		return redirect("/login")
 
@@ -113,48 +143,53 @@ def access_bank():
 
 	Assumes that all account assets will be checking accounts.
 	"""
-	institution = str(request.form["institution"])
-	username = request.form["user_name"]
-	password = request.form["user_password"]
+	form = BankLoginForm(request.form)
+	if form.validate_on_submit():
+		institution = str(request.form["institution"])
+		username = request.form["user_name"]
+		password = request.form["user_password"]
 
-	user_fields = accounts.get_credential_fields(accounts.create_client(),
-		institution)
-	credentials = {}
-	credentials[user_fields["username"]] = username
-	credentials[user_fields["password"]] = password
+		user_fields = accounts.get_credential_fields(accounts.create_client(),
+			institution)
+		credentials = {}
+		credentials[user_fields["username"]] = username
+		credentials[user_fields["password"]] = password
 
-	try:
-		account = accounts.discover_add_account(accounts.create_client(), 
-			institution, credentials)
-		account_data = account.content
-		
-		# Checks the HTTP error code if account needs further authentication
-		if account.status_code in [200, 201]:
-			checking_balance = account_data.balance_amount
+		try:
+			account = accounts.discover_add_account(accounts.create_client(), 
+				institution, credentials)
+			account_data = account.content
+			
+			# Checks the HTTP error code if account needs further authentication
+			if account.status_code in [200, 201]:
+				checking_balance = account_data.balance_amount
 
-			# Checks that user's assets are getting updated each time they change
-			# their input, and not getting added to the database.
-			user_assets = m_session.query(model.UserBanking).filter_by(
-				user_id=g.user.id).first()
-			if user_assets != None:
-				update_assets = m_session.query(model.UserBanking).filter_by(
-					user_id=g.user.id).update({model.UserBanking.checking_amt: 
-					checking_balance})
+				# Checks that user's assets are getting updated each time they change
+				# their input, and not getting added to the database.
+				user_assets = m_session.query(model.UserBanking).filter_by(
+					user_id=g.user.id).first()
+				if user_assets != None:
+					update_assets = m_session.query(model.UserBanking).filter_by(
+						user_id=g.user.id).update({model.UserBanking.checking_amt: 
+						checking_balance})
+				else:
+					new_account = model.UserBanking(user_id=g.user.id,
+						inputted_assets=0, checking_amt=checking_balance,
+						savings_amt=0, IRA_amt=0, comp401k_amt=0, 
+						investment_amt=0)
+					m_session.add(new_account)
+				m_session.commit()
+				flash ("%s account XXXX%s with $%s has been added to your assets." %(
+					account_data.account_nickname, account_data.account_number[-4:],
+					account_data.balance_amount))
+				return redirect("/input/assets")	
 			else:
-				new_account = model.UserBanking(user_id=g.user.id,
-					inputted_assets=0, checking_amt=checking_balance,
-					savings_amt=0, IRA_amt=0, comp401k_amt=0, 
-					investment_amt=0)
-				m_session.add(new_account)
-			m_session.commit()
-			flash ("%s account XXXX%s with $%s has been added to your assets." %(
-				account_data.account_nickname, account_data.account_number[-4:],
-				account_data.balance_amount))
-			return redirect("/input/assets")	
-		else:
-			return redirect("/banklogin/challenge")	
-	except:
-		flash ("There was an error accessing your account. Please try again.")
+				return redirect("/banklogin/challenge")	
+		except:
+			flash ("There was an error accessing your account. Please try again.")
+			return redirect("/banklogin")
+	else:
+		flash("Please enter a valid email and password.")
 		return redirect("/banklogin")
 	
 @app.route("/banklogin/challenge")
@@ -278,6 +313,10 @@ def save_assets():
 		return redirect("/input/assets")
 
 
+class IncomeForm(Form):
+	income = IntegerField("What's your annual income?",
+		validators=[DataRequired()])
+
 @app.route("/input/income")
 def input_income():
 	"""
@@ -289,7 +328,7 @@ def input_income():
 				g.user.id).first().income
  		else:
 			income = 0
-		return render_template("input_income.html",
+		return render_template("input_income.html", form=IncomeForm(),
 			income=income)
 	else:
 		return redirect("/login")
@@ -301,15 +340,20 @@ def save_income():
 	database, and routes to next question (/results will perform
 	the calculations).
 	"""
-	income = float(request.form["income"])
+	form = IncomeForm(request.form)
+	if form.validate_on_submit():
+		income = float(request.form["income"])
 
-    # Find user id using f_session and then update the database with the 
-	# user's financial inputs
-	update_user = m_session.query(model.User).filter_by(id = 
-		g.user.id).update({model.User.income: income})
-	m_session.commit()
+	    # Find user id using f_session and then update the database with the 
+		# user's financial inputs
+		update_user = m_session.query(model.User).filter_by(id = 
+			g.user.id).update({model.User.income: income})
+		m_session.commit()
 
-	return redirect("/input/comp_401k")
+		return redirect("/input/comp_401k")
+	else:
+		flash("Please enter an integer. No commas or symbols.")
+		return redirect("/input/income")
 
 @app.route("/input/comp_401k")
 def input_comp_401k():
