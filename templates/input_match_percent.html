@@ -25,10 +25,15 @@
 				</ul>
 			</nav>
 
+			<script>
+			$(function() {
+				$('[data-toggle="popover"]').popover()
+			})
+			</script>
 			
-			What are the match terms? <br>
-		    For example: 100% of the first 6%, meaning your company will match 100% up to 6% of your salary. <br> If your salary is $50,000 and you contributed 6% (or $3,000), your employer will match 100% of that (receive $3,000).
-			<br>
+			What are the match terms? 
+			<i tabindex="0" class="fa fa-question-circle" data-toggle="popover" data-trigger="focus" data-content="For example: 100% (percent of match) of the first 6% (percent of salary), meaning your company will match 100% up to 6% of your salary. If your salary is $50,000 and you contributed 6% of your salary (or $3,000), your employer will match 100% of that (receive $3,000)."></i>
+   			<br>
 		    <label>Percentage of match
 				{% if match_percent == 1.0 %}
 					<select name="match_percent">

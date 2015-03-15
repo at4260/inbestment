@@ -78,11 +78,14 @@
         </div>
     </nav>
 
+    
     <div class="flash_block" style="padding-bottom: 10px">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         {% for message in messages %}
+            <div class="alert alert-info" role="alert">
             <li>{{message}}</li>
+            </div>
         {% endfor %}
         {% endif %}
         {% endwith %}
