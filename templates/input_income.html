@@ -19,15 +19,17 @@
 					<li class="active"><a href="/input/income">Question 3</a></li>
 					<li><a href="/input/comp_401k">4</a></li>
 					<li><a href="/input/match_401k">5</a></li>
-					<li><a href="/input/match_percent">6</a></li>
-					<li><a href="/input/match_salary">7</a></li>
-					<li><a href="/input/risk_tolerance">8</a></li>
+					<li><a href="/input/match_terms">6</a></li>
+					<li><a href="/input/risk_tolerance">7</a></li>
 				</ul>
 			</nav>
 
 			{{ form.hidden_tag() }}
 			{{ form.income.label }} 
+			<br>
 			{{ form.income (autofocus=true, required=true, value=income) }}
+			<br>
+			<br>
 	    	
 			<p><button class="btn btn-primary" type="submit">Next</button></p>
 			

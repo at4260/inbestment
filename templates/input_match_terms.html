@@ -9,7 +9,7 @@
 </ul>
 <br>    
 	
-<form action="/input/match_salary" method="POST">		
+<form action="/input/match_terms" method="POST">		
 	<div class="container" style="width: 50%">
 		<div class="jumbotron">
 			<nav>
@@ -19,13 +19,40 @@
 					<li><a href="/input/income">3</a></li>
 					<li><a href="/input/comp_401k">4</a></li>
 					<li><a href="/input/match_401k">5</a></li>
-					<li><a href="/input/match_percent">6</a></li>
-					<li class="active"><a href="/input/match_salary">Question 7</a></li>
-					<li><a href="/input/risk_tolerance">8</a></li>
+					<li class="active"><a href="/input/match_terms">Question 6</a></li>
+					<li><a href="/input/risk_tolerance">7</a></li>
 				</ul>
 			</nav>
+
+			<script>
+			$(function() {
+				$('[data-toggle="popover"]').popover()
+			})
+			</script>
 			
-			<label >Percentage of salary
+			What are the match terms? 
+			<i tabindex="0" class="fa fa-question-circle" data-toggle="popover" data-trigger="focus" data-content="For example: 100% (percent of match) of the first 6% (percent of salary), meaning your company will match 100% up to 6% of your salary. If your salary is $50,000 and you contributed 6% of your salary (or $3,000), your employer will match 100% of that (receive $3,000)."></i>
+   			<br>
+		    <label>Percent of match
+				{% if match_percent == 1.0 %}
+					<select name="match_percent">
+						<label><option value="0.5" >50%</option>
+						</label>
+						<label><option value="1.0" selected="selected">100%</option>
+						</label>
+					</select>
+				{% else %}
+					<select name="match_percent">
+						<label><option value="0.5" selected="selected">50%</option>
+						</label>
+						<label><option value="1.0" >100%</option>
+						</label>
+					</select>
+				{% endif %}
+			</label>
+			<br>
+
+			<label>Percent of salary to match
 				{% if match_salary == 0.04 %}
 					<select name="salary_percent">
 						<label><option value="0.03">3%</option>

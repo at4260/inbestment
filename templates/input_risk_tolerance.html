@@ -20,9 +20,8 @@
 						<li><a href="/input/income">3</a></li>
 						<li><a href="/input/comp_401k">4</a></li>
 						<li class="disabled"><a href="/input/match_401k">5</a></li>
-						<li class="disabled"><a href="/input/match_percent">6</a></li>
-						<li class="disabled"><a href="/input/match_salary">7</a></li>
-						<li class="active"><a href="/input/risk_tolerance">Question 8</a></li>
+						<li class="disabled"><a href="/input/match_terms">6</a></li>
+						<li class="active"><a href="/input/risk_tolerance">Question 7</a></li>
 					</ul>
 				{% elif g.user.company_match == "No" %}
 					<ul class= "pagination">
@@ -31,9 +30,8 @@
 						<li><a href="/input/income">3</a></li>
 						<li><a href="/input/comp_401k">4</a></li>
 						<li><a href="/input/match_401k">5</a></li>
-						<li class="disabled"><a href="/input/match_percent">6</a></li>
-						<li class="disabled"><a href="/input/match_salary">7</a></li>
-						<li class="active"><a href="/input/risk_tolerance">Question 8</a></li>
+						<li class="disabled"><a href="/input/match_terms">6</a></li>
+						<li class="active"><a href="/input/risk_tolerance">Question 7</a></li>
 					</ul>
 				{% else %}
 					<ul class= "pagination">
@@ -42,14 +40,14 @@
 						<li><a href="/input/income">3</a></li>
 						<li><a href="/input/comp_401k">4</a></li>
 						<li><a href="/input/match_401k">5</a></li>
-						<li><a href="/input/match_percent">6</a></li>
-						<li><a href="/input/match_salary">7</a></li>
-						<li class="active"><a href="/input/risk_tolerance">Question 8</a></li>
+						<li><a href="/input/match_terms">6</a></li>
+						<li class="active"><a href="/input/risk_tolerance">Question 7</a></li>
 					</ul>
 				{% endif %}
 			</nav>
 			
 			<label >What is your risk tolerance?
+				<br>
 		    	{% if risk_tolerance == "Moderate" %}
 					<select name="risk_tolerance">
 						<label><option value="Conservative">Conservative</option>

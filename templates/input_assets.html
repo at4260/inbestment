@@ -19,15 +19,24 @@
 					<li><a href="/input/income">3</a></li>
 					<li><a href="/input/comp_401k">4</a></li>
 					<li><a href="/input/match_401k">5</a></li>
-					<li><a href="/input/match_percent">6</a></li>
-					<li><a href="/input/match_salary">7</a></li>
-					<li><a href="/input/risk_tolerance">8</a></li>
+					<li><a href="/input/match_terms">6</a></li>
+					<li><a href="/input/risk_tolerance">7</a></li>
 				</ul>
 			</nav>
+
+			<script>
+			$(function() {
+				$('[data-toggle="popover"]').popover()
+			})
+			</script>
 			
 			{{ form.hidden_tag() }}
-			{{ form.assets.label }} 
+			{{ form.assets.label }}
+			<i tabindex="0" class="fa fa-question-circle" data-toggle="popover" data-trigger="focus" data-content="This should be your liquid assets. Do not include the account added in Question 1."></i>
+			<br> 
 			{{ form.assets (autofocus=true, required=true, value=assets) }}
+			<br>
+			<br>
 				
 			<p><button class="btn btn-primary" type="submit">Next</button></p>
 			</div>

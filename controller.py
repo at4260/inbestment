@@ -285,7 +285,7 @@ def add_bank():
 
 
 class AssetsForm(Form):
-    assets = IntegerField("How much money is under your mattress?",
+    assets = IntegerField("How much money do you have?",
         validators=[DataRequired()])
 
 
@@ -464,14 +464,14 @@ def save_match_401k():
         id=g.user.id).update({model.User.company_match: match_401k})
     m_session.commit()
 
-    return redirect("/input/match_percent")
+    return redirect("/input/match_terms")
 
 
-@app.route("/input/match_percent")
-def input_match_percent():
+@app.route("/input/match_terms")
+def input_match_terms():
     """
-    This allows the user to enter and edit the match percent of their
-    401k match.
+    This allows the user to enter and edit the match percent and max
+    salary percent match of their 401k match.
     """
     if g.logged_in is True:
         # If user selects that they do not have a 401k match, skip
@@ -482,57 +482,12 @@ def input_match_percent():
             if g.inputs is True:
                 match_percent = m_session.query(model.User).filter_by(
                     id=g.user.id).first().match_percent
-            else:
-                match_percent = 0
-            return render_template("input_match_percent.html",
-                match_percent=match_percent)
-        else:
-            match_percent = match_salary = 0
-            update_user = m_session.query(model.User).filter_by(
-                id=g.user.id).update({model.User.match_percent:
-                match_percent, model.User.match_salary: match_salary})
-            m_session.commit()
-            return redirect("/input/risk_tolerance")
-    else:
-        return redirect("/login")
-
-
-@app.route("/input/match_percent", methods=["POST"])
-def save_match_percent():
-    """
-    Pulls match percent from user input (as a post request), save
-    to database, and routes to next question (/results will perform
-    the calculations).
-    """
-    match_percent = float(request.form["match_percent"])
-
-    # Find user id using f_session and then update the database with the
-    # user's financial inputs
-    update_user = m_session.query(model.User).filter_by(
-        id=g.user.id).update({model.User.match_percent: match_percent})
-    m_session.commit()
-
-    return redirect("/input/match_salary")
-
-
-@app.route("/input/match_salary")
-def input_match_salary():
-    """
-    This allows the user to enter and edit the max salary percent match.
-    """
-    if g.logged_in is True:
-        # If user selects that they do not have a 401k match, skip
-        # all 401k match-related questions.
-        match_401k = m_session.query(model.User).filter_by(
-            id=g.user.id).first().company_match
-        if match_401k == "Yes":
-            if g.inputs is True:
                 match_salary = m_session.query(model.User).filter_by(
                     id=g.user.id).first().match_salary
             else:
-                match_salary = 0
-            return render_template("input_match_salary.html",
-                match_salary=match_salary)
+                match_percent = match_salary = 0
+            return render_template("input_match_terms.html",
+                match_percent=match_percent, match_salary=match_salary)
         else:
             match_percent = match_salary = 0
             update_user = m_session.query(model.User).filter_by(
@@ -544,19 +499,21 @@ def input_match_salary():
         return redirect("/login")
 
 
-@app.route("/input/match_salary", methods=["POST"])
-def save_match_salary():
+@app.route("/input/match_terms", methods=["POST"])
+def save_match_terms():
     """
-    Pulls max salary percent match from user input (as a post request),
-    save to database, and routes to next question (/results will perform
-    the calculations).
+    Pulls match percent and max salary percent match from user input
+    (as a post request), save to database, and routes to next question
+    (/results will perform the calculations).
     """
+    match_percent = float(request.form["match_percent"])
     match_salary = float(request.form["salary_percent"])
 
     # Find user id using f_session and then update the database with the
     # user's financial inputs
     update_user = m_session.query(model.User).filter_by(
-        id=g.user.id).update({model.User.match_salary: match_salary})
+        id=g.user.id).update({model.User.match_percent: match_percent,
+        model.User.match_salary: match_salary})
     m_session.commit()
 
     return redirect("/input/risk_tolerance")
