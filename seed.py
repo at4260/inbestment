@@ -74,8 +74,8 @@ def load_ticker_data(ticker_url_list, session):
             ticker_category = ""
 
         # Create new instance of the Ticker class called new_ticker
-        new_ticker = model.Ticker(symbol=ticker_symbol,
-                    name=ticker_name, category=ticker_category)
+        new_ticker = model.Ticker(
+            symbol=ticker_symbol, name=ticker_name, category=ticker_category)
         # Add each instance to session
         session.add(new_ticker)
         session.commit()
@@ -89,8 +89,9 @@ def load_ticker_data(ticker_url_list, session):
             date_format = datetime.strptime(date, "%Y-%m-%d")
             date_format = date_format.date()
             close_price = price[4]
-            new_ticker_price = model.Price(ticker_id=new_ticker.id,
-                        date=date_format, close_price=close_price)
+            new_ticker_price = model.Price(
+                ticker_id=new_ticker.id, date=date_format,
+                close_price=close_price)
             session.add(new_ticker_price)
 
     # commit after all instances are added
@@ -122,7 +123,7 @@ def calc_percent_change_all(ticker_list, session):
         for daily_ticker_price in ticker:
             new_close_price = float(ticker[new_index].close_price)
             difference = round((new_close_price - old_close_price) /
-                        old_close_price, 4)
+                               old_close_price, 4)
             ticker[new_index].percent_change = difference
             new_index = new_index + 1
     session.commit()
@@ -157,7 +158,7 @@ def load_prof_allocs(session):
 
 def main(session):
     load_ticker_data(build_ticker_url(find_ticker(ticker_list,
-                "seed_data/ETFs-GOOG.csv")), m_session)
+                     "seed_data/ETFs-GOOG.csv")), m_session)
     calc_percent_change_all(ticker_list, m_session)
     load_risk_profs(m_session)
     load_prof_allocs(m_session)

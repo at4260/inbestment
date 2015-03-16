@@ -21,7 +21,7 @@ def create_client():
         token_list.append(token)
 
     client = AggcatClient(token_list[0], token_list[1], token_list[2],
-        '1', './testapp1.key', verify_ssl=False)
+                          '1', './testapp1.key', verify_ssl=False)
     return client
 
 
@@ -73,8 +73,8 @@ def discover_add_account(client, institution, credentials):
     Credentials is a dictionary that is being generated from
     controller.py with user inputted credentials.
     """
-    account = client.discover_and_add_accounts(institutions[institution],
-        **credentials)
+    account = client.discover_and_add_accounts(
+        institutions[institution], **credentials)
     return account
 
 
@@ -105,9 +105,10 @@ def delete_account(client, account_id):
 
 
 def confirm_challenge(client, institution, challenge_session_id,
-    challenge_node_id, responses):
-    accounts = client.confirm_challenge(institutions[institution],
-        challenge_session_id, challenge_node_id, responses)
+                      challenge_node_id, responses):
+    accounts = client.confirm_challenge(
+        institutions[institution], challenge_session_id, challenge_node_id,
+        responses)
     return accounts
 
 

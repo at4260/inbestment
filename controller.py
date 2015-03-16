@@ -30,9 +30,10 @@ def before_request():
         g.email = f_session["email"]
         g.user = m_session.query(model.User).filter_by(email=g.email).first()
         if g.user.income is not None and g.user.company_401k is not None \
-            and g.user.company_match is not None and g.user.match_percent \
-            is not None and g.user.match_salary is not None and \
-            g.user.risk_profile_id is not None:
+                and g.user.company_match is not None and \
+                g.user.match_percent is not None and \
+                g.user.match_salary is not None and \
+                g.user.risk_profile_id is not None:
             g.inputs = True
         else:
             g.inputs = False
@@ -47,10 +48,8 @@ def home_page():
 
 
 class LoginForm(Form):
-    email = TextField("Email",
-        validators=[DataRequired()])
-    password = PasswordField("Password",
-        validators=[DataRequired()])
+    email = TextField("Email", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
 
 
 @app.route("/login")
@@ -90,10 +89,8 @@ def process_login():
 
 
 class CreateForm(Form):
-    email = TextField("Email",
-        validators=[DataRequired()])
-    password = PasswordField("Password",
-        validators=[DataRequired()])
+    email = TextField("Email", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
 
 
 @app.route("/create")
@@ -112,8 +109,8 @@ def process_acct():
     if form.validate_on_submit():
         email = request.form["email"]
         password = request.form["password"]
-        hashed_password = pbkdf2_sha512.encrypt(password, salt=b'64',
-            rounds=100000, salt_size=16)
+        hashed_password = pbkdf2_sha512.encrypt(
+            password, salt=b'64', rounds=100000, salt_size=16)
 
         # Checks that user isn't creating a duplicate account
         user = m_session.query(model.User).filter_by(email=email).first()
@@ -133,10 +130,8 @@ def process_acct():
 
 
 class BankLoginForm(Form):
-    user_name = TextField("Username",
-        validators=[DataRequired()])
-    user_password = PasswordField("Password",
-        validators=[DataRequired()])
+    user_name = TextField("Username", validators=[DataRequired()])
+    user_password = PasswordField("Password", validators=[DataRequired()])
 
 
 @app.route("/banklogin")
@@ -161,15 +156,15 @@ def access_bank():
         username = request.form["user_name"]
         password = request.form["user_password"]
 
-        user_fields = accounts.get_credential_fields(accounts.create_client(),
-            institution)
+        user_fields = accounts.get_credential_fields(
+            accounts.create_client(), institution)
         credentials = {}
         credentials[user_fields["username"]] = username
         credentials[user_fields["password"]] = password
 
         try:
-            account = accounts.discover_add_account(accounts.create_client(),
-                institution, credentials)
+            account = accounts.discover_add_account(
+                accounts.create_client(), institution, credentials)
             account_data = account.content
 
             # Checks the HTTP error code if account needs further
@@ -187,16 +182,16 @@ def access_bank():
                         model.UserBanking).filter_by(user_id=g.user.id).update(
                         {model.UserBanking.checking_amt: checking_balance})
                 else:
-                    new_account = model.UserBanking(user_id=g.user.id,
-                        inputted_assets=0, checking_amt=checking_balance,
-                        savings_amt=0, IRA_amt=0, comp401k_amt=0,
-                        investment_amt=0)
+                    new_account = model.UserBanking(
+                        user_id=g.user.id, inputted_assets=0,
+                        checking_amt=checking_balance, savings_amt=0,
+                        IRA_amt=0, comp401k_amt=0, investment_amt=0)
                     m_session.add(new_account)
                 m_session.commit()
                 flash("%s account XXXX%s with $%s has been added to your \
                     assets." % (account_data.account_nickname,
-                    account_data.account_number[-4:],
-                    account_data.balance_amount))
+                                account_data.account_number[-4:],
+                                account_data.balance_amount))
                 return redirect("/input/assets")
             else:
                 return redirect("/banklogin/challenge")
@@ -243,9 +238,9 @@ def process_challenge():
         challenge_session_id = account.headers["challengesessionid"]
         challenge_node_id = account.headers["challengenodeid"]
 
-        confirmed_account = accounts.confirm_challenge(create_client(),
-            institution, challenge_session_id, challenge_node_id,
-            responses)
+        confirmed_account = accounts.confirm_challenge(
+            create_client(), institution, challenge_session_id,
+            challenge_node_id, responses)
 
         print accounts.content.account_nickname, \
             accounts.content.account_number
@@ -255,17 +250,17 @@ def process_challenge():
             user_id=g.user.id).first()
         if user_assets is not None:
             update_assets = m_session.query(model.UserBanking).filter_by(
-                user_id=g.user.id).update({model.UserBanking.checking_amt:
-                checking_balance})
+                user_id=g.user.id).update(
+                {model.UserBanking.checking_amt: checking_balance})
         else:
-            new_account = model.UserBanking(user_id=g.user.id,
-                checking_amt=checking_balance)
+            new_account = model.UserBanking(
+                user_id=g.user.id, checking_amt=checking_balance)
             m_session.add(new_account)
         m_session.commit()
         flash("%s account XXXX%s with $%s has been added to your assets."
-            % (confirmed_account.content.account_nickname,
-            confirmed_account.content.account_number[-4:],
-            confirmed_account.content.balance_amount))
+              % (confirmed_account.content.account_nickname,
+                 confirmed_account.content.account_number[-4:],
+                 confirmed_account.content.balance_amount))
         return redirect("/input/assets")
     except:
         flash("There was an error authenticating your account. Please \
@@ -286,7 +281,7 @@ def add_bank():
 
 class AssetsForm(Form):
     assets = IntegerField("How much money do you have?",
-        validators=[DataRequired()])
+                          validators=[DataRequired()])
 
 
 @app.route("/input/assets")
@@ -301,7 +296,7 @@ def input_assets():
         else:
             assets = 0
         return render_template("input_assets.html", form=AssetsForm(),
-            assets=assets)
+                               assets=assets)
     else:
         return redirect("/login")
 
@@ -326,9 +321,9 @@ def save_assets():
                 user_id=g.user.id).update(
                 {model.UserBanking.inputted_assets: assets})
         else:
-            new_account = model.UserBanking(user_id=g.user.id,
-                inputted_assets=assets, checking_amt=0, savings_amt=0,
-                IRA_amt=0, comp401k_amt=0, investment_amt=0)
+            new_account = model.UserBanking(
+                user_id=g.user.id, inputted_assets=assets, checking_amt=0,
+                savings_amt=0, IRA_amt=0, comp401k_amt=0, investment_amt=0)
             m_session.add(new_account)
         m_session.commit()
         return redirect("/input/income")
@@ -338,8 +333,8 @@ def save_assets():
 
 
 class IncomeForm(Form):
-    income = IntegerField("What's your annual income?",
-        validators=[DataRequired()])
+    income = IntegerField(
+        "What's your annual income?", validators=[DataRequired()])
 
 
 @app.route("/input/income")
@@ -354,7 +349,7 @@ def input_income():
         else:
             income = 0
         return render_template("input_income.html", form=IncomeForm(),
-            income=income)
+                               income=income)
     else:
         return redirect("/login")
 
@@ -393,8 +388,8 @@ def input_comp_401k():
                 id=g.user.id).first().company_401k
         else:
             comp_401k = 0
-        return render_template("input_comp_401k.html",
-            comp_401k=comp_401k)
+        return render_template(
+            "input_comp_401k.html", comp_401k=comp_401k)
     else:
         return redirect("/login")
 
@@ -434,15 +429,15 @@ def input_match_401k():
                     id=g.user.id).first().company_match
             else:
                 match_401k = 0
-            return render_template("input_match_401k.html",
-                match_401k=match_401k)
+            return render_template(
+                "input_match_401k.html", match_401k=match_401k)
         else:
             match_401k = "No"
             match_percent = match_salary = 0
             update_user = m_session.query(model.User).filter_by(
                 id=g.user.id).update({model.User.company_match: match_401k,
-                model.User.match_percent: match_percent,
-                model.User.match_salary: match_salary})
+                                      model.User.match_percent: match_percent,
+                                      model.User.match_salary: match_salary})
             m_session.commit()
             return redirect("/input/risk_tolerance")
     else:
@@ -486,13 +481,14 @@ def input_match_terms():
                     id=g.user.id).first().match_salary
             else:
                 match_percent = match_salary = 0
-            return render_template("input_match_terms.html",
-                match_percent=match_percent, match_salary=match_salary)
+            return render_template(
+                "input_match_terms.html", match_percent=match_percent,
+                match_salary=match_salary)
         else:
             match_percent = match_salary = 0
             update_user = m_session.query(model.User).filter_by(
-                id=g.user.id).update({model.User.match_percent:
-                match_percent, model.User.match_salary: match_salary})
+                id=g.user.id).update({model.User.match_percent: match_percent,
+                                      model.User.match_salary: match_salary})
             m_session.commit()
             return redirect("/input/risk_tolerance")
     else:
@@ -513,7 +509,7 @@ def save_match_terms():
     # user's financial inputs
     update_user = m_session.query(model.User).filter_by(
         id=g.user.id).update({model.User.match_percent: match_percent,
-        model.User.match_salary: match_salary})
+                              model.User.match_salary: match_salary})
     m_session.commit()
 
     return redirect("/input/risk_tolerance")
@@ -532,8 +528,8 @@ def input_risk_tolerance():
                 id=risk_tolerance_id).first().name
         else:
             risk_tolerance = 0
-        return render_template("input_risk_tolerance.html",
-            risk_tolerance=risk_tolerance)
+        return render_template(
+            "input_risk_tolerance.html", risk_tolerance=risk_tolerance)
     else:
         return redirect("/login")
 
@@ -579,12 +575,14 @@ def show_existing_results():
             match_percent = g.user.match_percent
             match_salary = g.user.match_salary
 
-            results = utils.calc_financial_results(total_assets, income,
-                comp_401k, match_401k, match_percent, match_salary)
-            max_results = utils.calc_max_financials(income, comp_401k,
-                match_401k, match_percent, match_salary)
+            results = utils.calc_financial_results(
+                total_assets, income, comp_401k, match_401k, match_percent,
+                match_salary)
+            max_results = utils.calc_max_financials(
+                income, comp_401k, match_401k, match_percent, match_salary)
 
-            return render_template("results.html",
+            return render_template(
+                "results.html",
                 checking=utils.format_currency(results["checking"]),
                 savings=utils.format_currency(results["savings"]),
                 match=utils.format_currency(results["match"]),
@@ -617,7 +615,8 @@ def show_existing_inputs():
                 user_assets.investment_amt
             risk_prof = m_session.query(model.RiskProfile).filter_by(
                 id=g.user.risk_profile_id).first()
-            return render_template("profile_inputs.html",
+            return render_template(
+                "profile_inputs.html",
                 assets=utils.format_currency(total_assets),
                 income=utils.format_currency(g.user.income),
                 company_401k=g.user.company_401k,
@@ -671,7 +670,8 @@ def show_investments():
                 prof_ticker_data[0][4])
 
             if request.method == "GET":
-                return render_template("investments.html",
+                return render_template(
+                    "investments.html",
                     risk_prof=risk_prof.name,
                     dates=json.dumps(dates),
                     total_performance=json.dumps(total_performance),
@@ -711,9 +711,10 @@ def show_investments():
                         symbol=compare_ticker).first().id
                     compare_ticker_query = \
                         utils.generate_individual_ticker_linegraph(
-                        compare_ticker_id)
+                            compare_ticker_id)
 
-                    return render_template("investments_compare.html",
+                    return render_template(
+                        "investments_compare.html",
                         risk_prof=risk_prof.name,
                         dates=json.dumps(dates),
                         total_performance=json.dumps(total_performance),
@@ -728,7 +729,7 @@ def show_investments():
                         compare_ticker_query=json.dumps(compare_ticker_query))
                 else:
                     flash("Sorry, that ticker does not exist in our \
-                        database.")
+                          database.")
                     return redirect("/investments")
         else:
             flash("Our financial data on you is incomplete. \

@@ -31,7 +31,7 @@ def calc_monthly_expense(income):
     misc_budget = 0.36
     cushion_budget = 0.10
     monthly_expenses = (income * (housing_budget + misc_budget +
-        cushion_budget)) / 12
+                        cushion_budget)) / 12
     return monthly_expenses
 
 
@@ -131,7 +131,7 @@ def calc_user_ira(assets):
 
 
 def calc_user_401k(assets, match_percent, match_salary, income,
-    comp_401k, match_401k):
+                   comp_401k, match_401k):
     """
     Calculates how much the user will put into their 401k
     based on assets.
@@ -140,8 +140,8 @@ def calc_user_401k(assets, match_percent, match_salary, income,
     applicable 401k match contributions.
     """
     match_needed = calc_max_match(match_percent, match_salary, income)
-    user_match = calc_user_match(assets, match_needed, comp_401k,
-        match_401k)
+    user_match = calc_user_match(
+        assets, match_needed, comp_401k, match_401k)
 
     max_401k = 18000 - user_match
     if comp_401k == "Yes":
@@ -153,7 +153,7 @@ def calc_user_401k(assets, match_percent, match_salary, income,
 
 
 def calc_financial_results(assets, income, comp_401k, match_401k,
-    match_percent, match_salary):
+                           match_percent, match_salary):
     """
     Calculates how much the user will be able to put into each type
     of account based on assets.
@@ -180,15 +180,15 @@ def calc_financial_results(assets, income, comp_401k, match_401k,
     assets = assets - results["savings"]
 
     match_needed = calc_max_match(match_percent, match_salary, income)
-    results["match"] = calc_user_match(assets, match_needed,
-        comp_401k, match_401k)
+    results["match"] = calc_user_match(
+        assets, match_needed, comp_401k, match_401k)
     assets = assets - results["match"]
 
     results["ira"] = calc_user_ira(assets)
     assets = assets - results["ira"]
 
-    results["ret401k"] = calc_user_401k(assets, match_percent,
-        match_salary, income, comp_401k, match_401k)
+    results["ret401k"] = calc_user_401k(
+        assets, match_percent, match_salary, income, comp_401k, match_401k)
     assets = assets - results["ret401k"]
 
     results["investment"] = assets
@@ -197,7 +197,7 @@ def calc_financial_results(assets, income, comp_401k, match_401k,
 
 
 def calc_max_financials(income, comp_401k, match_401k,
-    match_percent, match_salary):
+                        match_percent, match_salary):
     """
     Calculates how much the user should be putting into each type
     of account.
@@ -214,8 +214,8 @@ def calc_max_financials(income, comp_401k, match_401k,
 
     if comp_401k == "Yes":
         if match_401k == "Yes":
-            max_results["match"] = calc_max_match(match_percent,
-                match_salary, income)
+            max_results["match"] = calc_max_match(
+                match_percent, match_salary, income)
             max_results["ret401k"] = 18000 - max_results["match"]
         else:
             max_results["match"] = 0
@@ -300,8 +300,8 @@ def generate_performance_linegraph(risk_prof):
     GROUP by prices.date
     ORDER by prices.date
     """
-    total_performance_result = connection.execute(text(linegraph_sql_query),
-        sql_risk_prof=risk_prof.id)
+    total_performance_result = connection.execute(
+        text(linegraph_sql_query), sql_risk_prof=risk_prof.id)
 
     dates = []
     total_performance = []
@@ -378,8 +378,8 @@ def calc_percent_change_compare(compare_ticker, session):
         dummy_id = find_old_date_id + incrementing_date
         find_dummy_date = m_session.query(model.Price).filter_by(
             id=dummy_id).first().date
-        add_dummy_price = model.Price(ticker_id=compare_ticker.id,
-            date=find_dummy_date, close_price=0)
+        add_dummy_price = model.Price(
+            ticker_id=compare_ticker.id, date=find_dummy_date, close_price=0)
         session.add(add_dummy_price)
     session.commit()
 
@@ -391,8 +391,8 @@ def calc_percent_change_compare(compare_ticker, session):
 
     while ticker[new_index].date > old_date:
         new_close_price = float(ticker[new_index].close_price)
-        difference = round((new_close_price - old_close_price) /
-            old_close_price, 4)
+        difference = round(
+            (new_close_price - old_close_price) / old_close_price, 4)
         ticker[new_index].percent_change = difference
         new_index = new_index + 1
     session.commit()
