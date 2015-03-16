@@ -4,12 +4,17 @@
 <div class="jumbotron">
  	<div class="container">
     	<img src="../static/inbestment.gif">
+    	<br>
 
 		{% if g.logged_in == True %}
-    	<p><a class="btn btn-primary btn-lg" href="/profile" role="button">Let's Get Started</a></p>
+    	<a class="btn btn-primary btn-lg" href="/profile" role="button">
+    		Let's Get Started
+    	</a>
 
     	{% else %}
-    	<p><a class="btn btn-primary btn-lg" href="/login" role="button">Let's Get Started</a></p>
+    	<a class="btn btn-primary btn-lg" href="/login" role="button">
+    		Let's Get Started
+    	</a>
 
     	{% endif %}
 

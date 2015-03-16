@@ -2,12 +2,20 @@
 {% block body %}
 
 <ul class="nav nav-tabs">
-    <li role="presentation"><a href="/profile"><i class="fa fa-user fa-fw fa-lg"></i>Profile</a></li>
-    <li role="presentation" class="active"><a href="/input/banking"><i class="fa fa-list-alt fa-fw fa-lg"></i> Survey</a></li>
-    <li role="presentation"><a href="/results"><i class="fa fa-bullseye fa-fw fa-lg"></i>Priority Goals</a></li>
-    <li role="presentation"><a href="/investments"><i class="fa fa-line-chart fa-fw fa-lg"></i>  Investments</a></li>
+    <li role="presentation"><a href="/profile">
+    	<i class="fa fa-user fa-fw fa-lg"></i>Profile
+    </a></li>
+    <li role="presentation" class="active"><a href="/input/banking">
+    	<i class="fa fa-list-alt fa-fw fa-lg"></i> Survey
+    </a></li>
+    <li role="presentation"><a href="/results">
+    	<i class="fa fa-bullseye fa-fw fa-lg"></i>Priority Goals
+    </a></li>
+    <li role="presentation"><a href="/investments">
+    	<i class="fa fa-line-chart fa-fw fa-lg"></i>  Investments
+    </a></li>
 </ul>
-<br>    
+<br>   
 	
 <form action="/input/match_terms" method="POST">		
 	<div class="container" style="width: 50%">
@@ -19,7 +27,9 @@
 					<li><a href="/input/income">3</a></li>
 					<li><a href="/input/comp_401k">4</a></li>
 					<li><a href="/input/match_401k">5</a></li>
-					<li class="active"><a href="/input/match_terms">Question 6</a></li>
+					<li class="active"><a href="/input/match_terms">
+						Question 6
+					</a></li>
 					<li><a href="/input/risk_tolerance">7</a></li>
 				</ul>
 			</nav>
@@ -30,23 +40,32 @@
 			})
 			</script>
 			
-			What are the match terms? 
-			<i tabindex="0" class="fa fa-question-circle" data-toggle="popover" data-trigger="focus" data-content="For example: 100% (percent of match) of the first 6% (percent of salary), meaning your company will match 100% up to 6% of your salary. If your salary is $50,000 and you contributed 6% of your salary (or $3,000), your employer will match 100% of that (receive $3,000)."></i>
+			<label>What are the match terms?</label>
+			<i tabindex="0" class="fa fa-question-circle" data-toggle="popover"
+			 data-trigger="focus" data-content="For example: 100% (percent of 
+			 match) of the first 6% (percent of salary), meaning your company 
+			 will match 100% up to 6% of your salary. If your salary is $50,000
+			 and you contributed 6% of your salary (or $3,000), your employer 
+			 will match 100% of that (receive $3,000)."></i>
    			<br>
 		    <label>Percent of match
 				{% if match_percent == 1.0 %}
 					<select name="match_percent">
 						<label><option value="0.5" >50%</option>
 						</label>
-						<label><option value="1.0" selected="selected">100%</option>
+						<label><option value="1.0" selected="selected">
+							100%
+						</option>
 						</label>
 					</select>
 				{% else %}
 					<select name="match_percent">
-						<label><option value="0.5" selected="selected">50%</option>
-						</label>
-						<label><option value="1.0" >100%</option>
-						</label>
+						<label><option value="0.5" selected="selected">
+							50%
+						</option></label>
+						<label><option value="1.0">
+							100%
+						</option></label>
 					</select>
 				{% endif %}
 			</label>
@@ -57,8 +76,9 @@
 					<select name="salary_percent">
 						<label><option value="0.03">3%</option>
 						</label>
-						<label><option value="0.04" selected="selected">4%</option>
-						</label>
+						<label><option value="0.04" selected="selected">
+							4%
+						</option></label>
 						<label><option value="0.05">5%</option>
 						</label>
 						<label><option value="0.06">6%</option>
@@ -70,8 +90,9 @@
 						</label>
 						<label><option value="0.04">4%</option>
 						</label>
-						<label><option value="0.05" selected="selected">5%</option>
-						</label>
+						<label><option value="0.05" selected="selected">
+							5%
+						</option></label>
 						<label><option value="0.06">6%</option>
 						</label>
 					</select>
@@ -83,13 +104,15 @@
 						</label>
 						<label><option value="0.05">5%</option>
 						</label>
-						<label><option value="0.06" selected="selected">6%</option>
-						</label>
+						<label><option value="0.06" selected="selected">
+							6%
+						</option></label>
 					</select>
 				{% else %}
 					<select name="salary_percent">
-						<label><option value="0.03" selected="selected">3%</option>
-						</label>
+						<label><option value="0.03" selected="selected">
+							3%
+						</option></label>
 						<label><option value="0.04">4%</option>
 						</label>
 						<label><option value="0.05">5%</option>
@@ -99,8 +122,11 @@
 					</select>
 				{% endif %}
 			</label>
+
 	    	
-			<p><button class="btn btn-primary" type="submit">Next</button></p>
+			<p><button class="btn btn-primary" type="submit">
+				Next
+			</button></p>
 			
 		</div>
 	</div>

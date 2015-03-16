@@ -2,12 +2,20 @@
 {% block body %}
 
 <ul class="nav nav-tabs">
-    <li role="presentation"><a href="/profile"><i class="fa fa-user fa-fw fa-lg"></i>Profile</a></li>
-    <li role="presentation" class="active"><a href="/input/banking"><i class="fa fa-list-alt fa-fw fa-lg"></i> Survey</a></li>
-    <li role="presentation"><a href="/results"><i class="fa fa-bullseye fa-fw fa-lg"></i>Priority Goals</a></li>
-    <li role="presentation"><a href="/investments"><i class="fa fa-line-chart fa-fw fa-lg"></i>  Investments</a></li>
+    <li role="presentation"><a href="/profile">
+    	<i class="fa fa-user fa-fw fa-lg"></i>Profile
+    </a></li>
+    <li role="presentation" class="active"><a href="/input/banking">
+    	<i class="fa fa-list-alt fa-fw fa-lg"></i> Survey
+    </a></li>
+    <li role="presentation"><a href="/results">
+    	<i class="fa fa-bullseye fa-fw fa-lg"></i>Priority Goals
+    </a></li>
+    <li role="presentation"><a href="/investments">
+    	<i class="fa fa-line-chart fa-fw fa-lg"></i>  Investments
+    </a></li>
 </ul>
-<br>    
+<br>
 	
 <form action="/input/risk_tolerance" method="POST">		
 	<div class="container" style="width: 50%">
@@ -19,9 +27,15 @@
 						<li><a href="/input/assets">2</a></li>
 						<li><a href="/input/income">3</a></li>
 						<li><a href="/input/comp_401k">4</a></li>
-						<li class="disabled"><a href="/input/match_401k">5</a></li>
-						<li class="disabled"><a href="/input/match_terms">6</a></li>
-						<li class="active"><a href="/input/risk_tolerance">Question 7</a></li>
+						<li class="disabled"><a href="/input/match_401k">
+							5
+						</a></li>
+						<li class="disabled"><a href="/input/match_terms">
+							6
+						</a></li>
+						<li class="active"><a href="/input/risk_tolerance">
+							Question 7
+						</a></li>
 					</ul>
 				{% elif g.user.company_match == "No" %}
 					<ul class= "pagination">
@@ -30,8 +44,12 @@
 						<li><a href="/input/income">3</a></li>
 						<li><a href="/input/comp_401k">4</a></li>
 						<li><a href="/input/match_401k">5</a></li>
-						<li class="disabled"><a href="/input/match_terms">6</a></li>
-						<li class="active"><a href="/input/risk_tolerance">Question 7</a></li>
+						<li class="disabled"><a href="/input/match_terms">
+							6
+						</a></li>
+						<li class="active"><a href="/input/risk_tolerance">
+							Question 7
+						</a></li>
 					</ul>
 				{% else %}
 					<ul class= "pagination">
@@ -41,7 +59,9 @@
 						<li><a href="/input/comp_401k">4</a></li>
 						<li><a href="/input/match_401k">5</a></li>
 						<li><a href="/input/match_terms">6</a></li>
-						<li class="active"><a href="/input/risk_tolerance">Question 7</a></li>
+						<li class="active"><a href="/input/risk_tolerance">
+							Question 7
+						</a></li>
 					</ul>
 				{% endif %}
 			</nav>
@@ -50,26 +70,31 @@
 				<br>
 		    	{% if risk_tolerance == "Moderate" %}
 					<select name="risk_tolerance">
-						<label><option value="Conservative">Conservative</option>
-						</label>
-						<label><option value="Moderate" selected="selected">Moderate</option>
-						</label>
+						<label><option value="Conservative">
+							Conservative
+						</option></label>
+						<label><option value="Moderate" selected="selected">
+							Moderate
+						</option></label>
 						<label><option value="Aggressive">Aggressive</option>
 						</label>
 					</select>
 				{% elif risk_tolerance == "Aggressive" %}
 					<select name="risk_tolerance">
-						<label><option value="Conservative">Conservative</option>
-						</label>
+						<label><option value="Conservative">
+							Conservative
+						</option></label>
 						<label><option value="Moderate">Moderate</option>
 						</label>
-						<label><option value="Aggressive" selected="selected">Aggressive</option>
-						</label>
+						<label><option value="Aggressive" selected="selected">
+							Aggressive
+						</option></label>
 					</select>
 				{% else %}
 					<select name="risk_tolerance">
-						<label><option value="Conservative" selected="selected">Conservative</option>
-						</label>
+						<label><option value="Conservative" selected="selected">
+							Conservative
+						</option></label>
 						<label><option value="Moderate">Moderate</option>
 						</label>
 						<label><option value="Aggressive">Aggressive</option>

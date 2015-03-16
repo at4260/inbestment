@@ -2,10 +2,18 @@
 {% block body %}
 
 <ul class="nav nav-tabs">
-    <li role="presentation"><a href="/profile"><i class="fa fa-user fa-fw fa-lg"></i>Profile</a></li>
-    <li role="presentation"><a href="/input/banking"><i class="fa fa-list-alt fa-fw fa-lg"></i> Survey</a></li>
-    <li role="presentation"><a href="/results"><i class="fa fa-bullseye fa-fw fa-lg"></i>Priority Goals</a></li>
-    <li role="presentation" class="active"><a href="/investments"><i class="fa fa-line-chart fa-fw fa-lg"></i>  Investments</a></li>
+    <li role="presentation"><a href="/profile">
+    	<i class="fa fa-user fa-fw fa-lg"></i>Profile
+    </a></li>
+    <li role="presentation" class="active"><a href="/input/banking">
+    	<i class="fa fa-list-alt fa-fw fa-lg"></i> Survey
+    </a></li>
+    <li role="presentation"><a href="/results">
+    	<i class="fa fa-bullseye fa-fw fa-lg"></i>Priority Goals
+    </a></li>
+    <li role="presentation"><a href="/investments">
+    	<i class="fa fa-line-chart fa-fw fa-lg"></i>  Investments
+    </a></li>
 </ul>
 <br>
 
@@ -15,20 +23,27 @@
 		<h5> Risk tolerance: {{risk_prof}} </h5>
 
 		<div class="btn-group" role="group" aria-label="...">
-			<button type="button" class="btn btn-default" id="line_total">Total Performance</button>
-			<button type="button" class="btn btn-default" id="line_individual">Individual Breakout</button>
-			<button type="button" class="btn btn-default" id="pie">Portfolio Allocation</button>
+			<button type="button" class="btn btn-default" id="line_total">
+				Total Performance</button>
+			<button type="button" class="btn btn-default" id="line_individual">
+				Individual Breakout</button>
+			<button type="button" class="btn btn-default" id="pie">
+				Portfolio Allocation</button>
 		</div>
 		<br>
 		<br>
 
-		<div id="total_performance" style="width:90%; height:400px; margin-left: auto; margin-right: auto"> </div>
-		<div id="all_performance" style="width:90%; height:400px; margin-left: auto; margin-right: auto; display: none"> </div>
-		<div id="allocation" style="width:90%; height:400px; margin-left: auto; margin-right: auto; display: none"></div>
+		<div id="total_performance" style="width:90%; height:400px; 
+		margin-left: auto; margin-right: auto"> </div>
+		<div id="all_performance" style="width:90%; height:400px; 
+		margin-left: auto; margin-right: auto; display: none"> </div>
+		<div id="allocation" style="width:90%; height:400px; 
+		margin-left: auto; margin-right: auto; display: none"></div>
 		<br>
 
 		<form action="/investments" method="POST">	
-			<label >Compare: <input type="text" name="compare_ticker" placeholder="Enter ticker here">
+			<label >Compare: <input type="text" name="compare_ticker" 
+				placeholder="Enter ticker here">
 		    </label>
 			<button type="submit">Add</button>
 		</form>

@@ -6,11 +6,13 @@
 	<div class="form-group">
         {{ form.hidden_tag() }}
         {{ form.email.label }} 
-        {{ form.email (type="email", class="form-control", autofocus=true, required=true, placeholder="Enter email") }}
+        {{ form.email (type="email", class="form-control", autofocus=true, 
+        required=true, placeholder="Enter email") }}
         <br>
 
         {{ form.password.label }} 
-        {{ form.password (class="form-control", autofocus=true, required=true, placeholder="Create password") }}
+        {{ form.password (class="form-control", autofocus=true, required=true,
+        placeholder="Create password") }}
         <br>
     </div>
     <br>

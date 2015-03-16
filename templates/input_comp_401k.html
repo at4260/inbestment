@@ -2,12 +2,20 @@
 {% block body %}
 
 <ul class="nav nav-tabs">
-    <li role="presentation"><a href="/profile"><i class="fa fa-user fa-fw fa-lg"></i>Profile</a></li>
-    <li role="presentation" class="active"><a href="/input/banking"><i class="fa fa-list-alt fa-fw fa-lg"></i> Survey</a></li>
-    <li role="presentation"><a href="/results"><i class="fa fa-bullseye fa-fw fa-lg"></i>Priority Goals</a></li>
-    <li role="presentation"><a href="/investments"><i class="fa fa-line-chart fa-fw fa-lg"></i>  Investments</a></li>
+    <li role="presentation"><a href="/profile">
+    	<i class="fa fa-user fa-fw fa-lg"></i>Profile
+    </a></li>
+    <li role="presentation" class="active"><a href="/input/banking">
+    	<i class="fa fa-list-alt fa-fw fa-lg"></i> Survey
+    </a></li>
+    <li role="presentation"><a href="/results">
+    	<i class="fa fa-bullseye fa-fw fa-lg"></i>Priority Goals
+    </a></li>
+    <li role="presentation"><a href="/investments">
+    	<i class="fa fa-line-chart fa-fw fa-lg"></i>  Investments
+    </a></li>
 </ul>
-<br>    
+<br>   
 	
 <form action="/input/comp_401k" method="POST">		
 	<div class="container" style="width: 50%">
@@ -17,24 +25,28 @@
 					<li><a href="/input/banking">1</a></li>
 					<li><a href="/input/assets">2</a></li>
 					<li><a href="/input/income">3</a></li>
-					<li class="active"><a href="/input/comp_401k">Question 4</a></li>
+					<li class="active"><a href="/input/comp_401k">
+						Question 4
+					</a></li>
 					<li><a href="/input/match_401k">5</a></li>
 					<li><a href="/input/match_terms">6</a></li>
 					<li><a href="/input/risk_tolerance">7</a></li>
 				</ul>
 			</nav>
 
-			Does your company have a 401k? 
+			<label>Does your company have a 401k?</label>
 			<br>
 	    	{% if comp_401k == "Yes" %}
-			    <label><input type="radio" name="401k" value="Yes" checked="checked"> Yes 
+			    <label><input type="radio" name="401k" value="Yes" 
+			    	checked="checked"> Yes 
 			    </label>
-			    <label><input type="radio" name="401k" value="No"> No 
+			    <label><input type="radio" name="401k" value="No"> No
 			    </label>
 		    {% else %}
 			    <label><input type="radio" name="401k" value="Yes"> Yes 
 			    </label>
-			    <label><input type="radio" name="401k" value="No" checked="checked"> No 
+			    <label><input type="radio" name="401k" value="No" 
+			    	checked="checked"> No 
 			    </label>
 		    {% endif %}
 	    	
