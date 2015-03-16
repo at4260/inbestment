@@ -19,7 +19,7 @@ from wtforms.validators import DataRequired
 
 
 app = Flask(__name__)
-app.secret_key = 'thisisasecretkey'
+app.secret_key = open("flask_tokens.txt").read()
 
 
 @app.before_request

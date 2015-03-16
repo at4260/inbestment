@@ -6,6 +6,7 @@ testapp1.crt
 testapp1.key
 testapp1.pfx
 
-# Don't store tokens (Quandl)
+# Don't store tokens
 quandl_tokens.txt
 intuit_tokens.txt
+flask_tokens.txt
