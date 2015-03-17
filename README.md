@@ -3,9 +3,6 @@
 
 Putting all of your money under the mattress is never a good choice. The goal of Inbestment is to help individuals easily come up with a financial plan and determine the amount and type of accounts they should fund first. Using the Intuit Customer Account Data API, users are able to import real banking account information to their profiles. Inbestment uses relational database modeling and large datasets to provide a recommended investment portfolio based on risk tolerance and graphically present performance over time. Users can also compare other stock's performance to their portfolio.
 
-Setting Up
---------
-
 Technology Stack
 --------
 <h5>APIs</h5>
@@ -105,8 +102,10 @@ As an example, for the "Conservative" risk profile and one day's data point:
 | BIV           | 40%		      | 0.04				  |
 | BSV           | 10%		      | 0.05				  |
 
-```One day's aggregated performance (weighted average) = ``` <br>
-```(0.25 * 0.01) + (0.20 * 0.02) + (0.05 * 0.03) + (0.40 * 0.04) + (0.10 * 0.05)```
+```
+One day's aggregated performance (weighted average) =
+(0.25 * 0.01) + (0.20 * 0.02) + (0.05 * 0.03) + (0.40 * 0.04) + (0.10 * 0.05)
+```
 
 My original query was a nested loop using SQLAlchemy that resulted in the line graph taking 18+ seconds to generate:
 ```
@@ -154,6 +153,32 @@ Future Plans
 - Use machine learning to estimate user's assets, income, and company 401K information (to limit number of user inputted fields)
 - More customizations and options in risk tolerance portfolios
 - Allows user to input all assets from multiple sources (current accounts and investments) and re-allocates their portfolio to Inbestment's recommendation
+
+Setting Up
+--------
+- Clone this [repo](https://github.com/at4260/inbestment)
+
+- Create and activate a new, empty virtual environment
+
+`virtualenv env`<br>
+`source env/bin/activate`
+
+- Use pip to install the packages required in requirements.txt
+
+`pip install -r requirements.txt`
+
+- Initialize account with the [Intuit Customer Account Data API](https://developer.intuit.com/docs/0020_customeraccountdata/009_using_customeraccountdata/0010_gettingstarted) and put the following keys in `intuit_tokens.txt` in this order:
+	- 1. OAuth Consumer Key
+	- 2. OAuth Consumer Secret
+	- 3. SAML Identity Provider ID
+
+- Initialize account with the [Quandl API](https://www.quandl.com/help/api) and put the key in `quandl_tokens.txt`
+
+- Put the Flask secret key in `flask_tokens.txt`
+
+- Start the application by running `controller.py`
+
+- Navigate to http://localhost:5000 and start exploring the app
 
 License
 --------
