@@ -26,4 +26,11 @@ body {
 .form-group {
     margin: 0 auto;
     width: 30%;
+}
+.button{
+    border-size: 0; 
+    border: 0; 
+    background-color: #eee; 
+    border-color: none;
+    background: url();
 }                   
