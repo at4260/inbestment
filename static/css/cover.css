@@ -13,44 +13,37 @@ body {
     text-align: center;
     font-family: 'Noto Sans', sans-serif;
 }
-#section-1{
-    background-image: url("../img/vw.jpg");
+#vw-image{
+    background-image: url("../img/vw2.jpg");
     background-repeat: no-repeat;
     background-size: 100% 100%;
     width: 100%;
-    height: 800px;
+    height: 575px;
     position: absolute;
 }
-#outline-header-on-img{
+#header-on-img{
     padding: 10px 30px; 
     color: #eee;
     width: 400px;
-    margin-top: 260px;
+    margin-top: 100px;
     margin-left: 825px;
     text-align: center;
     font-family: minimo-med;
     font-size: 40px;
 }
-#header{
-    text-align: center;
-    width: 800px;
-    margin: 40px auto;
-    font-family: minimo-med;
-    font-size: 60px;
-    color: #434348;
-}
-#section-4{
+#inbestment-logo{
     background-image: none;
     width: 100%;
     height: 100px;
-    margin-top: 800px;
+    margin-top: 575px;
     position: absolute;
+    text-align: center;
 }
-#section-5{
+#lets-get-started-button{
     background-image: none;
     width: 100%;
     height: 100px;
-    margin-top: 1000px;
+    margin-top: 720px;
     position: absolute;
     text-align: center;
     font-family: 'Noto Sans', sans-serif;
