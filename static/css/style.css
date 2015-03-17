@@ -1,0 +1,29 @@
+body {
+    padding-top: 20px;
+    /*background-image: url("../brushed/brushed.png");*/
+}
+.main_block {
+    text-align: center;
+    font-family: 'Noto Sans', sans-serif;
+    /*background-image: url("../brushed/brushed.png");*/
+}
+.flash_block {
+    padding: 40px 100px;
+    text-align: left;
+}
+@font-face {
+    font-family: minimo-med;
+    src: url("../Minimo/Minimo Medium.otf");
+}
+@font-face {
+    font-family: minimo;
+    src: url("../Minimo/Minimo.otf");
+}
+#logo {
+    font-family: minimo-med;
+    font-size: 20px;
+}
+.form-group {
+    margin: 0 auto;
+    width: 30%;
+}                   
