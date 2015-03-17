@@ -19,7 +19,8 @@ $("#pie").click(function() {
 $(function () { 
     $('#total_performance').highcharts({
         chart: {
-            type: 'area'
+            type: 'area',
+            backgroundColor: '#eee'
         },
         title: {
             text: 'Total Portfolio Performance'
@@ -53,6 +54,7 @@ $(function () {
     $('#all_performance').highcharts({
         chart: {
             type: 'area',
+            backgroundColor: '#eee'
         },
         title: {
             text: 'Individual Fund Performance'
@@ -167,7 +169,8 @@ $(function () {
     // Create the chart
     $('#allocation').highcharts({
         chart: {
-            type: 'pie'
+            type: 'pie',
+            backgroundColor: '#eee'
         },
         title: {
             text: 'Recommended Allocation'
