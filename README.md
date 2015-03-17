@@ -8,28 +8,28 @@ Setting Up
 
 Technology Stack
 --------
-<h5>APIs:</h5>
+<h5>APIs</h5>
 Intuit API, Quandl API
 
-<h5>Back-end:</h5>
+<h5>Back-end</h5>
 Python, SQL, SQLAlchemy, Flask, Flask-Login, Flask-WTF, Jinja, Python Passlib, Python Aggcat (client for Intuit API)
 
-<h5>Front-end:</h5>
+<h5>Front-end</h5>
 Highcharts, Javascript, JQuery, HTML, CSS
 
 Features
 --------
-<h5>Survey and Profile</5>
+<h5>Survey and Profile</h5>
 - INPUT
 
-<h5>Results</5>
+<h5>Results</h5>
 - INPUT
 
-<h5>Investments</5>
+<h5>Investments</h5>
 - The Quandl API allows me to call a ticker and returns a JSON object with pricing information. I am using the daily close price, and then, using a raw SQL query to calculate the percent change for each individual date's close price compared to the inception's close price.
 - Used Highcharts to pass the data
 
-<h5>Data Modelling</5>
+<h5>Data Modelling</h5>
 - Created a detailed data model with many relationships
 - Employed raw SQL and SQLAlchemy to query the database across relationships
 
