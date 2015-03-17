@@ -208,7 +208,7 @@ $(function () {
                     return this.y > 5 ? this.point.name : null;
                 },
                 color: 'white',
-                distance: -30
+                distance: -50
             }
         }, {
             name: 'Fund',
@@ -220,7 +220,8 @@ $(function () {
                     // display only if larger than 1
                     return this.y > 1 ? '<b>' + this.point.name + ':</b> ' 
                     + this.y + '%'  : null;
-                }
+                },
+                distance: 10
             }
         }]
     });
