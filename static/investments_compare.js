@@ -169,7 +169,8 @@ $(function () {
             versionsData.push({
                 name: data[i].drilldown.categories[j],
                 y: data[i].drilldown.data[j],
-                color: Highcharts.Color(data[i].color).brighten(brightness).get()
+                color: Highcharts.Color(data[i].color).brighten(
+                    brightness).get()
             });
         }
     }
@@ -217,7 +218,8 @@ $(function () {
             dataLabels: {
                 formatter: function () {
                     // display only if larger than 1
-                    return this.y > 1 ? '<b>' + this.point.name + ':</b> ' + this.y + '%'  : null;
+                    return this.y > 1 ? '<b>' + this.point.name + ':</b> ' 
+                    + this.y + '%'  : null;
                 }
             }
         }]

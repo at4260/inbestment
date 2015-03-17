@@ -23,7 +23,6 @@ body {
 }
 #outline-header-on-img{
     padding: 10px 30px; 
-    /*border: 8px solid #434348;*/
     color: #eee;
     width: 400px;
     margin-top: 260px;
@@ -32,13 +31,6 @@ body {
     font-family: minimo-med;
     font-size: 40px;
 }
-/*#section-2{
-    background-image: none;
-    width: 100%;
-    height: 500px;
-    margin-top: 1000px;
-    position: absolute;
-}*/
 #header{
     text-align: center;
     width: 800px;
@@ -47,22 +39,6 @@ body {
     font-size: 60px;
     color: #434348;
 }
-/*#section-3{
-    background-image: url("../pier.jpeg");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    width: 100%;
-    height: 1000px;
-    margin-top: 1500px;
-    position: absolute;
-}
-#header-on-img{
-    color: #eee;
-    width: 700px;
-    margin: 320px 250px 250px 1300px;
-    font-family: minimo-med;
-    font-size: 60px;
-}*/
 #section-4{
     background-image: none;
     width: 100%;

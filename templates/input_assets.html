@@ -42,8 +42,9 @@
 			
 			{{ form.hidden_tag() }}
 			{{ form.assets.label }}
-			<i tabindex="0" class="fa fa-question-circle" data-toggle="popover"
-			data-trigger="focus" data-content="This should be your liquid 
+			<i tabindex="0" class="fa fa-question-circle" 
+			data-toggle="popover" data-trigger="focus" 
+			data-content="This should be your liquid 
 			assets. Do not include the account added in Question 1."></i>
 			<br> 
 			{{ form.assets (autofocus=true, required=true, value=assets) }}

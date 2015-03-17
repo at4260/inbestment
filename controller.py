@@ -742,7 +742,6 @@ def show_investments():
 @app.route("/logout")
 def process_logout():
     f_session.clear()
-    flash("You are succesfully logged out.")
     return redirect("/")
 
 

@@ -1,11 +1,9 @@
 body {
     padding-top: 20px;
-    /*background-image: url("../brushed/brushed.png");*/
 }
 .main_block {
     text-align: center;
     font-family: 'Noto Sans', sans-serif;
-    /*background-image: url("../brushed/brushed.png");*/
 }
 .flash_block {
     padding: 40px 100px;
@@ -33,4 +31,5 @@ body {
     background-color: #eee; 
     border-color: none;
     background: url();
-}                   
+}
+div.inline {float: left;}            

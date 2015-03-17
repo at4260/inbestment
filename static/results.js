@@ -23,7 +23,7 @@ $(function () {
             spacing: [-50, -50, -50, -50]
         },
         title: {
-            text: 'Checking<br>Account',
+            text: 'Checking',
             align: 'center',
             verticalAlign: 'middle',
             y: 50
@@ -56,7 +56,8 @@ $(function () {
             innerSize: '50%',
             data: [
                 ['Amount Funded', results["checking"]],
-                ['Target Remaining', max_results["checking"] - results["checking"]],
+                ['Target Remaining', max_results["checking"] 
+                - results["checking"]],
             ]
         }]
     });
@@ -71,7 +72,7 @@ $(function () {
         	spacing: [-50, -50, -50, -50]
         },
         title: {
-            text: 'Savings<br>Account',
+            text: 'Savings',
             align: 'center',
             verticalAlign: 'middle',
             y: 50
@@ -104,7 +105,8 @@ $(function () {
             innerSize: '50%',
             data: [
                 ['Amount Funded', results["savings"]],
-                ['Target Remaining', max_results["savings"] - results["savings"]],
+                ['Target Remaining', max_results["savings"] 
+                - results["savings"]],
             ]
         }]
     });
@@ -153,7 +155,8 @@ if (max_results["match"] !== 0) {
 	            innerSize: '50%',
 	            data: [
 	                ['Amount Funded', results["match"]],
-	                ['Target Remaining', max_results["match"] - results["match"]],
+	                ['Target Remaining', max_results["match"] 
+	                - results["match"]],
 	            ]
 	        }],
     	});
@@ -303,7 +306,8 @@ if (max_results["ret401k"] !== 0) {
 	            innerSize: '50%',
 	            data: [
 	                ['Amount Funded', results["ret401k"]],
-	                ['Target Remaining', max_results["ret401k"] - results["ret401k"]],
+	                ['Target Remaining', max_results["ret401k"] 
+	                - results["ret401k"]],
 	            ]
 	        }]
 	    });
@@ -370,7 +374,7 @@ if (results["investment"] !== 0) {
             	spacing: [-50, -50, -50, -50]
 	        },
 	        title: {
-	            text: 'Brokerage<br>Account',
+	            text: 'Brokerage',
 	            align: 'center',
 	            verticalAlign: 'middle',
 	            y: 50
@@ -417,7 +421,7 @@ if (results["investment"] !== 0) {
             	spacing: [-50, -50, -50, -50]
 	        },
 	        title: {
-	            text: 'Brokerage<br>Account',
+	            text: 'Brokerage',
 	            align: 'center',
 	            verticalAlign: 'middle',
 	            y: 50
