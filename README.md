@@ -3,7 +3,7 @@
 
 Putting all of your money under the mattress is never a good choice. The goal of Inbestment is to help individuals easily come up with a financial plan and determine the amounts to fund each account. Using the Intuit Customer Account Data API, users are able to import real banking account information to their profiles. Inbestment uses relational database modeling and large datasets to provide a recommended investment portfolio based on risk tolerance and graphically present performance over time. Users can also compare other stock's performance to their portfolio.
 
-<img src="static/img/Screenshot-home.png" width="70%">
+<img src="static/img/Screenshot-home.png">
 
 Technology Stack
 --------
@@ -28,9 +28,9 @@ File Structure
 Features
 --------
 <h5>Survey and Profile</h5>
-<img src="/static/img/Screenshot-Profile.png" width="70%">
+<img src="/static/img/Screenshot-Profile.png">
 
-<img src="/static/img/Screenshot-Survey.png" width="70%">
+<img src="/static/img/Screenshot-Survey.png">
 
 - Allows user to add real banking information through the use of the Intuit Customer Account Data API and the Python aggcat client
 	- Passes the institution id for select institutions into the API call to pull account data (account number and balance amount)
@@ -38,26 +38,26 @@ Features
 		- If an account is being validated for the first time, the API may come back with the bank's challenge question to force additional user validation
 - User can easily get results based on a maximum of seven questions
 	- Values are updated to the database after each question allowing for a responsive survey (ex: if user answers that there is no 401k account, then disable and skip all-401K related questions)
-	- Profile saves all user inputs and shows it within the survey input field, allowing the user to easily edit any question
+	- Profile saves all user inputs and shows it within the survey input field, allowing the user to easily edit any response
 - Includes tooltips to assist the user in answering some of the questions
 
 <h5>Results</h5>
-<img src="/static/img/Screenshot-Results.png" width="70%">
+<img src="/static/img/Screenshot-Results.png">
 
 - Determines the target amount for each type of account and checks that against the user's assets
 - Creates a flow through a hierarchy of accounts
-	- 1. Checking - one month worth of living expenses
-	- 2. Savings - three months worth of living expenses
-	- 3. 401K match - (if applicable), calculated based on user inputted percent match and percent of salary to match
+	- 1. Checking - one month worth of living expenses, calculation based on user income
+	- 2. Savings - three months worth of living expenses, calculation based on user income
+	- 3. 401K match - (if applicable), calculation based on user percent match and percent of salary to match
 	- 4. IRA - maximum $5,500 IRS contribution
 	- 5. 401K - (if applicable), maximum $18,000 IRS contribution less 401K match
 	- 6. Brokerage - remaining assets
 - Includes modal to assist the user in interpreting their financial results
 
 <h5>Investments</h5>
-<img src="/static/img/Screenshot-TotalGraph.png" width="70%">
+<img src="/static/img/Screenshot-TotalGraph.png">
 
-<img src="/static/img/Screenshot-PieChart.png" width="70%">
+<img src="/static/img/Screenshot-PieChart.png">
 
 - Seeds the database with stock tickers and daily close prices using the Quandl API
 	- Uses raw SQL query to calculate the percent change for each individual date's close price compared to the inception's close price
@@ -67,10 +67,10 @@ Features
 - Implementes the ability for the user to input a ticker for comparison
 	- Checks a .csv file for the ticker's url identifier
 	- Calls the Quandl API to return the pricing information
-	- Seeds the database with the ticker's information while calculating the percent change
+	- Saves the ticker's information and calculated percent change in the database
 	- Future requests for that ticker will pull straight from the database, rather than making another API call
 
-<img src="/static/img/Screenshot-IndGraphComparison.png" width="70%">
+<img src="/static/img/Screenshot-IndGraphComparison.png">
 
 <h5>Data Modelling</h5>
 - Creates a detailed data model leveraging cross-tables relationships
@@ -100,7 +100,7 @@ In order to show total portfolio performance, I needed to query the database for
 
 Since stock prices are relative, I could not add the daily prices for each ticker together. I initially decided to normalize the data by calculating a daily percent change from the day before, but this resulted in an undynamic line graph. Then, I decided to still calculate a daily percent change, but since inception. This resulted in a more dynamic and interesting line graph. However, a stock ticker that has 10% growth since inception 10 years ago cannot be accurately compared to another stock ticker that has 20% growth since inception 5 years ago.
 
-Another option I considered would be to annualize the returns, but I would lose some fidelity when displaying the data in a line graph with less data points. I decided to take the latest inception date of all of my stock tickers in the risk tolerance portfolios (4/10/2007) and mark that as the since inception date for all percent changes to be calculated off of. While not optimal, this allowed me to accurately compare performance across stock tickers.
+Another option I considered would be to annualize the returns, but I would lose some fidelity when displaying the data in a line graph with less data points. I decided to take the latest inception date of all of my stock tickers in the risk tolerance portfolios (4/10/2007) and mark that as the since inception date for all percent changes to be calculated off of.
 
 At this point, I could now aggregate the percent change of the stock tickers for each daily data point. Since each stock ticker comprises a different weighting in the portfolio, I used a weighted average to calculate the aggregate percent change.
 
@@ -138,9 +138,10 @@ Future Plans
 - Short-term plans can be found in my github [Issues](https://github.com/at4260/inbestment/issues)
 
 <h5>Long-term</h5>
+- Improve methodology of determining total portfolio performance by taking a stock ticker's real inception date and still allowing apples-to-apples comparison
 - Use machine learning to estimate user's assets, income, and company 401K information (to limit number of user inputted fields)
 - More customizations and options in risk tolerance portfolios
-- Allows user to input all assets from multiple sources (current accounts and investments) and re-allocates their portfolio to Inbestment's recommendation
+- Allow user to input all assets from multiple sources (current accounts and investments) and re-allocates their portfolio to Inbestment's recommendation
 
 Setting Up
 --------
@@ -148,12 +149,12 @@ Setting Up
 
 - Create and activate a new, empty virtual environment
 
-`virtualenv env`<br>
-`source env/bin/activate`
+	`virtualenv env`<br>
+	`source env/bin/activate`
 
 - Use pip to install the packages required in requirements.txt
 
-`pip install -r requirements.txt`
+	`pip install -r requirements.txt`
 
 - Initialize account with the [Intuit Customer Account Data API](https://developer.intuit.com/docs/0020_customeraccountdata/009_using_customeraccountdata/0010_gettingstarted) and put the following keys in `intuit_tokens.txt` in this order:
 	- 1. OAuth Consumer Key
