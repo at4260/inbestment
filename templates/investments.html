@@ -17,7 +17,59 @@
 </ul>
 <br>
 
-<div class="container" style="width: 75%">
+<button type="button" data-toggle="modal" data-target=".bs-example-modal-lg" 
+style="float: right; margin-right: 10px" class="button">
+	<i class="fa fa-question-circle fa-3x"></i>
+</button>
+
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" 
+aria-labelledby="myLargeModalLabel" aria-hidden="true"style="margin-bottom: 10px">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="text-align: left">
+			<div class="modal-header">
+				<h4 class="modal-title">
+					Understanding Your Investments
+				</h4>
+			</div>
+			<div class="modal-body">
+				<p>
+					Usually, bonds are considered less risky than stocks. A portfolio with a heavier allocation towards bonds is going to be considered more risk adverse. Less risk usually correlates with less yield (lower performance).
+					<br>
+					<br>
+					The conventional recommendation for asset allocation is to subtract your age from 100 to determine the percentage your portfolio should be allocated towards stocks. The thinking is that we can tolerate less risk as we get older, because we have less of a time horizon to recover from market crashes, and we are closer to needing money for retirement.
+					<br>
+					<br>
+					The new recommendation is to subtract your age from 120 to determine the percentage your portfolio should be allocated towards stocks. This is due to a longer expected life span.
+				</p>
+				<br>
+
+				<p>
+					A fund is typically considered less risk than an individual bond/stock, because as a basket of bonds/stocks, it offers more diversification.
+					<br>
+					<br>
+					These funds are ranked from low risk to high risk:<br>
+					- BSV - short-term bond fund<br>
+					Short-term bonds lock up funds for a shorter period of time (less than 5 years), so there is less risk for price fluctuations.<br>
+					- BIV - intermediate-term bond fund<br>
+					Intermediate-term bonds lock up funds for 5-10 years.<br>
+					- BND- total bond fund<br>
+					Total bond funds have both intermediate-term bonds and long-term bonds (more than 10 years).<br>
+					- VV - large-cap stock fund<br>
+					Large-cap funds are composed of larger companies with market capitalization over $10B that offer more stability.<br>
+					- VEU - foreign large-cap stock fund<br>
+					Foreign large-cap funds have large, stable foreign companies, but sometimes carry more risk because it's international. There are no US companies.<br>
+					- VB - small-cap stock fund<br>
+					Small-cap stocks are companies that are more volatile with a market capitlization between $300M and $2B, but there is usually significantly more growth potential.<br>
+					- VWO - emerging markets stock fund<br>
+					These funds invest in companies located in emerging markets like China, Brazil, and South America. There is high potential for growth, but also high risk with less stable markets.<br>
+				</p>
+
+			</div>
+		</div>	
+	</div>
+</div>
+
+<div class="container" style="width: 85%; margin-top: 30px">
 	<div class="jumbotron" style="padding: 5px">
 
 		<h5> Risk Tolerance: {{risk_prof}} &nbsp
@@ -50,25 +102,21 @@
 		<br>
 		<br>
 
-		<div id="total_performance" style="width: 900px; 
+		<div id="total_performance" style="width: 1000px; 
 		margin-left: auto; margin-right: auto"> </div>
-		<div id="all_performance" style="width: 900px; 
+		<div id="all_performance" style="width: 1000px; 
 		margin-left: auto; margin-right: auto; display: none"> </div>
-		<div id="allocation" style="width: 900px;
+		<div id="allocation" style="width: 1000px;
 		margin-left: auto; margin-right: auto; display: none"></div>
 		<br>
 
 		<form action="/investments" method="POST">	
-			<form class="form-inline">
-				<div class="form-group">
-					<label for="Input comparison tickers">Compare:</label>
-					<input type="text" name="compare_ticker" 
-					placeholder="Enter ticker here" class="form-control">
-				</div>
-				<button type="submit" class="button">
-					<i class="fa fa-plus-circle fa-lg"></i>
-				</button>
-			</form>
+			<label for="Input comparison tickers">Compare:</label>
+			<input type="text" name="compare_ticker" 
+			placeholder="Enter ticker here" class="form-control" style="width: 150px; display: inline">
+			<button type="submit" class="button" style="display: inline">
+				<i class="fa fa-plus-circle fa-lg"></i>
+			</button>
 		</form>
 		<br>	
 	</div>
