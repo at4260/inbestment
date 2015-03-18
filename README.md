@@ -69,6 +69,7 @@ Features
 	- Calls the Quandl API to return the pricing information
 	- Seeds the database with the ticker's information while calculating the percent change
 	- Future requests for that ticker will pull straight from the database, rather than making another API call
+
 <img src="/static/img/Screenshot-IndGraphComparison.png" width="70%">
 
 <h5>Data Modelling</h5>
