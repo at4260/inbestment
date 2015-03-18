@@ -3,6 +3,8 @@
 
 Putting all of your money under the mattress is never a good choice. The goal of Inbestment is to help individuals easily come up with a financial plan and determine the amounts to fund each account. Using the Intuit Customer Account Data API, users are able to import real banking account information to their profiles. Inbestment uses relational database modeling and large datasets to provide a recommended investment portfolio based on risk tolerance and graphically present performance over time. Users can also compare other stock's performance to their portfolio.
 
+<img src="static/img/Screenshot-home.png" width="70%">
+
 Technology Stack
 --------
 <h5>APIs</h5>
@@ -26,6 +28,10 @@ File Structure
 Features
 --------
 <h5>Survey and Profile</h5>
+<img src="/static/img/Screenshot-Profile.png" width="70%">
+
+<img src="/static/img/Screenshot-Survey.png" width="70%">
+
 - Allows user to add real banking information through the use of the Intuit Customer Account Data API and the Python aggcat client
 	- Passes the institution id for select institutions into the API call to pull account data (account number and balance amount)
 	- Creates a route to authenticate challenge scenarios
@@ -36,6 +42,8 @@ Features
 - Includes tooltips to assist the user in answering some of the questions
 
 <h5>Results</h5>
+<img src="/static/img/Screenshot-Results.png" width="70%">
+
 - Determines the target amount for each type of account and checks that against the user's assets
 - Creates a flow through a hierarchy of accounts
 	- 1. Checking - one month worth of living expenses
@@ -47,6 +55,10 @@ Features
 - Includes modal to assist the user in interpreting their financial results
 
 <h5>Investments</h5>
+<img src="/static/img/Screenshot-TotalGraph.png" width="70%">
+
+<img src="/static/img/Screenshot-PieChart.png" width="70%">
+
 - Seeds the database with stock tickers and daily close prices using the Quandl API
 	- Uses raw SQL query to calculate the percent change for each individual date's close price compared to the inception's close price
 	- See "Technical Choices" on calculating portfolio performance
@@ -57,6 +69,7 @@ Features
 	- Calls the Quandl API to return the pricing information
 	- Seeds the database with the ticker's information while calculating the percent change
 	- Future requests for that ticker will pull straight from the database, rather than making another API call
+<img src="/static/img/Screenshot-IndGraphComparison.png" width="70%">
 
 <h5>Data Modelling</h5>
 - Creates a detailed data model leveraging cross-tables relationships
