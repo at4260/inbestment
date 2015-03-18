@@ -39,7 +39,7 @@ Features
 - Determines the target amount for each type of account and checks that against the user's assets
 - Creates a flow through a hierarchy of accounts
 	- 1. Checking - one month worth of living expenses
-	- 2. Savings- three months worth of living expenses
+	- 2. Savings - three months worth of living expenses
 	- 3. 401K match - (if applicable), calculated based on user inputted percent match and percent of salary to match
 	- 4. IRA - maximum $5,500 IRS contribution
 	- 5. 401K - (if applicable), maximum $18,000 IRS contribution less 401K match
@@ -63,7 +63,7 @@ Features
 - Employes raw SQL and SQLAlchemy to query the database across relationships
 
 <h5>Security</h5>
-- Encryptes and verifies user passwords through hashing and salting
+- Encrypts and verifies user passwords through hashing and salting
 - Uses Python Passlib and PBKDF2_SHA512 hash algorithm
 
 <h5>Data Validation and Testing</h5>
