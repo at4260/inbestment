@@ -76,6 +76,9 @@ Features
 - Creates a detailed data model leveraging cross-tables relationships
 - Employes raw SQL and SQLAlchemy to query the database across relationships
 
+<img src="static/img/datamodel.png" width=70%><br>
+(Data model created with Vertabelo)
+
 <h5>Security</h5>
 - Encrypts and verifies user passwords through hashing and salting
 - Uses Python Passlib and PBKDF2_SHA512 hash algorithm
