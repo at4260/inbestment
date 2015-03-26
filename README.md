@@ -14,7 +14,7 @@ Intuit Customer Account Data API, Quandl API
 Python, SQL, SQLAlchemy, Flask, Flask-Login, Flask-WTF, Python Passlib, Python Aggcat (client for Intuit API), Python unittest
 
 <h5>Front-end</h5>
-Jinja, Highcharts, Javascript, JQuery, HTML, CSS
+Jinja, Highcharts, Javascript, jQuery, HTML, CSS
 
 File Structure
 --------
