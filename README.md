@@ -44,7 +44,7 @@ Features
 <h5>Results</h5>
 <img src="/static/img/Screenshot-Results.png">
 
-- Determines the target amount for each type of account and checks that against the user's assets
+
 - Creates a flow through a hierarchy of accounts
 	- 1. Checking - one month worth of living expenses, calculation based on user income
 	- 2. Savings - three months worth of living expenses, calculation based on user income
