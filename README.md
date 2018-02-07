@@ -1,5 +1,4 @@
 <img src="static/img/inbestment2.png" width="40%" height="40%">
-=======
 
 Putting all of your money under the mattress is never a good choice. The goal of Inbestment is to help individuals easily come up with a financial plan and determine the amounts to fund each account. Using the Intuit Customer Account Data API, users are able to import real banking account information to their profiles. Inbestment uses relational database modeling and large datasets to provide a recommended investment portfolio based on risk tolerance and graphically present performance over time. Users can also compare other stock's performance to their portfolio.
 
@@ -19,6 +18,7 @@ Jinja, Highcharts, Javascript, jQuery, HTML, CSS
 File Structure
 --------
 <h5>Main Files</h5>
+
 - __controller.py__: Main entry point and controls application routing
 - __utils.py__: Utility functions for calculating large operations outside of __controller.py__
 - __model.py__: Creates the local database model
@@ -73,6 +73,7 @@ Features
 <img src="/static/img/Screenshot-IndGraphComparison.png">
 
 <h5>Data Modelling</h5>
+
 - Creates a detailed data model leveraging cross-tables relationships
 - Employes raw SQL and SQLAlchemy to query the database across relationships
 
@@ -80,10 +81,12 @@ Features
 (Data model created with Vertabelo)
 
 <h5>Security</h5>
+
 - Encrypts and verifies user passwords through hashing and salting
 - Uses Python Passlib and PBKDF2_SHA512 hash algorithm
 
 <h5>Data Validation and Testing</h5>
+
 - Checks back-end data validity using Flask-WTF and front-end using HTML fields, so the user is not able to input non-integers for assets and income or invalid email and password
 - All routes use Flask-g to ensure the following scenarios:
 	- A user who is not logged in will be directed to the login page
@@ -93,6 +96,7 @@ Features
 	- Flask integration tests ensure that all routes are working when user is logged in or logged out
 
 <h5>Maintainable Code</h5>
+
 - Checks Python files in PEP8 style guide for formatting consistency
 - Strong workflow and bug tracking using Git to create issues and hunking commits with detailed messages
 
@@ -138,9 +142,11 @@ linegraph_sql_query = """
 Future Plans
 --------
 <h5>Short-term</h5>
+
 - Short-term plans can be found in my github [Issues](https://github.com/at4260/inbestment/issues)
 
 <h5>Long-term</h5>
+
 - Improve methodology of determining total portfolio performance by taking a stock ticker's real inception date and still allowing apples-to-apples comparison
 - Use machine learning to estimate user's assets, income, and company 401K information (to limit number of user inputted fields)
 - More customizations and options in risk tolerance portfolios
